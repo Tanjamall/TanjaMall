@@ -9,7 +9,7 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 5 from `BUILD_PLAN.md` are implemented.
+Task 1 through Task 6 from `BUILD_PLAN.md` are implemented.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -49,7 +49,10 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
 - `lib/`
   - Project utilities.
-  - Includes Supabase client helpers, storefront data fetchers, Zustand cart foundation, WhatsApp helper, validators, and shared utilities.
+  - Includes Supabase client helpers, admin auth helpers, storefront data fetchers, Zustand cart foundation, WhatsApp helper, validators, and shared utilities.
+
+- `docs/ADMIN_AUTH_SETUP.md`
+  - One-time Supabase Auth admin setup steps.
 
 - `supabase/migrations/`
   - Local SQL migrations.
@@ -149,6 +152,29 @@ Customer routes now read live Supabase data:
 
 The customer-facing visual classes intentionally reuse the approved static preview styling from `assets/styles.css`.
 
+## Implemented Task 6 Admin Authentication
+
+Admin routes now require:
+
+- A valid Supabase Auth session.
+- A matching `public.profiles` row.
+- `profiles.role = 'ADMIN'`.
+
+Implemented files:
+
+- `app/admin/login/page.tsx`
+- `app/admin/actions.ts`
+- `app/admin/page.tsx`
+- `components/admin/admin-login-form.tsx`
+- `components/admin/admin-logout-button.tsx`
+- `components/admin/admin-shell.tsx`
+- `lib/admin/auth.ts`
+
+Current live Supabase state:
+
+- ADMIN profile count is `0`.
+- Create an Auth user and matching profile row using `docs/ADMIN_AUTH_SETUP.md` before testing a successful login.
+
 ## Build Direction
 
 The production project should use:
@@ -172,6 +198,6 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue to Task 6: Admin authentication.
+Continue to Task 7: Admin dashboard UI customization.
 
 Important: customer-facing visual design remains locked. Do not visually redesign it while building admin/auth/order features.

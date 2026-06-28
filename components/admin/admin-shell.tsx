@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { BarChart3, Boxes, ClipboardList, FolderTree, Settings, UserRound } from "lucide-react";
+import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
+import { requireAdmin } from "@/lib/admin/auth";
 
 const navItems: Array<{
   href: Route;
@@ -14,7 +16,9 @@ const navItems: Array<{
   { href: "/admin/settings", label: "الإعدادات", icon: Settings }
 ];
 
-export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>) {
+export async function AdminShell({ children }: Readonly<{ children: React.ReactNode }>) {
+  const admin = await requireAdmin();
+
   return (
     <main className="min-h-screen bg-muted/60 text-foreground">
       <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
@@ -39,14 +43,17 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
           </nav>
         </aside>
         <section className="min-w-0">
-          <header className="flex min-h-16 items-center justify-between border-b border-border bg-card px-5">
+          <header className="flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-3">
             <div>
               <p className="text-xs font-black text-muted-foreground">إدارة متجر COD</p>
               <p className="text-sm font-black">Tanger first</p>
             </div>
-            <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-black">
-              <UserRound className="h-4 w-4" aria-hidden="true" />
-              Admin
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-black">
+                <UserRound className="h-4 w-4" aria-hidden="true" />
+                <span dir="ltr">{admin.email || admin.fullName || "Admin"}</span>
+              </div>
+              <AdminLogoutButton />
             </div>
           </header>
           <div className="p-5 lg:p-8">{children}</div>

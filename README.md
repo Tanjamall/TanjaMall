@@ -62,6 +62,16 @@ Task 5 is implemented:
 - Product detail pages include quantity controls, a gallery, detail image stack, related products, and WhatsApp info link.
 - Customer-facing visual classes reuse the approved static preview styling.
 
+Task 6 is implemented in code:
+
+- `/admin/login` uses Supabase email/password login.
+- Admin pages render through a protected server-side admin shell.
+- Admin access checks the authenticated user plus `profiles.role = 'ADMIN'`.
+- Logout is available from the admin header.
+- One-time admin user setup is documented in `docs/ADMIN_AUTH_SETUP.md`.
+
+The connected Supabase project currently has no ADMIN profile. Create an Auth user and matching profile row before expecting admin login to succeed.
+
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
 ## Run Locally
@@ -122,6 +132,10 @@ Admin routes:
 - `/admin/orders`
 - `/admin/orders/[id]`
 - `/admin/settings`
+
+Admin auth setup:
+
+- See `docs/ADMIN_AUTH_SETUP.md`.
 
 ## Supabase Notes
 
