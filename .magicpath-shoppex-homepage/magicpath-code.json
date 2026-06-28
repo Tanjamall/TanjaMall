@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "421338766314209280",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "421347944726413312",
+  "baseRevisionId": "421347944726413312",
+  "jobId": "411111423477960704-external-agent-421348292677480448",
+  "generatedName": "boldly-sun-2869",
+  "name": "TanjaMall Shoppex Homepage",
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "b2c751738e1cfc4772bfee1365b9ea7ef5b81b7652c8f69c31f819b3b9a08de1"
+    },
+    {
+      "path": "src/components/generated/TanjaMallShoppexHomepage.tsx",
+      "sha256": "463476537af9de3a4dcec9fe8d10a6c10c24b02ec3a869038634447f28306776"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "7f55f4cf590b2b8b836bce920efdaa9de33d9dbfc9f063f8e656ab582c77af1d"
+    }
+  ],
+  "dimensions": {
+    "width": 430,
+    "height": 1400
+  }
+}

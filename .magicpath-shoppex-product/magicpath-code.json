@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "421339051606573056",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "421347926661558272",
+  "baseRevisionId": "421347926661558272",
+  "jobId": "411111423477960704-external-agent-421348291075248128",
+  "generatedName": "breezily-ocean-5477",
+  "name": "TanjaMall Shoppex Product Page",
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "f0f0a1140cce9b0b501096d3787398154e1714314467fdec94563c08c93dd80d"
+    },
+    {
+      "path": "src/components/generated/TanjaMallShoppexProductPage.tsx",
+      "sha256": "9565adaaaf59e66fe7808d9339da55fa13192e1634ab2fbbb2008b0390cb93ca"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "f92e8c74da1d4da69e88d4acc1a5c926bed477021de48eb8dd27c2c1d73eac97"
+    }
+  ],
+  "dimensions": {
+    "width": 430,
+    "height": 1500
+  }
+}

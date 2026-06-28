@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "421338847968903168",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "421347944999051264",
+  "baseRevisionId": "421347944999051264",
+  "jobId": "411111423477960704-external-agent-421348286864199680",
+  "generatedName": "quiet-earth-1910",
+  "name": "TanjaMall Shoppex Category Page",
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "23153d1725f5513dcd443bf375cef7ee48df74d684498975c1e62de041f461c4"
+    },
+    {
+      "path": "src/components/generated/TanjaMallShoppexCategoryPage.tsx",
+      "sha256": "5a6d77309097bf19e17d4743e3ad0754f95264e1eebb17fa0e37ed497b18ced8"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "3575f5095609a20cf97093fca35c58cf6a326706f5021bf3b3885aa08ca46f7f"
+    }
+  ],
+  "dimensions": {
+    "width": 430,
+    "height": 1250
+  }
+}

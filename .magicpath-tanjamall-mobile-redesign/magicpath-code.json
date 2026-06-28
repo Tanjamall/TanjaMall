@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "421333905531105280",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "421335266863759360",
+  "baseRevisionId": "421335266863759360",
+  "jobId": "411111423477960704-external-agent-421335414671036416",
+  "generatedName": "peaceful-shade-8064",
+  "name": "TanjaMall Mobile Storefront System",
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "8a01c0415bb55f7e9fcd79b5b1a765173ba1be94016d7d0602f34a9155b86d97"
+    },
+    {
+      "path": "src/components/generated/TanjaMallMobileStorefrontSystem.tsx",
+      "sha256": "5c8ebc80f826c3311a4de04e13f5dc3443b889ed3b266ad2102162350ce31b81"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "40fb7422a40d67c7bb15aaf7c10d68256b34f5db7fa35a3cbaecdf207c7a9095"
+    }
+  ],
+  "dimensions": {
+    "width": 1600,
+    "height": 1400
+  }
+}
