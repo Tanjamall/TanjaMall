@@ -1,10 +1,17 @@
-import { StorefrontPlaceholder } from "@/components/storefront/storefront-placeholder";
+import { HomeStorefront } from "@/components/storefront/home-storefront";
+import { StorefrontShell } from "@/components/storefront/storefront-shell";
+import { getCategories, getProducts, getStoreSettings } from "@/lib/storefront/data";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [categories, products, settings] = await Promise.all([
+    getCategories(),
+    getProducts(),
+    getStoreSettings()
+  ]);
+
   return (
-    <StorefrontPlaceholder
-      title="الصفحة الرئيسية"
-      description="سيتم نقل التصميم الحالي المعتمد إلى هذه الصفحة بدون تغيير بصري."
-    />
+    <StorefrontShell categories={categories} settings={settings}>
+      <HomeStorefront categories={categories} products={products} />
+    </StorefrontShell>
   );
 }

@@ -52,6 +52,16 @@ Live verification passed:
 - Anonymous users cannot read the private `products` table.
 - `create_cod_order` created verification order `TM-20260628-96484` with item snapshots and a WhatsApp confirmation URL.
 
+Task 5 is implemented:
+
+- Homepage reads live Supabase categories, products, and settings.
+- `/products` reads live published products from `public_products`.
+- `/category/[slug]` reads active categories and category products.
+- `/products/[slug]` reads product details and product images.
+- Product cards can add items to the local Zustand cart.
+- Product detail pages include quantity controls, a gallery, detail image stack, related products, and WhatsApp info link.
+- Customer-facing visual classes reuse the approved static preview styling.
+
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
 ## Run Locally
@@ -126,6 +136,15 @@ The RLS setup keeps public users away from direct product table access. Public p
 Task 4 added and applied the secure `create_cod_order` RPC.
 
 Storage bucket setup comes in a later task.
+
+Task 5 storefront pages use:
+
+- `categories`
+- `store_settings`
+- `product_images`
+- `public_products`
+
+The storefront does not read `cost_price` or `internal_notes`.
 
 We need real Supabase project info only when applying/testing migrations or connecting the app to live data.
 

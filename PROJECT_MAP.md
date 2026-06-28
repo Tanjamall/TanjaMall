@@ -9,7 +9,7 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 4 from `BUILD_PLAN.md` are implemented.
+Task 1 through Task 5 from `BUILD_PLAN.md` are implemented.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -40,15 +40,16 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
 - `app/`
   - Next.js App Router routes for the real project foundation.
-  - Contains placeholder customer and admin routes from Task 1.
+  - Contains Supabase-backed customer storefront routes from Task 5.
+  - Contains placeholder admin routes from Task 1.
 
 - `components/`
   - Shared React components.
-  - Includes shadcn-style `components/ui/*`, admin shell components, and storefront placeholder scaffolding.
+  - Includes shadcn-style `components/ui/*`, admin shell components, and Supabase-backed storefront components.
 
 - `lib/`
   - Project utilities.
-  - Includes Supabase client helpers, Zustand cart foundation, WhatsApp helper, validators, and shared utilities.
+  - Includes Supabase client helpers, storefront data fetchers, Zustand cart foundation, WhatsApp helper, validators, and shared utilities.
 
 - `supabase/migrations/`
   - Local SQL migrations.
@@ -133,6 +134,21 @@ Admin routes:
 - `/admin/orders/[id]`
 - `/admin/settings`
 
+## Implemented Task 5 Customer Storefront
+
+Customer routes now read live Supabase data:
+
+- `/`
+  - Shoppex-style header, search, service strip, hero carousel, horizontal category strip, product rows.
+- `/products`
+  - Product listing with category chips, search query support, sorting, load-more behavior, and order buttons.
+- `/category/[slug]`
+  - Dynamic category page using active Supabase categories and published products.
+- `/products/[slug]`
+  - Dynamic product detail page with image gallery, offer/quantity controls, order button, WhatsApp button, detail image stack, and related products.
+
+The customer-facing visual classes intentionally reuse the approved static preview styling from `assets/styles.css`.
+
 ## Build Direction
 
 The production project should use:
@@ -156,6 +172,6 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue to Task 5: Storefront product pages.
+Continue to Task 6: Admin authentication.
 
-Important: customer-facing visual design is locked. The Next.js storefront should connect to Supabase data while matching the approved static Shoppex-style preview, not visually redesigning it.
+Important: customer-facing visual design remains locked. Do not visually redesign it while building admin/auth/order features.
