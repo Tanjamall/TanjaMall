@@ -93,6 +93,13 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
   - MagicPath working directory for the old product page component.
   - Generated component: `breezily-ocean-5477`.
 
+- `.magicpath-tanjamall-admin-dashboard/`
+  - MagicPath working directory for the admin dashboard design system.
+  - Generated component: `fancily-meadow-6789`.
+  - MagicPath component ID: `422127044336447488`.
+  - Preview URL: `https://www.magicpath.ai/files/422127044336447488`.
+  - Important: this is a design reference for Task 7 only. It must not change the locked customer storefront design.
+
 ## Static Preview Links
 
 - Local desktop preview: http://localhost:5174/
@@ -199,5 +206,11 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 ## Next Step
 
 Continue to Task 7: Admin dashboard UI customization.
+
+Task 7 design reference is now prepared in MagicPath:
+
+- `TanjaMall Admin Dashboard System`
+- Generated component: `fancily-meadow-6789`
+- Preview URL: `https://www.magicpath.ai/files/422127044336447488`
 
 Important: customer-facing visual design remains locked. Do not visually redesign it while building admin/auth/order features.

@@ -75,6 +75,26 @@ These live setup values are useful for development only and must be replaced or 
 - Category filter drawer only supports one demo filter: offers above 40 percent.
 - There is no real checkout backend, payment provider, shipping price calculation, stock reservation, analytics, product API, Supabase integration, or admin authentication in the static preview.
 
+## MagicPath Admin Design Defaults
+
+The MagicPath admin dashboard component is a design reference only:
+
+- Working directory: `.magicpath-tanjamall-admin-dashboard/`
+- Generated component: `fancily-meadow-6789`
+- MagicPath component ID: `422127044336447488`
+- Preview URL: `https://www.magicpath.ai/files/422127044336447488`
+
+The following design sample values must be replaced by Supabase data during implementation:
+
+- Dashboard metrics such as `18` new orders, `12,480 درهم` confirmed sales, `64` published products, and `7` low-stock products.
+- Sample order numbers and customers such as `TM-1048`, `سعيد العمراني`, `مريم الإدريسي`, `يوسف العلوي`, and `هند المرابط`.
+- Sample products such as `بروجيكتور 120 واط بالطاقة الشمسية`, `مصباح الطاقة الشمسية 500 واط`, `حقيبة استحمام محمولة للتخييم`, and `جهاز الطوارئ للسيارة ونفخ العجلات`.
+- Sample category rows for `electronics`, `home-garden`, `lights`, and `toys`.
+- Placeholder product-image blocks, form fields, dashboard tasks, status tabs, and settings fields.
+- Any hardcoded WhatsApp/order confirmation copy shown in the MagicPath admin design.
+
+Final admin pages must connect to Supabase and must not keep MagicPath mock rows as production data.
+
 ## Local Storage Keys
 
 - `tanjamall_preview_cart`

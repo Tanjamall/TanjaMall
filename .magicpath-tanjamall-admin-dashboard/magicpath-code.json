@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "422127044336447488",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "422127044336447489",
+  "jobId": "411111423477960704-external-agent-422128036289318912",
+  "generatedName": "fancily-meadow-6789",
+  "name": "TanjaMall Admin Dashboard System",
+  "dimensions": {
+    "width": 1800,
+    "height": 3600
+  },
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "b64366c5d044e17638c9caf25644a29730a9e7c4369d5be9a2c3228ffb702fd8"
+    },
+    {
+      "path": "src/components/generated/TanjaMallAdminDashboardSystem.tsx",
+      "sha256": "0226ef3482dade5c467d140ee42c5680fee219836df4a1e179c7e432296ee1a4"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "fd28e915f9000de2896f72b3001fca1515617e6dbbd6e2da1f6e766f63598d03"
+    }
+  ],
+  "baseRevisionId": "422127044336447489"
+}
