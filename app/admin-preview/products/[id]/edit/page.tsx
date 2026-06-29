@@ -1,5 +1,4 @@
-import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { ProductEditorShell } from "@/components/admin/product-editor-shell";
 import { ProductEditorForm } from "@/components/admin/product-editor-form";
 
 type AdminPreviewEditProductPageProps = {
@@ -12,11 +11,8 @@ export default async function AdminPreviewEditProductPage({ params }: AdminPrevi
   const { id } = await params;
 
   return (
-    <AdminShell preview>
-      <div className="space-y-6">
-        <AdminPageHeader title="تعديل المنتج" description={`معاينة محرر المنتج ${id} بدون اتصال Supabase.`} />
-        <ProductEditorForm mode="edit" />
-      </div>
-    </AdminShell>
+    <ProductEditorShell title="إضافة أو تعديل منتج" breadcrumb={`المنتجات / تحرير ${id}`} preview>
+      <ProductEditorForm mode="edit" />
+    </ProductEditorShell>
   );
 }

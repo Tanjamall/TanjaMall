@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 export function AdminPageHeader({
   title,
   description,
-  eyebrow = "TanjaMall Admin",
+  eyebrow = "MagicPath admin design component",
   children
 }: {
   title: string;
@@ -20,13 +20,17 @@ export function AdminPageHeader({
   children?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p className="text-sm font-black text-accent-foreground">{eyebrow}</p>
-        <h1 className="mt-1 text-3xl font-black text-foreground">{title}</h1>
-        <p className="mt-2 max-w-3xl text-sm font-bold leading-7 text-muted-foreground">{description}</p>
+    <header className="rounded-xl border border-[#d8e2dc] bg-white p-6 shadow-sm">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_410px] md:items-end" style={{ direction: "ltr" }}>
+        <div className="flex flex-wrap items-center gap-2" dir="ltr">
+          {children}
+        </div>
+        <div className="text-right" dir="rtl">
+          <p className="text-sm font-black text-accent-foreground">{eyebrow}</p>
+          <h1 className="mt-2 text-3xl font-black text-foreground md:text-4xl">{title}</h1>
+          <p className="mt-4 text-base font-bold leading-8 text-muted-foreground">{description}</p>
+        </div>
       </div>
-      {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
     </header>
   );
 }
@@ -53,14 +57,14 @@ export function AdminStatCard({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-start justify-between gap-4">
-        <div>
+      <CardHeader className="flex min-h-[145px] items-start justify-between gap-4" style={{ direction: "ltr" }}>
+        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-md", toneClass)}>
+          <Icon className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <div className="text-right" dir="rtl">
           <CardDescription>{title}</CardDescription>
           <CardTitle className="mt-2 text-2xl">{value}</CardTitle>
           <p className="mt-2 text-xs font-black text-muted-foreground">{description}</p>
-        </div>
-        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-md", toneClass)}>
-          <Icon className="h-5 w-5" aria-hidden="true" />
         </div>
       </CardHeader>
     </Card>
@@ -182,4 +186,3 @@ export function AdminLinkButton({ href, children }: { href: Route; children: Rea
     </Button>
   );
 }
-

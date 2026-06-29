@@ -1,65 +1,10 @@
-import { Boxes, CircleDollarSign, ClipboardList, Truck } from "lucide-react";
+import { AdminDashboardContent } from "@/components/admin/admin-dashboard-content";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { adminOrders, adminProducts } from "@/components/admin/admin-demo-data";
-import { AdminDataTable, AdminPageHeader, AdminStatCard, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminPreviewDashboardPage() {
   return (
     <AdminShell preview>
-      <div className="space-y-6">
-        <AdminPageHeader
-          title="لوحة التحكم"
-          description="معاينة محلية لواجهة الإدارة. لا تحتاج هذه الصفحة إلى Supabase Auth ولا تحفظ أي بيانات."
-        />
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <AdminStatCard title="طلبات جديدة" value="18" description="6 تحتاج تأكيد" icon={ClipboardList} tone="orange" />
-          <AdminStatCard title="مبيعات مؤكدة" value="12,480 درهم" description="هذا الأسبوع" icon={CircleDollarSign} tone="green" />
-          <AdminStatCard title="منتجات منشورة" value="64" description="9 مميزة" icon={Boxes} />
-          <AdminStatCard title="مخزون منخفض" value="7" description="راجعها اليوم" icon={Truck} tone="red" />
-        </div>
-
-        <div className="grid gap-4 xl:grid-cols-[1.4fr_0.8fr]">
-          <Card>
-            <CardHeader>
-              <CardTitle>آخر الطلبات</CardTitle>
-              <CardDescription>صفوف مؤقتة لمعاينة الشكل فقط.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AdminDataTable
-                columns={["الطلب", "العميل", "المنطقة", "المجموع", "الحالة", "تأكيد"]}
-                rows={adminOrders.map((order) => [
-                  order.id,
-                  order.customer,
-                  order.area,
-                  order.total,
-                  <StatusBadge key={order.id} status={order.status} />,
-                  <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212672975000" label="تأكيد" />
-                ])}
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>منتجات تحتاج انتباه</CardTitle>
-              <CardDescription>معاينة لقائمة المخزون والمسودات.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-3">
-              {adminProducts.map((product) => (
-                <div key={product.id} className="flex items-center justify-between gap-3 rounded-md border border-border p-3">
-                  <div>
-                    <p className="text-sm font-black">{product.name}</p>
-                    <p className="mt-1 text-xs font-bold text-muted-foreground">المخزون: {product.stock}</p>
-                  </div>
-                  <StatusBadge status={product.status} />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <AdminDashboardContent preview />
     </AdminShell>
   );
 }
