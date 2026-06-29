@@ -95,6 +95,29 @@ The following design sample values must be replaced by Supabase data during impl
 
 Final admin pages must connect to Supabase and must not keep MagicPath mock rows as production data.
 
+## MagicPath Product Editor Design Defaults
+
+The MagicPath product editor component is a design reference only:
+
+- Working directory: `.magicpath-tanjamall-product-editor/`
+- Generated component: `merrily-hour-9166`
+- MagicPath component ID: `422393827496726528`
+- Preview URL: `https://www.magicpath.ai/files/422393827496726528`
+- Detailed spec: `docs/PRODUCT_EDITOR_SPEC.md`
+
+The following design sample values must be replaced by Supabase data during implementation:
+
+- Sample product name: `solar projector 120w`.
+- Sample category: lights/lamps.
+- Sample prices: `249`, `449`, and cost examples.
+- Sample variant groups such as color and power/wattage.
+- Sample offer rows such as one piece, two pieces special price, and three-piece reseller offer.
+- Sample bundle rows such as projector plus cable and outdoor lighting kit.
+- Placeholder image slots for main image, gallery images, and Shoppex-style detail images.
+- Placeholder readiness warnings, WhatsApp test action, product preview card, and publish state.
+
+Final admin pages must calculate prices and stock from Supabase data and must not keep MagicPath mock selling options as production data.
+
 ## Local Storage Keys
 
 - `tanjamall_preview_cart`

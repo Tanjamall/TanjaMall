@@ -1,0 +1,29 @@
+{
+  "mode": "edit",
+  "componentId": "422393827496726528",
+  "projectId": "421333796772806656",
+  "selectedRevisionId": "422393827496726529",
+  "jobId": "411111423477960704-external-agent-422394952933322752",
+  "generatedName": "merrily-hour-9166",
+  "name": "TanjaMall Admin Product Editor",
+  "dimensions": {
+    "width": 1800,
+    "height": 3000
+  },
+  "selectedImages": [],
+  "editableFiles": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "ee6e07868e53231cd324cb69fcd270aa28c14a75dce23a61a85165a2f40b122e"
+    },
+    {
+      "path": "src/components/generated/TanjaMallAdminProductEditor.tsx",
+      "sha256": "77d96ad1055afb37050748d9307a3f9e3514b7ec2a9047c4eb93661c4c32312d"
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "fd28e915f9000de2896f72b3001fca1515617e6dbbd6e2da1f6e766f63598d03"
+    }
+  ],
+  "baseRevisionId": "422393827496726529"
+}

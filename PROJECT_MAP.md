@@ -100,6 +100,17 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
   - Preview URL: `https://www.magicpath.ai/files/422127044336447488`.
   - Important: this is a design reference for Task 7 only. It must not change the locked customer storefront design.
 
+- `.magicpath-tanjamall-product-editor/`
+  - MagicPath working directory for the admin add/edit product page design.
+  - Generated component: `merrily-hour-9166`.
+  - MagicPath component ID: `422393827496726528`.
+  - Preview URL: `https://www.magicpath.ai/files/422393827496726528`.
+  - Important: this design defines the product editor structure for variants, offers, bundles, detail images, and publish readiness.
+
+- `docs/PRODUCT_EDITOR_SPEC.md`
+  - Product editor requirements and data-model implications.
+  - Captures variants, offers, bundles, and Shoppex-style detail image stack behavior before implementation.
+
 ## Static Preview Links
 
 - Local desktop preview: http://localhost:5174/
@@ -212,5 +223,12 @@ Task 7 design reference is now prepared in MagicPath:
 - `TanjaMall Admin Dashboard System`
 - Generated component: `fancily-meadow-6789`
 - Preview URL: `https://www.magicpath.ai/files/422127044336447488`
+
+Product editor design reference is also prepared in MagicPath:
+
+- `TanjaMall Admin Product Editor`
+- Generated component: `merrily-hour-9166`
+- Preview URL: `https://www.magicpath.ai/files/422393827496726528`
+- Detailed spec: `docs/PRODUCT_EDITOR_SPEC.md`
 
 Important: customer-facing visual design remains locked. Do not visually redesign it while building admin/auth/order features.

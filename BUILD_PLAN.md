@@ -855,6 +855,48 @@ Product form fields:
 * status
 * internal_notes
 
+Product editor structure:
+
+* Basics
+* Price and stock
+* Main image and gallery images
+* Shoppex-style product detail image stack
+* Variants
+* Offers
+* Bundles with other products
+* Purchase configuration
+* Publishing and preview readiness
+
+Advanced selling requirements:
+
+* Variants must be optional per product.
+* Offers must be optional per product.
+* Bundles must be optional per product.
+* Variants, offers, and bundles must be usable alone or together.
+* The editor must include controls to enable or disable each advanced selling feature.
+* The editor must define whether customers can combine variants with offers, variants with bundles, offers with bundles, or all three.
+* The editor must support a default selected variant, offer, or bundle where relevant.
+* Final order totals must always be calculated securely from database data, not trusted from the browser.
+
+Product editor design reference:
+
+* MagicPath component: `merrily-hour-9166`
+* Preview URL: `https://www.magicpath.ai/files/422393827496726528`
+* Detailed spec: `docs/PRODUCT_EDITOR_SPEC.md`
+
+Schema extension required before final product editor implementation:
+
+* `product_detail_images`
+* `product_variant_groups`
+* `product_variant_options`
+* `product_variants`
+* `product_variant_option_values`
+* `product_offers`
+* `product_bundles`
+* `product_bundle_items`
+
+Cart, checkout, and `create_cod_order` must later understand selected variant, offer, and bundle identifiers.
+
 Product actions:
 
 * Create draft product
