@@ -116,10 +116,12 @@ Create `.env.local` from `.env.example`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_R2_PUBLIC_BASE_URL=
+ADMIN_PREVIEW_ENABLED=false
 ```
 
 Do not expose any Supabase service-role key in browser code.
 Do not expose any R2 write credentials in browser code.
+`ADMIN_PREVIEW_ENABLED` is a server-side escape hatch for preview routes and should stay false outside local/design review.
 
 This workspace has a local `.env.local` configured with the provided Supabase URL and anon key. The file is ignored by Git.
 
@@ -146,6 +148,15 @@ Admin routes:
 - `/admin/orders`
 - `/admin/orders/[id]`
 - `/admin/settings`
+
+Local admin preview routes, no Supabase login required in development:
+
+- `/admin-preview/dashboard`
+- `/admin-preview/products`
+- `/admin-preview/products/new`
+- `/admin-preview/categories`
+- `/admin-preview/orders`
+- `/admin-preview/settings`
 
 Admin auth setup:
 

@@ -161,6 +161,19 @@ Admin routes:
 - `/admin/orders/[id]`
 - `/admin/settings`
 
+Local admin preview routes:
+
+- `/admin-preview/dashboard`
+- `/admin-preview/products`
+- `/admin-preview/products/new`
+- `/admin-preview/products/[id]/edit`
+- `/admin-preview/categories`
+- `/admin-preview/orders`
+- `/admin-preview/orders/[id]`
+- `/admin-preview/settings`
+
+These preview routes bypass Supabase Auth only for local/design review. Production preview access is disabled unless `ADMIN_PREVIEW_ENABLED=true`, which should not be enabled for public deployment.
+
 ## Implemented Task 5 Customer Storefront
 
 Customer routes now read live Supabase data:

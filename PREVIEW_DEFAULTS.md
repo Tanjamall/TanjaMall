@@ -128,6 +128,8 @@ The current real Next.js admin UI includes temporary sample rows only to shape t
 - Product/category management will replace these rows in Task 8.
 - Order management will replace these rows in Task 12.
 - Dashboard/settings will replace these rows in Task 13.
+- `/admin-preview/*` routes bypass Supabase Auth for local/design review only.
+- `ADMIN_PREVIEW_ENABLED` should stay false outside local/design review.
 
 Do not treat Task 7 sample rows as seed data or real admin content.
 
