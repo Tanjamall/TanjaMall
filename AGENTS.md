@@ -29,9 +29,9 @@ Use:
 * Supabase
 * Supabase PostgreSQL
 * Supabase Auth
-* Supabase Storage
 * Supabase Row Level Security
 * Cloudflare Pages
+* Cloudflare R2 for product images
 * TanStack Table
 * React Hook Form
 * Zod
@@ -123,9 +123,10 @@ Use Supabase as the backend for:
 
 * Database
 * Auth
-* Storage
 * Row Level Security
 * Secure SQL functions/RPC
+
+Use Cloudflare R2 for product image files.
 
 The app must be compatible with Cloudflare Pages.
 
@@ -541,7 +542,7 @@ Use Supabase for:
 
 * Database
 * Admin authentication
-* Product image storage
+* Product image metadata
 * Row Level Security
 * Secure order creation RPC
 
@@ -555,6 +556,7 @@ The frontend can use:
 
 * NEXT_PUBLIC_SUPABASE_URL
 * NEXT_PUBLIC_SUPABASE_ANON_KEY
+* NEXT_PUBLIC_R2_PUBLIC_BASE_URL
 
 The frontend must never expose:
 
@@ -569,7 +571,7 @@ Public users can:
 * Read ACTIVE categories
 * Read PUBLISHED products
 * Read safe product data
-* Read public product images
+* Read public product image URLs
 * Read safe store settings
 * Create COD orders through a secure flow
 
@@ -583,7 +585,7 @@ Public users cannot:
 * Update categories
 * Update orders
 * Access admin pages
-* Upload product images
+* Upload product images to Cloudflare R2
 
 Admin users can:
 
@@ -591,7 +593,7 @@ Admin users can:
 * Manage categories
 * Manage orders
 * Manage store settings
-* Upload product images
+* Upload product images to Cloudflare R2
 * Update order statuses
 * Add internal order notes
 
@@ -641,20 +643,24 @@ Snapshot fields:
 * quantity
 * total_price
 
-## Supabase Storage rules
+## Cloudflare R2 image storage rules
 
-Use a Supabase Storage bucket for product images.
+Use Cloudflare R2 for product image files.
 
-Bucket name:
+Suggested bucket name:
 
 * product-images
 
 Rules:
 
-* Public users can view product images.
+* Public users can view product images through the R2 public/custom domain.
 * Only admins can upload images.
 * Only admins can delete or replace images.
-* Product images can be used as main image and gallery images.
+* Product images can be used as main image, gallery images, detail images, variant images, and bundle images.
+* Images should be converted/compressed to WebP before upload.
+* Supabase stores only image metadata and public URLs.
+* R2 write credentials must never be exposed to the browser.
+* Prefer Cloudflare Pages/Workers functions with an R2 binding for uploads.
 
 ## WhatsApp rules
 
@@ -701,8 +707,10 @@ Required environment variables:
 
 * NEXT_PUBLIC_SUPABASE_URL
 * NEXT_PUBLIC_SUPABASE_ANON_KEY
+* NEXT_PUBLIC_R2_PUBLIC_BASE_URL
 
 Never expose the service role key in client code.
+Never expose R2 write credentials in client code.
 
 ## Folder structure guidance
 

@@ -11,7 +11,8 @@ The approved customer storefront design is locked. Do not visually redesign cust
 - Tailwind CSS
 - shadcn/ui style components
 - Supabase client libraries
-- Supabase Auth, PostgreSQL, Storage, and RLS in later tasks
+- Supabase Auth, PostgreSQL, and RLS
+- Cloudflare R2 for product images
 - TanStack Table
 - React Hook Form
 - Zod
@@ -72,6 +73,17 @@ Task 6 is implemented in code:
 
 The connected Supabase project currently has no ADMIN profile. Create an Auth user and matching profile row before expecting admin login to succeed.
 
+Task 7 is implemented in code:
+
+- Clean protected admin shell with ecommerce-only navigation.
+- Dashboard page with summary cards and recent-order layout.
+- Product table page.
+- Add/edit product editor structure based on the approved MagicPath draft.
+- Category, order list, order detail, and settings page layouts.
+- Reusable admin UI helpers for page headers, stat cards, tables, status badges, form sections, confirmation actions, and WhatsApp buttons.
+- Temporary admin sample rows are isolated in `components/admin/admin-demo-data.ts` and tracked in `PREVIEW_DEFAULTS.md`.
+- Image storage direction is updated to Cloudflare R2 with WebP compression; Supabase stores image metadata and public R2 URLs only.
+
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
 ## Run Locally
@@ -103,9 +115,11 @@ Create `.env.local` from `.env.example`:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_R2_PUBLIC_BASE_URL=
 ```
 
 Do not expose any Supabase service-role key in browser code.
+Do not expose any R2 write credentials in browser code.
 
 This workspace has a local `.env.local` configured with the provided Supabase URL and anon key. The file is ignored by Git.
 
@@ -149,7 +163,8 @@ The RLS setup keeps public users away from direct product table access. Public p
 
 Task 4 added and applied the secure `create_cod_order` RPC.
 
-Storage bucket setup comes in a later task.
+Product image storage setup comes in Task 9 and will use Cloudflare R2, not Supabase Storage.
+Supabase stores image metadata and public R2 URLs only.
 
 Task 5 storefront pages use:
 
@@ -179,6 +194,8 @@ Cloudflare's current docs separate deployment paths:
 - Full-stack SSR Next.js apps use Cloudflare Workers with the OpenNext adapter.
 
 Because this app will need admin auth and dynamic ecommerce behavior, the final deployment path should be confirmed before Task 15. For now, keep the app compatible with standard Next.js and avoid a long-running custom Node.js server.
+
+Product images will be stored in Cloudflare R2 to reduce Supabase egress usage. Admin uploads should go through a Cloudflare-side endpoint with an R2 binding, and images should be converted/compressed to WebP before upload.
 
 ## Design Rule
 

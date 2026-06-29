@@ -38,14 +38,7 @@ export function AdminLoginForm() {
             <label className="text-sm font-black" htmlFor="password">
               كلمة المرور
             </label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              dir="ltr"
-            />
+            <Input id="password" name="password" type="password" autoComplete="current-password" required dir="ltr" />
           </div>
 
           {state.error ? (

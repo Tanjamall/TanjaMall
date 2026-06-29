@@ -60,6 +60,8 @@ Use a desktop-first admin editor with:
 - Image ordering
 - Image removal
 - Image preview
+- Uploads go to Cloudflare R2, not Supabase Storage
+- Images should be converted/compressed to WebP before upload
 
 ### Detail Image Stack
 
@@ -72,6 +74,7 @@ Controls:
 - Remove detail image
 - Optional internal label
 - Optional alt text
+- Store image file in Cloudflare R2 and save only the public R2 URL in Supabase
 
 ### Variants
 
@@ -188,6 +191,8 @@ Proposed tables:
 
 The cart and `create_cod_order` RPC must eventually accept selected variant, offer, and bundle identifiers and calculate trusted totals from database data, never from client-submitted prices.
 
+Product image files are stored in Cloudflare R2. Supabase stores image metadata and public R2 URLs only.
+
 ## Publish Readiness Checks
 
 The editor should warn before publishing when:
@@ -203,4 +208,3 @@ The editor should warn before publishing when:
 - Enabled offers have invalid prices.
 - Enabled bundles reference unpublished or archived products.
 - Public product would expose admin-only fields.
-

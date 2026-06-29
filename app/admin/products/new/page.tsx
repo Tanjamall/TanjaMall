@@ -1,13 +1,17 @@
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminPlaceholderPage } from "@/components/admin/admin-placeholder-page";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { ProductEditorForm } from "@/components/admin/product-editor-form";
 
 export default function NewProductPage() {
   return (
     <AdminShell>
-      <AdminPlaceholderPage
-        title="منتج جديد"
-        description="المنتجات الجديدة ستكون DRAFT افتراضيا عند ربط Supabase."
-      />
+      <div className="space-y-6">
+        <AdminPageHeader
+          title="منتج جديد"
+          description="إنشاء منتج كمسودة أولا. الصور سترفع لاحقا إلى Cloudflare R2 بعد تحويلها إلى WebP."
+        />
+        <ProductEditorForm mode="new" />
+      </div>
     </AdminShell>
   );
 }

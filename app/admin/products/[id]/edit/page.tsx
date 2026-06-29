@@ -1,5 +1,6 @@
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminPlaceholderPage } from "@/components/admin/admin-placeholder-page";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { ProductEditorForm } from "@/components/admin/product-editor-form";
 
 type EditProductPageProps = {
   params: Promise<{
@@ -12,10 +13,13 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
 
   return (
     <AdminShell>
-      <AdminPlaceholderPage
-        title="تعديل المنتج"
-        description={`مسار تعديل المنتج جاهز: ${id}.`}
-      />
+      <div className="space-y-6">
+        <AdminPageHeader
+          title="تعديل المنتج"
+          description={`واجهة تعديل المنتج ${id}. البيانات المعروضة مؤقتة إلى أن يتم ربط النموذج ب Supabase في Task 8.`}
+        />
+        <ProductEditorForm mode="edit" />
+      </div>
     </AdminShell>
   );
 }

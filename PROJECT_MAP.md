@@ -9,7 +9,7 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 6 from `BUILD_PLAN.md` are implemented.
+Task 1 through Task 7 from `BUILD_PLAN.md` are implemented.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -46,6 +46,7 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 - `components/`
   - Shared React components.
   - Includes shadcn-style `components/ui/*`, admin shell components, and Supabase-backed storefront components.
+  - Includes Task 7 admin UI components and temporary admin demo rows.
 
 - `lib/`
   - Project utilities.
@@ -110,6 +111,11 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 - `docs/PRODUCT_EDITOR_SPEC.md`
   - Product editor requirements and data-model implications.
   - Captures variants, offers, bundles, and Shoppex-style detail image stack behavior before implementation.
+
+- `docs/IMAGE_STORAGE_R2.md`
+  - Source of truth for the product image storage decision.
+  - Product image files go to Cloudflare R2 as compressed WebP.
+  - Supabase stores image metadata and public R2 URLs only.
 
 ## Static Preview Links
 
@@ -193,6 +199,35 @@ Current live Supabase state:
 - ADMIN profile count is `0`.
 - Create an Auth user and matching profile row using `docs/ADMIN_AUTH_SETUP.md` before testing a successful login.
 
+## Implemented Task 7 Admin UI Foundation
+
+Admin routes now have separated page layouts:
+
+- `/admin/dashboard`
+- `/admin/products`
+- `/admin/products/new`
+- `/admin/products/[id]/edit`
+- `/admin/categories`
+- `/admin/orders`
+- `/admin/orders/[id]`
+- `/admin/settings`
+
+Implemented files:
+
+- `components/admin/admin-ui.tsx`
+- `components/admin/admin-demo-data.ts`
+- `components/admin/product-editor-form.tsx`
+- `lib/images/r2.ts`
+- `docs/IMAGE_STORAGE_R2.md`
+
+Important:
+
+- Task 7 admin data is temporary UI data only.
+- Product/category CRUD is not connected yet.
+- Order management is not connected yet.
+- Product image uploads are not implemented yet.
+- Product images will use Cloudflare R2 and WebP compression, not Supabase Storage.
+
 ## Build Direction
 
 The production project should use:
@@ -204,9 +239,9 @@ The production project should use:
 - Supabase
 - Supabase Auth
 - Supabase PostgreSQL
-- Supabase Storage
 - Supabase Row Level Security
 - Cloudflare Pages
+- Cloudflare R2 for product images
 - TanStack Table
 - React Hook Form
 - Zod
@@ -216,7 +251,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue to Task 7: Admin dashboard UI customization.
+Continue to Task 8: Admin product and category management, with the schema extension needed for variants, offers, bundles, and R2-backed product images.
 
 Task 7 design reference is now prepared in MagicPath:
 

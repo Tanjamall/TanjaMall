@@ -118,6 +118,19 @@ The following design sample values must be replaced by Supabase data during impl
 
 Final admin pages must calculate prices and stock from Supabase data and must not keep MagicPath mock selling options as production data.
 
+## Task 7 Admin UI Temporary Data
+
+The current real Next.js admin UI includes temporary sample rows only to shape the admin pages before Supabase CRUD is connected:
+
+- File: `components/admin/admin-demo-data.ts`
+- Sample products, categories, orders, dashboard metrics, and settings preview values are not production data.
+- Product editor image controls mention Cloudflare R2/WebP but do not upload files yet.
+- Product/category management will replace these rows in Task 8.
+- Order management will replace these rows in Task 12.
+- Dashboard/settings will replace these rows in Task 13.
+
+Do not treat Task 7 sample rows as seed data or real admin content.
+
 ## Local Storage Keys
 
 - `tanjamall_preview_cart`
@@ -128,7 +141,7 @@ Final admin pages must calculate prices and stock from Supabase data and must no
 
 - Replace this static preview with the Next.js/TypeScript project described in `BUILD_PLAN.md`.
 - Replace mock product/category arrays with Supabase data.
-- Replace remote Shoppex/AGA image URLs with TanjaMall media in Supabase Storage.
+- Replace remote Shoppex/AGA image URLs with TanjaMall media in Cloudflare R2.
 - Replace fake order handlers with the secure `create_cod_order` Supabase RPC.
 - Replace localStorage cart with the planned Zustand cart persistence.
 - Replace preview offer bundles with real product/promotion fields.

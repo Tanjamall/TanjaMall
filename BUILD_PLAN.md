@@ -10,6 +10,7 @@ Build a cash-on-delivery ecommerce store for Tanger using:
 * shadcn/ui
 * Supabase
 * Cloudflare Pages
+* Cloudflare R2 for product images
 
 The main flow is:
 
@@ -57,13 +58,14 @@ Backend:
 
 * Supabase database
 * Supabase Auth for admin
-* Supabase Storage for product images
+* Cloudflare R2 for product images
 * Supabase Row Level Security
 * Secure order creation RPC
 
 Hosting:
 
 * Cloudflare Pages
+* Cloudflare R2 for product image delivery
 
 ## Supporting tools and open-source strategy
 
@@ -528,7 +530,7 @@ Public users cannot:
 * update categories
 * update orders
 * access admin data
-* upload product images
+* upload product images to Cloudflare R2
 
 Rules for admins:
 
@@ -538,7 +540,7 @@ Admins can:
 * manage categories
 * manage orders
 * manage settings
-* upload product images
+* upload product images to Cloudflare R2
 * update order status
 * add internal order notes
 
@@ -964,26 +966,36 @@ Done when:
 
 # Task 9 — Product image storage
 
-Set up Supabase Storage bucket:
+Set up Cloudflare R2 image storage:
 
-* product-images
+* R2 bucket: `product-images`
+* Public/custom image delivery domain
+* Cloudflare-side upload endpoint using an R2 binding
+* WebP compression/conversion before upload
 
 Rules:
 
-* Public users can view product images.
+* Public users can view product images through the R2 public/custom domain.
 * Only admins can upload product images.
 * Only admins can delete or replace product images.
 * Admin can set main product image.
 * Admin can add gallery images.
-* Uploaded image URLs can be saved to products and product_images.
+* Admin can add Shoppex-style detail images.
+* Admin can add optional variant and bundle images.
+* Uploaded R2 image URLs can be saved to products, product_images, product_detail_images, variants, and bundles as needed.
+* Supabase stores only image metadata and public URLs.
+* R2 write credentials must never be exposed to the browser.
+* The browser should not upload original large files directly as-is; normalize/compress images to WebP first.
 
 Admin image features:
 
 * Upload main image
 * Upload gallery images
+* Upload detail image stack images
 * Preview images in product form
 * Remove gallery image
 * Reorder gallery images if simple to implement
+* Convert/compress selected files to WebP before upload
 
 Storefront image UX:
 
@@ -998,11 +1010,13 @@ The product page should have:
 
 Done when:
 
-* Admin can upload product image.
-* Image URL saves to product.
+* Admin can upload product images to Cloudflare R2.
+* Uploaded images are compressed/converted to WebP.
+* R2 public URL saves to product metadata in Supabase.
 * Product image appears on storefront.
 * Non-admin users cannot upload.
-* Storage policies are safe.
+* R2 upload endpoint is admin-protected.
+* R2 write credentials are not exposed to the browser.
 
 ---
 
