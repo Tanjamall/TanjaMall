@@ -10,12 +10,18 @@ The active direction is now:
 - `BUILD_PLAN.md`
 
 Task 1 through Task 7 from `BUILD_PLAN.md` are implemented.
+Task 8 schema preparation is started with a local-only product editor extension migration.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
 - Project ref: `tszusjtcjackahheagll`
 - Schema, RLS policies, seed data, and secure COD order RPC are live.
 - A live anonymous checkout test created verification order `TM-20260628-96484`.
+
+Task 8 product editor schema extension exists locally only:
+
+- `supabase/migrations/20260701102919_product_editor_extensions.sql`
+- Not applied to the connected Supabase project yet.
 
 ## Important Files And Folders
 
@@ -61,6 +67,7 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
   - Current RLS/security file: `20260628115000_rls_policies.sql`.
   - Current COD order RPC file: `20260628121000_create_cod_order.sql`.
   - Current COD order RPC fix file: `20260628122500_fix_cod_order_return.sql`.
+  - Local product editor extension file: `20260701102919_product_editor_extensions.sql`.
 
 - `supabase/seed.sql`
   - Local seed data for sample categories, products, product images, and store settings.
@@ -264,7 +271,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue to Task 8: Admin product and category management, with the schema extension needed for variants, offers, bundles, and R2-backed product images.
+Continue to Task 8: Admin product and category management. The local schema extension for variants, offers, bundles, and Shoppex-style detail image stacks has been created and should be applied/tested before wiring the final Supabase product form.
 
 Task 7 design reference is now prepared in MagicPath:
 

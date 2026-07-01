@@ -84,6 +84,13 @@ Task 7 is implemented in code:
 - Temporary admin sample rows are isolated in `components/admin/admin-demo-data.ts` and tracked in `PREVIEW_DEFAULTS.md`.
 - Image storage direction is updated to Cloudflare R2 with WebP compression; Supabase stores image metadata and public R2 URLs only.
 
+Task 8 schema preparation is implemented locally but not applied yet:
+
+- `supabase/migrations/20260701102919_product_editor_extensions.sql`
+- Adds product detail image stack, variant groups/options, purchasable variants, offers, bundles, and bundle items.
+- Adds product-level switches and defaults for variants, offers, bundles, and combination rules.
+- Adds RLS policies and explicit Data API grants for the new public-safe product selling tables.
+
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
 ## Run Locally
@@ -173,6 +180,19 @@ Task 3 added and applied RLS policies and admin helper functions.
 The RLS setup keeps public users away from direct product table access. Public product browsing should use the safe `public_products` view, which excludes `cost_price` and `internal_notes`.
 
 Task 4 added and applied the secure `create_cod_order` RPC.
+
+Task 8 schema preparation added a local-only migration for the product editor advanced selling model:
+
+- `product_detail_images`
+- `product_variant_groups`
+- `product_variant_options`
+- `product_variants`
+- `product_variant_option_values`
+- `product_offers`
+- `product_bundles`
+- `product_bundle_items`
+
+This migration has not been applied to the connected Supabase project yet.
 
 Product image storage setup comes in Task 9 and will use Cloudflare R2, not Supabase Storage.
 Supabase stores image metadata and public R2 URLs only.

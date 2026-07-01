@@ -193,6 +193,12 @@ The cart and `create_cod_order` RPC must eventually accept selected variant, off
 
 Product image files are stored in Cloudflare R2. Supabase stores image metadata and public R2 URLs only.
 
+Local migration created:
+
+- `supabase/migrations/20260701102919_product_editor_extensions.sql`
+
+This migration has not been applied to the connected Supabase project yet.
+
 ## Publish Readiness Checks
 
 The editor should warn before publishing when:
