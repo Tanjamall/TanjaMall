@@ -54,6 +54,8 @@ These live setup values are useful for development only and must be replaced or 
   - WhatsApp number: `212672975000`
   - Supported city: `Tanger`
   - Free delivery threshold: `500`
+  - Tracking pixels disabled by default.
+  - Meta/TikTok/GTM preview IDs in `components/admin/admin-demo-data.ts` are placeholders only.
 - Seed product images still use remote Shoppex/AGA image URLs.
 - Live setup verification order created during Task 4:
   - Order number: `TM-20260628-96484`
@@ -128,6 +130,7 @@ The current real Next.js admin UI includes temporary sample rows only to shape t
 - Product/category management will replace these rows in Task 8.
 - Order management will replace these rows in Task 12.
 - Dashboard/settings will replace these rows in Task 13.
+- Tracking preview IDs for Meta Pixel, TikTok Pixel, and Google Tag Manager are placeholders only.
 - `/admin-preview/*` routes bypass Supabase Auth for local/design review only.
 - `ADMIN_PREVIEW_ENABLED` should stay false outside local/design review.
 

@@ -155,7 +155,13 @@ insert into public.store_settings (
   supported_cities,
   delivery_fee_tanger,
   free_delivery_threshold,
-  announcement_text
+  announcement_text,
+  meta_pixel_enabled,
+  meta_pixel_id,
+  tiktok_pixel_enabled,
+  tiktok_pixel_id,
+  google_tag_manager_enabled,
+  google_tag_manager_id
 )
 values (
   '99999999-9999-4999-8999-999999999999',
@@ -166,7 +172,13 @@ values (
   array['Tanger'],
   0,
   500,
-  'الدفع عند الاستلام والتوصيل داخل طنجة'
+  'الدفع عند الاستلام والتوصيل داخل طنجة',
+  false,
+  null,
+  false,
+  null,
+  false,
+  null
 )
 on conflict (id) do update
 set
@@ -177,4 +189,10 @@ set
   supported_cities = excluded.supported_cities,
   delivery_fee_tanger = excluded.delivery_fee_tanger,
   free_delivery_threshold = excluded.free_delivery_threshold,
-  announcement_text = excluded.announcement_text;
+  announcement_text = excluded.announcement_text,
+  meta_pixel_enabled = excluded.meta_pixel_enabled,
+  meta_pixel_id = excluded.meta_pixel_id,
+  tiktok_pixel_enabled = excluded.tiktok_pixel_enabled,
+  tiktok_pixel_id = excluded.tiktok_pixel_id,
+  google_tag_manager_enabled = excluded.google_tag_manager_enabled,
+  google_tag_manager_id = excluded.google_tag_manager_id;

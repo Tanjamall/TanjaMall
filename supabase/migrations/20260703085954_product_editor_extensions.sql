@@ -289,6 +289,8 @@ select
   p.main_image_url,
   p.is_featured,
   p.is_best_seller,
+  p.created_at,
+  p.updated_at,
   p.variants_enabled,
   p.offers_enabled,
   p.bundles_enabled,
@@ -298,9 +300,7 @@ select
   p.allow_variant_offer_bundle_combo,
   p.default_variant_id,
   p.default_offer_id,
-  p.default_bundle_id,
-  p.created_at,
-  p.updated_at
+  p.default_bundle_id
 from public.products p
 left join public.categories c on c.id = p.category_id
 where p.status = 'PUBLISHED'

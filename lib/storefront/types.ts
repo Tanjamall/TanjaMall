@@ -5,6 +5,12 @@ export type StoreSettings = {
   announcement_text: string | null;
   delivery_fee_tanger: number | null;
   free_delivery_threshold: number | null;
+  meta_pixel_enabled: boolean;
+  meta_pixel_id: string | null;
+  tiktok_pixel_enabled: boolean;
+  tiktok_pixel_id: string | null;
+  google_tag_manager_enabled: boolean;
+  google_tag_manager_id: string | null;
 };
 
 export type StoreCategory = {

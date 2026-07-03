@@ -10,7 +10,7 @@ The active direction is now:
 - `BUILD_PLAN.md`
 
 Task 1 through Task 7 from `BUILD_PLAN.md` are implemented.
-Task 8 schema preparation is started with a local-only product editor extension migration.
+Task 8 schema preparation is started and the product editor extension migration has been applied to Supabase.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -18,10 +18,15 @@ Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 - Schema, RLS policies, seed data, and secure COD order RPC are live.
 - A live anonymous checkout test created verification order `TM-20260628-96484`.
 
-Task 8 product editor schema extension exists locally only:
+Task 8 product editor schema extension is applied:
 
-- `supabase/migrations/20260701102919_product_editor_extensions.sql`
-- Not applied to the connected Supabase project yet.
+- `supabase/migrations/20260703085954_product_editor_extensions.sql`
+- Applied to the connected Supabase project.
+
+Tracking settings schema extension is applied:
+
+- `supabase/migrations/20260703090017_tracking_pixel_settings.sql`
+- Applied to the connected Supabase project.
 
 ## Important Files And Folders
 
@@ -56,7 +61,7 @@ Task 8 product editor schema extension exists locally only:
 
 - `lib/`
   - Project utilities.
-  - Includes Supabase client helpers, admin auth helpers, storefront data fetchers, Zustand cart foundation, WhatsApp helper, validators, and shared utilities.
+  - Includes Supabase client helpers, admin auth helpers, storefront data fetchers, Zustand cart foundation, WhatsApp helper, validators, tracking validators, and shared utilities.
 
 - `docs/ADMIN_AUTH_SETUP.md`
   - One-time Supabase Auth admin setup steps.
@@ -67,10 +72,11 @@ Task 8 product editor schema extension exists locally only:
   - Current RLS/security file: `20260628115000_rls_policies.sql`.
   - Current COD order RPC file: `20260628121000_create_cod_order.sql`.
   - Current COD order RPC fix file: `20260628122500_fix_cod_order_return.sql`.
-  - Local product editor extension file: `20260701102919_product_editor_extensions.sql`.
+  - Local product editor extension file: `20260703085954_product_editor_extensions.sql`.
+  - Local tracking settings file: `20260703090017_tracking_pixel_settings.sql`.
 
 - `supabase/seed.sql`
-  - Local seed data for sample categories, products, product images, and store settings.
+  - Local seed data for sample categories, products, product images, store settings, and disabled tracking defaults.
 
 - `package.json`
   - Next.js scripts and pinned dependencies.
@@ -236,6 +242,7 @@ Implemented files:
 
 - `components/admin/admin-ui.tsx`
 - `components/admin/admin-demo-data.ts`
+- `components/admin/admin-tracking-settings-form.tsx`
 - `components/admin/product-editor-form.tsx`
 - `lib/images/r2.ts`
 - `docs/IMAGE_STORAGE_R2.md`
@@ -247,6 +254,8 @@ Important:
 - Order management is not connected yet.
 - Product image uploads are not implemented yet.
 - Product images will use Cloudflare R2 and WebP compression, not Supabase Storage.
+- Tracking settings are partially wired: Meta Pixel, TikTok Pixel, and GTM IDs can be saved after the tracking migration is applied.
+- Runtime tracking scripts load only on public storefront routes and skip `/admin` and `/admin-preview`.
 
 ## Build Direction
 

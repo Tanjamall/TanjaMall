@@ -38,21 +38,55 @@ function normalizeImage(image: Record<string, unknown>): ProductImage {
   };
 }
 
+type StoreSettingsRecord = Record<string, unknown>;
+
 export async function getStoreSettings(): Promise<StoreSettings> {
   const supabase = await createClient();
-  const { data } = await supabase
+  const trackingSettingsColumns = [
+    "store_name",
+    "store_phone",
+    "whatsapp_number",
+    "announcement_text",
+    "delivery_fee_tanger",
+    "free_delivery_threshold",
+    "meta_pixel_enabled",
+    "meta_pixel_id",
+    "tiktok_pixel_enabled",
+    "tiktok_pixel_id",
+    "google_tag_manager_enabled",
+    "google_tag_manager_id"
+  ].join(", ");
+  const baseSettingsColumns = "store_name, store_phone, whatsapp_number, announcement_text, delivery_fee_tanger, free_delivery_threshold";
+
+  const { data, error } = await supabase
     .from("store_settings")
-    .select("store_name, store_phone, whatsapp_number, announcement_text, delivery_fee_tanger, free_delivery_threshold")
+    .select(trackingSettingsColumns)
     .limit(1)
     .maybeSingle();
+  const settings = (error
+    ? await supabase
+        .from("store_settings")
+        .select(baseSettingsColumns)
+        .limit(1)
+        .maybeSingle()
+        .then((result) => result.data)
+    : data) as StoreSettingsRecord | null;
 
   return {
-    store_name: data?.store_name ?? "TanjaMall",
-    store_phone: data?.store_phone ?? "0672975000",
-    whatsapp_number: data?.whatsapp_number ?? "212672975000",
-    announcement_text: data?.announcement_text ?? null,
-    delivery_fee_tanger: toNumber(data?.delivery_fee_tanger),
-    free_delivery_threshold: toNumber(data?.free_delivery_threshold)
+    store_name: settings?.store_name ? String(settings.store_name) : "TanjaMall",
+    store_phone: settings?.store_phone ? String(settings.store_phone) : "0672975000",
+    whatsapp_number: settings?.whatsapp_number ? String(settings.whatsapp_number) : "212672975000",
+    announcement_text: settings?.announcement_text ? String(settings.announcement_text) : null,
+    delivery_fee_tanger: toNumber(settings?.delivery_fee_tanger),
+    free_delivery_threshold: toNumber(settings?.free_delivery_threshold),
+    meta_pixel_enabled: Boolean(settings?.meta_pixel_enabled),
+    meta_pixel_id: settings?.meta_pixel_id ? String(settings.meta_pixel_id) : null,
+    tiktok_pixel_enabled: Boolean(settings?.tiktok_pixel_enabled),
+    tiktok_pixel_id: settings?.tiktok_pixel_id ? String(settings.tiktok_pixel_id) : null,
+    google_tag_manager_enabled: Boolean(settings?.google_tag_manager_enabled),
+    google_tag_manager_id: settings?.google_tag_manager_id
+      ? String(settings.google_tag_manager_id)
+      : null
   };
 }
 

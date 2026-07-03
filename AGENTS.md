@@ -429,6 +429,9 @@ Admin must be able to edit:
 * Delivery fee for Tanger
 * Free delivery threshold
 * Homepage announcement text
+* Meta/Facebook Pixel ID and enabled state
+* TikTok Pixel ID and enabled state
+* Google Tag Manager container ID and enabled state
 
 ### WhatsApp confirmation
 
@@ -711,6 +714,25 @@ Required environment variables:
 
 Never expose the service role key in client code.
 Never expose R2 write credentials in client code.
+
+## Tracking pixels and ads tags
+
+Tracking is configured from admin settings.
+
+Supported MVP tracking settings:
+
+* Meta/Facebook Pixel ID
+* TikTok Pixel ID
+* Google Tag Manager container ID for additional tags
+
+Rules:
+
+* Store only provider IDs in settings, not raw JavaScript snippets.
+* Tracking scripts load only on public customer storefront pages.
+* Tracking scripts must not load on `/admin` or `/admin-preview` routes.
+* Pixel IDs must be validated before saving.
+* Tracking must be disabled by default in seed data.
+* Later conversion events must use database-confirmed order totals, not browser-trusted totals.
 
 ## Folder structure guidance
 

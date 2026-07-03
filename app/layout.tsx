@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
+import { TrackingPixels } from "@/components/storefront/tracking-pixels";
+import { getStoreSettings } from "@/lib/storefront/data";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -13,14 +15,19 @@ export const metadata: Metadata = {
   description: "Cash-on-delivery ecommerce store for Tanger."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getStoreSettings();
+
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
-      <body>{children}</body>
+      <body>
+        <TrackingPixels settings={settings} />
+        {children}
+      </body>
     </html>
   );
 }

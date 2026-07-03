@@ -75,6 +75,8 @@ export const adminSettingsPreview = {
   whatsapp: "212672975000",
   defaultCity: "Tanger",
   deliveryFee: "0 درهم",
-  freeDeliveryThreshold: "500 درهم"
+  freeDeliveryThreshold: "500 درهم",
+  metaPixelId: "123456789012345",
+  tiktokPixelId: "C123ABC456DEF789",
+  googleTagManagerId: "GTM-TANJAMALL"
 };
-

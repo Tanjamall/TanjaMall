@@ -195,9 +195,9 @@ Product image files are stored in Cloudflare R2. Supabase stores image metadata 
 
 Local migration created:
 
-- `supabase/migrations/20260701102919_product_editor_extensions.sql`
+- `supabase/migrations/20260703085954_product_editor_extensions.sql`
 
-This migration has not been applied to the connected Supabase project yet.
+This migration has been applied to the connected Supabase project.
 
 ## Publish Readiness Checks
 

@@ -84,12 +84,19 @@ Task 7 is implemented in code:
 - Temporary admin sample rows are isolated in `components/admin/admin-demo-data.ts` and tracked in `PREVIEW_DEFAULTS.md`.
 - Image storage direction is updated to Cloudflare R2 with WebP compression; Supabase stores image metadata and public R2 URLs only.
 
-Task 8 schema preparation is implemented locally but not applied yet:
+Task 8 schema preparation is implemented and applied to Supabase:
 
-- `supabase/migrations/20260701102919_product_editor_extensions.sql`
+- `supabase/migrations/20260703085954_product_editor_extensions.sql`
 - Adds product detail image stack, variant groups/options, purchasable variants, offers, bundles, and bundle items.
 - Adds product-level switches and defaults for variants, offers, bundles, and combination rules.
 - Adds RLS policies and explicit Data API grants for the new public-safe product selling tables.
+
+Tracking settings preparation is implemented and applied to Supabase:
+
+- `supabase/migrations/20260703090017_tracking_pixel_settings.sql`
+- Adds Meta/Facebook Pixel, TikTok Pixel, and Google Tag Manager fields to `store_settings`.
+- Tracking is disabled by default in seed data.
+- Enabled tracking scripts load only on public storefront routes, not `/admin` or `/admin-preview`.
 
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
@@ -181,7 +188,7 @@ The RLS setup keeps public users away from direct product table access. Public p
 
 Task 4 added and applied the secure `create_cod_order` RPC.
 
-Task 8 schema preparation added a local-only migration for the product editor advanced selling model:
+Task 8 schema preparation added and applied the product editor advanced selling model:
 
 - `product_detail_images`
 - `product_variant_groups`
@@ -192,7 +199,13 @@ Task 8 schema preparation added a local-only migration for the product editor ad
 - `product_bundles`
 - `product_bundle_items`
 
-This migration has not been applied to the connected Supabase project yet.
+This migration is applied to the connected Supabase project.
+
+Tracking settings added and applied this migration:
+
+- `supabase/migrations/20260703090017_tracking_pixel_settings.sql`
+
+This migration is applied to the connected Supabase project.
 
 Product image storage setup comes in Task 9 and will use Cloudflare R2, not Supabase Storage.
 Supabase stores image metadata and public R2 URLs only.
@@ -205,6 +218,7 @@ Task 5 storefront pages use:
 - `public_products`
 
 The storefront does not read `cost_price` or `internal_notes`.
+Tracking script injection reads safe tracking IDs from `store_settings` and skips admin routes.
 
 We need real Supabase project info only when applying/testing migrations or connecting the app to live data.
 

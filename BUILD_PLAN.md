@@ -1312,6 +1312,9 @@ Use shadcn form components for:
 * Delivery fee for Tanger
 * Free delivery threshold
 * Homepage announcement text
+* Meta/Facebook Pixel ID and enabled state
+* TikTok Pixel ID and enabled state
+* Google Tag Manager container ID and enabled state
 
 Use React Hook Form and Zod for settings form validation.
 
@@ -1323,12 +1326,19 @@ The WhatsApp number used for confirmation should come from settings.
 
 The delivery fee used in checkout should come from settings.
 
+Tracking scripts should load only on public storefront pages, never on admin or preview admin routes.
+Store only provider IDs in settings, not raw JavaScript snippets.
+Meta, TikTok, and GTM page-view tracking should be disabled by default until IDs are added and enabled.
+Future purchase/conversion events must use database-confirmed order totals from the secure COD order flow.
+
 Done when:
 
 * Dashboard shows useful real Supabase data.
 * Settings can be updated.
 * WhatsApp number comes from settings.
 * Delivery fee comes from settings.
+* Tracking IDs can be saved from settings.
+* Enabled tracking scripts load on storefront pages only.
 * No mock dashboard/settings data remains.
 
 ---
@@ -1413,6 +1423,7 @@ Check:
 * Order status updates work.
 * WhatsApp confirmation link works.
 * Settings page works.
+* Tracking pixel settings work and do not load on admin routes.
 * Mobile layout works.
 * Storefront UX is clean and modern.
 * Saleor was used only as UX inspiration.
