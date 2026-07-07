@@ -28,6 +28,13 @@ Tracking settings schema extension is applied:
 - `supabase/migrations/20260703090017_tracking_pixel_settings.sql`
 - Applied to the connected Supabase project.
 
+Advanced product table grants have been tightened:
+
+- `supabase/migrations/20260707133816_tighten_product_extension_grants.sql`
+- Applied to the connected Supabase project.
+- Anonymous users have SELECT only on public-safe advanced product tables.
+- Authenticated writes still require admin RLS policies.
+
 ## Important Files And Folders
 
 - `AGENTS.md`
@@ -75,6 +82,7 @@ Tracking settings schema extension is applied:
   - Local product editor extension file: `20260703085954_product_editor_extensions.sql`.
   - Local tracking settings file: `20260703090017_tracking_pixel_settings.sql`.
   - Local public product projection grant file: `20260703091731_grant_public_product_projection_access.sql`.
+  - Local advanced product grant hardening file: `20260707133816_tighten_product_extension_grants.sql`.
 
 - `supabase/seed.sql`
   - Local seed data for sample categories, products, product images, store settings, and disabled tracking defaults.
@@ -223,6 +231,7 @@ Implemented files:
 
 Current live Supabase state:
 
+- Auth user count is `0`.
 - ADMIN profile count is `0`.
 - Create an Auth user and matching profile row using `docs/ADMIN_AUTH_SETUP.md` before testing a successful login.
 
