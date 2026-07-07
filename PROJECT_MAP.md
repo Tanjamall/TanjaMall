@@ -10,7 +10,7 @@ The active direction is now:
 - `BUILD_PLAN.md`
 
 Task 1 through Task 7 from `BUILD_PLAN.md` are implemented.
-Task 8 schema preparation is started and the product editor extension migration has been applied to Supabase.
+Task 8 is in progress: product/category admin pages now read and write live Supabase data, and the product editor extension migration has been applied to Supabase.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -57,7 +57,7 @@ Tracking settings schema extension is applied:
 - `components/`
   - Shared React components.
   - Includes shadcn-style `components/ui/*`, admin shell components, and Supabase-backed storefront components.
-  - Includes Task 7 admin UI components and temporary admin demo rows.
+  - Includes Task 7 admin UI components, live product/category admin forms, and temporary demo rows only for admin-preview/order/dashboard areas not yet connected.
 
 - `lib/`
   - Project utilities.
@@ -74,6 +74,7 @@ Tracking settings schema extension is applied:
   - Current COD order RPC fix file: `20260628122500_fix_cod_order_return.sql`.
   - Local product editor extension file: `20260703085954_product_editor_extensions.sql`.
   - Local tracking settings file: `20260703090017_tracking_pixel_settings.sql`.
+  - Local public product projection grant file: `20260703091731_grant_public_product_projection_access.sql`.
 
 - `supabase/seed.sql`
   - Local seed data for sample categories, products, product images, store settings, and disabled tracking defaults.
@@ -257,6 +258,43 @@ Important:
 - Tracking settings are partially wired: Meta Pixel, TikTok Pixel, and GTM IDs can be saved after the tracking migration is applied.
 - Runtime tracking scripts load only on public storefront routes and skip `/admin` and `/admin-preview`.
 
+## Task 8 Product And Category Management Progress
+
+The real admin product/category routes now connect to Supabase:
+
+- `/admin/products`
+  - Reads products from `public.products`.
+  - Supports search and status filtering.
+  - Shows category, price, stock, publish status, featured flag, best-seller flag, and actions.
+  - Can publish, unpublish, and archive products.
+- `/admin/products/new`
+  - Creates a draft or published product.
+  - Saves basics, category, descriptions, SKU, price, compare-at price, admin-only cost price, stock, status, featured/best-seller flags, main image URL, gallery image URLs, Shoppex-style detail image URLs, advanced selling enable flags, variants, offers, bundles, and internal notes.
+- `/admin/products/[id]/edit`
+  - Loads existing product data and related image/detail/variant/offer/bundle rows.
+  - Saves updates back to Supabase.
+- `/admin/categories`
+  - Reads categories from `public.categories`.
+  - Creates and edits categories.
+  - Can hide/show categories.
+  - Shows product counts based on current product rows.
+
+Implemented files:
+
+- `lib/admin/catalog.ts`
+- `lib/validators/catalog.ts`
+- `app/admin/products/actions.ts`
+- `app/admin/categories/actions.ts`
+- `components/admin/product-editor-form.tsx`
+- `components/admin/category-form.tsx`
+
+Important limitations still reserved for later tasks:
+
+- Product image file uploads are not implemented yet. Admin currently saves image URLs only.
+- Cloudflare R2 upload, WebP compression, and image replacement/deletion belong to Task 9.
+- Cart/checkout still need later updates to understand selected variants, offers, and bundles before those advanced selling options affect public ordering.
+- Order dashboard and order management remain later tasks.
+
 ## Build Direction
 
 The production project should use:
@@ -280,7 +318,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue to Task 8: Admin product and category management. The local schema extension for variants, offers, bundles, and Shoppex-style detail image stacks has been created and should be applied/tested before wiring the final Supabase product form.
+Continue Task 8 by testing the live admin product/category flow with a real ADMIN profile, then move into Task 9 for Cloudflare R2 image uploads and WebP compression.
 
 Task 7 design reference is now prepared in MagicPath:
 

@@ -1,3 +1,8 @@
+"use client";
+
+import { useActionState } from "react";
+import type { ReactNode, TextareaHTMLAttributes } from "react";
+import { useForm } from "react-hook-form";
 import {
   BadgePercent,
   Boxes,
@@ -6,14 +11,16 @@ import {
   PackageCheck,
   Settings2,
   ShoppingBag,
-  Tags,
-  Upload
+  Tags
 } from "lucide-react";
+import { saveProductAction, type ProductEditorState } from "@/app/admin/products/actions";
 import { AdminFormSection, StatusBadge } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import type { AdminCategory, ProductEditorData } from "@/lib/admin/catalog";
 import { imageUploadRules } from "@/lib/images/r2";
+import type { ProductFormInput } from "@/lib/validators/catalog";
 
 const tabs = ["الأساسيات", "السعر والمخزون", "الصور", "تفاصيل المنتج", "البيع المتقدم", "النشر"];
 
@@ -23,7 +30,7 @@ function Field({
   className = ""
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -34,74 +41,162 @@ function Field({
   );
 }
 
-function SwitchRow({ label, description, enabled = true }: { label: string; description: string; enabled?: boolean }) {
+function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md border border-border bg-background p-4">
-      <div>
-        <p className="text-sm font-black">{label}</p>
-        <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">{description}</p>
-      </div>
-      <div className={`flex h-7 w-12 shrink-0 items-center rounded-full p-1 ${enabled ? "justify-end bg-primary" : "justify-start bg-muted"}`}>
-        <span className="h-5 w-5 rounded-full bg-white shadow-sm" />
-      </div>
-    </div>
+    <textarea
+      {...props}
+      className={`min-h-28 rounded-md border border-input bg-card px-3 py-2 text-sm font-bold outline-none transition-colors placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring ${props.className ?? ""}`}
+    />
   );
 }
 
-export function ProductEditorForm({ mode }: { mode: "new" | "edit" }) {
+function CheckboxField({
+  name,
+  label,
+  description,
+  defaultChecked
+}: {
+  name: keyof ProductFormInput;
+  label: string;
+  description: string;
+  defaultChecked?: boolean;
+}) {
   return (
-    <div className="space-y-6">
+    <label className="flex min-h-24 items-start gap-3 rounded-md border border-border bg-background p-4">
+      <input className="mt-1 h-5 w-5 accent-primary" defaultChecked={defaultChecked} name={name} type="checkbox" />
+      <span>
+        <span className="block text-sm font-black">{label}</span>
+        <span className="mt-1 block text-xs font-bold leading-6 text-muted-foreground">{description}</span>
+      </span>
+    </label>
+  );
+}
+
+function lines(values: string[]) {
+  return values.filter(Boolean).join("\n");
+}
+
+function productDefaults(editorData?: ProductEditorData): Partial<ProductFormInput> {
+  const product = editorData?.product;
+  return {
+    id: product?.id ?? null,
+    name: product?.name ?? "",
+    slug: product?.slug ?? "",
+    category_id: product?.category_id ?? null,
+    short_description: product?.short_description ?? "",
+    full_description: product?.full_description ?? "",
+    price: product?.price ?? 1,
+    compare_at_price: product?.compare_at_price ?? null,
+    cost_price: product?.cost_price ?? null,
+    sku: product?.sku ?? "",
+    stock: product?.stock ?? 0,
+    status: product?.status ?? "DRAFT",
+    main_image_url: product?.main_image_url ?? "",
+    is_featured: product?.is_featured ?? false,
+    is_best_seller: product?.is_best_seller ?? false,
+    internal_notes: product?.internal_notes ?? "",
+    variants_enabled: product?.variants_enabled ?? false,
+    offers_enabled: product?.offers_enabled ?? false,
+    bundles_enabled: product?.bundles_enabled ?? false,
+    allow_variant_offer_combo: product?.allow_variant_offer_combo ?? false,
+    allow_variant_bundle_combo: product?.allow_variant_bundle_combo ?? false,
+    allow_offer_bundle_combo: product?.allow_offer_bundle_combo ?? false,
+    allow_variant_offer_bundle_combo: product?.allow_variant_offer_bundle_combo ?? false,
+    gallery_image_urls: lines(editorData?.galleryImages.map((image) => image.image_url) ?? []),
+    detail_image_urls: lines(editorData?.detailImages.map((image) => image.image_url) ?? []),
+    variant_groups_text: lines(editorData?.variantGroups.map((group) => `${group.name}: ${group.options.join(", ")}`) ?? []),
+    offers_text: lines(
+      editorData?.offers.map((offer) =>
+        [offer.name, offer.quantity, offer.price, offer.compare_at_price ?? "", offer.badge_text ?? "", offer.is_enabled ? "on" : "off"].join(" | ")
+      ) ?? []
+    ),
+    bundles_text: lines(
+      editorData?.bundles.map((bundle) =>
+        [bundle.name, bundle.price, bundle.compare_at_price ?? "", bundle.badge_text ?? "", bundle.image_url ?? "", bundle.is_enabled ? "on" : "off"].join(" | ")
+      ) ?? []
+    )
+  };
+}
+
+export function ProductEditorForm({
+  mode,
+  categories = [],
+  editorData
+}: {
+  mode: "new" | "edit";
+  categories?: AdminCategory[];
+  editorData?: ProductEditorData;
+}) {
+  const defaults = productDefaults(editorData);
+  const [state, formAction, isPending] = useActionState<ProductEditorState, FormData>(saveProductAction, {});
+  const { register } = useForm<ProductFormInput>({ defaultValues: defaults });
+  const product = editorData?.product;
+  const isPublished = product?.status === "PUBLISHED";
+  const previewHref = product?.slug ? `/products/${product.slug}` : "/products";
+
+  return (
+    <form action={formAction} className="space-y-6">
+      <input type="hidden" {...register("id")} value={product?.id ?? ""} />
+
       <section className="rounded-xl border border-[#d8e2dc] bg-white p-6 shadow-sm">
         <p className="text-sm font-black text-accent-foreground">MagicPath product editor design</p>
         <div className="mt-2 flex flex-wrap items-end justify-between gap-6" style={{ direction: "ltr" }}>
           <div className="flex flex-wrap gap-2" dir="ltr">
-            <span className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">Supabase-ready</span>
-            <span className="rounded-full bg-secondary px-4 py-2 text-sm font-black text-secondary-foreground">Admin only</span>
-            <span className="rounded-full bg-accent px-4 py-2 text-sm font-black text-accent-foreground">TanjaMall colors</span>
+            <span className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">Supabase connected</span>
+            <span className="rounded-full bg-secondary px-4 py-2 text-sm font-black text-secondary-foreground">R2 URLs until upload task</span>
+            <span className="rounded-full bg-accent px-4 py-2 text-sm font-black text-accent-foreground">Admin only</span>
           </div>
           <div className="text-right" dir="rtl">
-            <h2 className="text-4xl font-black">صفحة إنشاء وتعديل المنتج</h2>
+            <h2 className="text-4xl font-black">{mode === "new" ? "إضافة منتج جديد" : "تعديل المنتج"}</h2>
             <p className="mt-3 max-w-4xl text-base font-bold leading-8 text-muted-foreground">
-              هذه الصفحة تتحكم في كل ما يظهر للعميل: بطاقة المنتج، المعرض، صور التفاصيل، نموذج الطلب، المتغيرات، العروض، والباقات.
+              هذه الصفحة تتحكم في بطاقة المنتج، صفحة المنتج، الصور، صور التفاصيل، ونموذج الطلب. الصور تضاف كرابط مؤقتا إلى أن ننجز رفع R2 في Task 9.
             </p>
           </div>
         </div>
       </section>
 
-      <nav className="flex gap-2 rounded-lg border border-border bg-white p-2 shadow-sm">
+      <nav className="flex flex-wrap gap-2 rounded-lg border border-border bg-white p-2 shadow-sm">
         {tabs.map((tab, index) => (
-          <button
+          <a
             key={tab}
             className={`rounded-md px-4 py-2 text-sm font-black ${
               index === 0 ? "bg-primary text-primary-foreground" : index === 4 ? "bg-[#131921] text-white" : "text-muted-foreground hover:bg-muted"
             }`}
-            type="button"
+            href={`#section-${index}`}
           >
             {tab}
-          </button>
+          </a>
         ))}
       </nav>
 
       <div className="grid gap-6 lg:grid-cols-[390px_minmax(0,1fr)]" style={{ direction: "ltr" }}>
-        <aside className="space-y-4 lg:sticky lg:top-6" dir="rtl">
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start" dir="rtl">
           <Card className="overflow-hidden">
             <div className="bg-[#131921] p-5 text-white">
               <p className="text-sm font-black text-orange-300">حالة المنتج</p>
               <div className="mt-3 flex items-center justify-between">
-                <h2 className="text-2xl font-black">{mode === "new" ? "مسودة" : "منشور"}</h2>
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-accent-foreground">
-                  {mode === "new" ? "غير منشور" : "منشور"}
-                </span>
+                <h2 className="text-2xl font-black">{isPublished ? "منشور" : product?.status === "ARCHIVED" ? "مؤرشف" : "مسودة"}</h2>
+                <StatusBadge status={product?.status ?? "DRAFT"} />
               </div>
             </div>
             <CardContent className="grid gap-3 pt-5">
-              <Button type="button">
+              <Button disabled={isPending} name="intent" type="submit" value="publish">
                 <PackageCheck className="h-4 w-4" aria-hidden="true" />
-                نشر المنتج
+                {isPending ? "جار الحفظ..." : "حفظ ونشر المنتج"}
               </Button>
-              <Button type="button" variant="secondary">
-                معاينة صفحة المنتج
+              <Button disabled={isPending} name="intent" type="submit" value="draft" variant="secondary">
+                حفظ كمسودة
               </Button>
+              <Button asChild variant="secondary">
+                <a href={previewHref} target="_blank" rel="noreferrer">
+                  معاينة صفحة المنتج
+                </a>
+              </Button>
+              {state.message ? (
+                <p className={state.status === "success" ? "text-sm font-black text-emerald-700" : "text-sm font-black text-destructive"}>
+                  {state.message}
+                </p>
+              ) : null}
             </CardContent>
           </Card>
 
@@ -110,11 +205,9 @@ export function ProductEditorForm({ mode }: { mode: "new" | "edit" }) {
               <CardTitle>جاهزية النشر</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-2">
-              {["أضف صورة رئيسية", "راجع علاقة العروض مع المتغيرات", "أكمل صور التفاصيل"].map((warning) => (
-                <div key={warning} className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">
-                  {warning}
-                </div>
-              ))}
+              {!defaults.main_image_url ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صورة رئيسية قبل النشر</div> : null}
+              {!defaults.detail_image_urls ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صور تفاصيل Shoppex-style</div> : null}
+              {!defaults.category_id ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">اختر التصنيف</div> : null}
             </CardContent>
           </Card>
         </aside>
@@ -125,102 +218,139 @@ export function ProductEditorForm({ mode }: { mode: "new" | "edit" }) {
             description="هذه البيانات تظهر في بطاقة المنتج وصفحة المنتج والبحث."
             icon={ShoppingBag}
           >
-            <div className="grid gap-4 md:grid-cols-2">
+            <div id="section-0" className="grid gap-4 md:grid-cols-2">
               <Field label="اسم المنتج" className="md:col-span-2">
-                <Input defaultValue={mode === "edit" ? "بروجيكتور 120 واط بالطاقة الشمسية" : ""} placeholder="اسم المنتج" />
+                <Input {...register("name")} placeholder="اسم المنتج" />
               </Field>
               <Field label="الرابط المختصر">
-                <Input defaultValue={mode === "edit" ? "solar-projector-120w" : ""} dir="ltr" placeholder="product-slug" />
+                <Input {...register("slug")} dir="ltr" placeholder="product-slug" />
               </Field>
               <Field label="التصنيف">
-                <Input defaultValue="أضواء ومصابيح" placeholder="اختر التصنيف" />
+                <select
+                  {...register("category_id")}
+                  className="h-11 rounded-md border border-input bg-card px-3 py-2 text-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  defaultValue={defaults.category_id ?? ""}
+                >
+                  <option value="">بدون تصنيف</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="الحالة">
+                <select
+                  {...register("status")}
+                  className="h-11 rounded-md border border-input bg-card px-3 py-2 text-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  defaultValue={defaults.status ?? "DRAFT"}
+                >
+                  <option value="DRAFT">DRAFT</option>
+                  <option value="PUBLISHED">PUBLISHED</option>
+                  <option value="ARCHIVED">ARCHIVED</option>
+                </select>
+              </Field>
+              <Field label="SKU">
+                <Input {...register("sku")} dir="ltr" placeholder="SKU-001" />
               </Field>
               <Field label="وصف قصير للبيع" className="md:col-span-2">
-                <textarea
-                  className="min-h-24 rounded-md border border-input bg-card px-3 py-2 text-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  defaultValue={mode === "edit" ? "إضاءة قوية للخارج مع شحن بالطاقة الشمسية." : ""}
-                  placeholder="وصف قصير يظهر في صفحة المنتج"
-                />
+                <Textarea {...register("short_description")} placeholder="وصف قصير يظهر في صفحة المنتج" />
+              </Field>
+              <Field label="وصف كامل / ملاحظات وصفية" className="md:col-span-2">
+                <Textarea {...register("full_description")} placeholder="وصف إضافي عند الحاجة" />
               </Field>
             </div>
           </AdminFormSection>
 
-          <AdminFormSection title="السعر والمخزون" description="السعر الظاهر للعميل، وسعر التكلفة يبقى داخليا فقط." icon={Tags}>
-            <div className="grid gap-4 md:grid-cols-4">
-              <Field label="سعر البيع"><Input defaultValue="249" inputMode="decimal" /></Field>
-              <Field label="سعر المقارنة"><Input defaultValue="449" inputMode="decimal" /></Field>
-              <Field label="سعر التكلفة"><Input defaultValue="135" inputMode="decimal" /></Field>
-              <Field label="المخزون"><Input defaultValue="24" inputMode="numeric" /></Field>
+          <AdminFormSection title="السعر والمخزون" description="سعر التكلفة يبقى داخليا ولا يظهر في المتجر." icon={Tags}>
+            <div id="section-1" className="grid gap-4 md:grid-cols-4">
+              <Field label="سعر البيع">
+                <Input {...register("price")} inputMode="decimal" />
+              </Field>
+              <Field label="سعر المقارنة">
+                <Input {...register("compare_at_price")} inputMode="decimal" />
+              </Field>
+              <Field label="سعر التكلفة">
+                <Input {...register("cost_price")} inputMode="decimal" />
+              </Field>
+              <Field label="المخزون">
+                <Input {...register("stock")} inputMode="numeric" />
+              </Field>
+              <CheckboxField defaultChecked={defaults.is_featured === true} description="يظهر في أقسام مختارة في الواجهة." label="منتج مميز" name="is_featured" />
+              <CheckboxField defaultChecked={defaults.is_best_seller === true} description="يظهر في أقوى العروض أو الأكثر طلبا." label="الأكثر مبيعا" name="is_best_seller" />
             </div>
           </AdminFormSection>
 
           <AdminFormSection
             title="الصور"
-            description={`الصور سترفع إلى Cloudflare R2 بعد تحويلها إلى WebP. الجودة الافتراضية ${Math.round(imageUploadRules.webpQuality * 100)}%.`}
+            description={`روابط الصور تحفظ الآن في Supabase. رفع R2 والتحويل إلى WebP سيأتي في Task 9 بجودة ${Math.round(imageUploadRules.webpQuality * 100)}%.`}
             icon={ImageIcon}
           >
-            <div className="grid gap-4 lg:grid-cols-[0.7fr_1.3fr]">
-              <div className="grid min-h-56 place-items-center rounded-lg border border-dashed border-border bg-muted">
-                <div className="text-center">
-                  <Upload className="mx-auto h-9 w-9 text-muted-foreground" aria-hidden="true" />
-                  <p className="mt-3 text-sm font-black">الصورة الرئيسية</p>
-                  <p className="mt-1 text-xs font-bold text-muted-foreground">R2 / WebP</p>
-                </div>
+            <div id="section-2" className="grid gap-4">
+              <Field label="رابط الصورة الرئيسية">
+                <Input {...register("main_image_url")} dir="ltr" placeholder="https://..." />
+              </Field>
+              <Field label="صور المعرض - رابط واحد في كل سطر">
+                <Textarea {...register("gallery_image_urls")} dir="ltr" />
+              </Field>
+            </div>
+          </AdminFormSection>
+
+          <AdminFormSection title="تفاصيل المنتج" description="قسم تفاصيل المنتج في Shoppex يعتمد أساسا على صور متتالية، وليس جدول نصوص طويل." icon={ImageIcon}>
+            <div id="section-3">
+              <Field label="صور التفاصيل - رابط واحد في كل سطر">
+                <Textarea {...register("detail_image_urls")} className="min-h-40" dir="ltr" />
+              </Field>
+            </div>
+          </AdminFormSection>
+
+          <AdminFormSection title="إعدادات البيع المتقدم" description="يمكن تشغيل المتغيرات، العروض، والباقات منفردة أو مع بعضها." icon={Settings2}>
+            <div id="section-4" className="grid gap-3 md:grid-cols-3">
+              <CheckboxField defaultChecked={defaults.variants_enabled === true} description="لون، حجم، قوة، موديل." label="تفعيل المتغيرات" name="variants_enabled" />
+              <CheckboxField defaultChecked={defaults.offers_enabled === true} description="قطعة، قطعتين، تخفيض كمية." label="تفعيل العروض" name="offers_enabled" />
+              <CheckboxField defaultChecked={defaults.bundles_enabled === true} description="منتج مع منتجات أخرى." label="تفعيل الباقات" name="bundles_enabled" />
+              <CheckboxField defaultChecked={defaults.allow_variant_offer_combo === true} description="يسمح باختيار متغير مع عرض." label="متغير + عرض" name="allow_variant_offer_combo" />
+              <CheckboxField defaultChecked={defaults.allow_variant_bundle_combo === true} description="يسمح باختيار متغير مع باقة." label="متغير + باقة" name="allow_variant_bundle_combo" />
+              <CheckboxField defaultChecked={defaults.allow_offer_bundle_combo === true} description="يسمح باختيار عرض مع باقة." label="عرض + باقة" name="allow_offer_bundle_combo" />
+              <CheckboxField defaultChecked={defaults.allow_variant_offer_bundle_combo === true} description="يسمح باستخدام الثلاثة معا." label="متغير + عرض + باقة" name="allow_variant_offer_bundle_combo" />
+            </div>
+          </AdminFormSection>
+
+          <AdminFormSection title="المتغيرات" description="اكتب كل مجموعة بهذا الشكل: اللون: أسود, أبيض, أخضر" icon={Layers3}>
+            <Field label="مجموعات المتغيرات">
+              <Textarea {...register("variant_groups_text")} className="min-h-36" />
+            </Field>
+          </AdminFormSection>
+
+          <AdminFormSection title="العروض" description="سطر لكل عرض: الاسم | الكمية | السعر | سعر المقارنة | الشارة | on/off" icon={BadgePercent}>
+            <Field label="العروض">
+              <Textarea {...register("offers_text")} className="min-h-36" />
+            </Field>
+          </AdminFormSection>
+
+          <AdminFormSection title="الباقات مع منتجات أخرى" description="سطر لكل باقة: الاسم | السعر | سعر المقارنة | الشارة | رابط الصورة | on/off" icon={Boxes}>
+            <Field label="الباقات">
+              <Textarea {...register("bundles_text")} className="min-h-36" />
+            </Field>
+          </AdminFormSection>
+
+          <AdminFormSection title="النشر والملاحظات الداخلية" description="هذه الملاحظات إدارية فقط ولا تظهر للعميل." icon={PackageCheck}>
+            <div id="section-5" className="grid gap-4">
+              <Field label="ملاحظات داخلية">
+                <Textarea {...register("internal_notes")} className="min-h-32" />
+              </Field>
+              <div className="flex flex-wrap gap-2">
+                <Button disabled={isPending} name="intent" type="submit" value="draft" variant="secondary">
+                  حفظ كمسودة
+                </Button>
+                <Button disabled={isPending} name="intent" type="submit" value="publish">
+                  حفظ ونشر
+                </Button>
               </div>
-              <div className="grid gap-3">
-                <div className="grid grid-cols-4 gap-3">
-                  {[1, 2, 3, 4].map((item) => (
-                    <div key={item} className="grid aspect-square place-items-center rounded-md border border-border bg-background">
-                      <ImageIcon className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="إعدادات البيع المتقدم" description="يمكن تشغيل المتغيرات، العروض، والباقات منفردة أو مع بعض." icon={Settings2}>
-            <div className="grid gap-3 md:grid-cols-3">
-              <SwitchRow label="المتغيرات" description="لون، حجم، قوة، موديل" />
-              <SwitchRow label="العروض" description="قطعة، قطعتين، تخفيض كمية" />
-              <SwitchRow label="الباقات" description="منتج مع منتجات أخرى" />
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="المتغيرات" description="اختيارات المنتج مثل اللون، الحجم، أو القوة." icon={Layers3}>
-            <div className="grid gap-3">
-              {["اللون: أسود، أبيض، أخضر", "القوة: 120W، 200W"].map((variant) => (
-                <div key={variant} className="flex items-center justify-between rounded-md border border-border p-3">
-                  <span className="text-sm font-black">{variant}</span>
-                  <Button type="button" variant="secondary" size="sm">تعديل</Button>
-                </div>
-              ))}
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="العروض" description="خيارات الطلب التي تظهر داخل صفحة المنتج." icon={BadgePercent}>
-            <div className="grid gap-3 md:grid-cols-3">
-              {["قطعة واحدة - 249 درهم", "قطعتين بسعر خاص - 449 درهم", "3 قطع للتجار - 629 درهم"].map((offer) => (
-                <div key={offer} className="rounded-md border border-border bg-background p-4">
-                  <StatusBadge status={offer.includes("3") ? "DRAFT" : "ACTIVE"} />
-                  <p className="mt-3 text-sm font-black">{offer}</p>
-                </div>
-              ))}
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="الباقات مع منتجات أخرى" description="اربط المنتج بمنتجات إضافية مع سعر باقة واضح." icon={Boxes}>
-            <div className="grid gap-3">
-              {["البروجيكتور + كابل تمديد - 319 درهم", "مجموعة الإنارة الخارجية - 699 درهم"].map((bundle) => (
-                <div key={bundle} className="flex items-center justify-between rounded-md border border-border p-3">
-                  <span className="text-sm font-black">{bundle}</span>
-                  <Button type="button" variant="secondary" size="sm">تعديل</Button>
-                </div>
-              ))}
             </div>
           </AdminFormSection>
         </div>
       </div>
-    </div>
+    </form>
   );
 }

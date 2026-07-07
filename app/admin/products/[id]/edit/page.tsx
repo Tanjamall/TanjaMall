@@ -1,5 +1,7 @@
 import { ProductEditorShell } from "@/components/admin/product-editor-shell";
 import { ProductEditorForm } from "@/components/admin/product-editor-form";
+import { notFound } from "next/navigation";
+import { getAdminCategories, getAdminProductEditorData } from "@/lib/admin/catalog";
 
 type EditProductPageProps = {
   params: Promise<{
@@ -9,10 +11,18 @@ type EditProductPageProps = {
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
+  const [categories, editorData] = await Promise.all([
+    getAdminCategories(),
+    getAdminProductEditorData(id)
+  ]);
+
+  if (!editorData) {
+    notFound();
+  }
 
   return (
-    <ProductEditorShell title="إضافة أو تعديل منتج" breadcrumb={`المنتجات / تحرير ${id}`}>
-      <ProductEditorForm mode="edit" />
+    <ProductEditorShell title="تعديل المنتج" breadcrumb={`المنتجات / ${editorData.product.name}`}>
+      <ProductEditorForm categories={categories} editorData={editorData} mode="edit" />
     </ProductEditorShell>
   );
 }
