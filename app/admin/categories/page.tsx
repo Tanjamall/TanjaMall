@@ -6,6 +6,7 @@ import { AdminDataTable, AdminPageHeader, StatusBadge } from "@/components/admin
 import { CategoryForm } from "@/components/admin/category-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireAdmin } from "@/lib/admin/auth";
 import { getAdminCategories } from "@/lib/admin/catalog";
 
 type AdminCategoriesPageProps = {
@@ -36,6 +37,7 @@ function CategoryStatusAction({
 }
 
 export default async function AdminCategoriesPage({ searchParams }: AdminCategoriesPageProps) {
+  await requireAdmin();
   const params = await searchParams;
   const categories = await getAdminCategories();
   const editingCategory = categories.find((category) => category.id === params.edit);

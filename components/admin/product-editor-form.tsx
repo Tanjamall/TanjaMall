@@ -14,6 +14,7 @@ import {
   Tags
 } from "lucide-react";
 import { saveProductAction, type ProductEditorState } from "@/app/admin/products/actions";
+import { AdminImageUploadButton } from "@/components/admin/admin-image-upload-button";
 import { AdminFormSection, StatusBadge } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -129,10 +130,17 @@ export function ProductEditorForm({
 }) {
   const defaults = productDefaults(editorData);
   const [state, formAction, isPending] = useActionState<ProductEditorState, FormData>(saveProductAction, {});
-  const { register } = useForm<ProductFormInput>({ defaultValues: defaults });
+  const { getValues, register, setValue } = useForm<ProductFormInput>({ defaultValues: defaults });
   const product = editorData?.product;
   const isPublished = product?.status === "PUBLISHED";
   const previewHref = product?.slug ? `/products/${product.slug}` : "/products";
+  const productIdForUpload = product?.id ?? "new-product";
+
+  function appendImageUrl(field: "gallery_image_urls" | "detail_image_urls", url: string) {
+    const current = getValues(field) ?? "";
+    const next = [current.trim(), url].filter(Boolean).join("\n");
+    setValue(field, next, { shouldDirty: true });
+  }
 
   return (
     <form action={formAction} className="space-y-6">
@@ -143,13 +151,13 @@ export function ProductEditorForm({
         <div className="mt-2 flex flex-wrap items-end justify-between gap-6" style={{ direction: "ltr" }}>
           <div className="flex flex-wrap gap-2" dir="ltr">
             <span className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">Supabase connected</span>
-            <span className="rounded-full bg-secondary px-4 py-2 text-sm font-black text-secondary-foreground">R2 URLs until upload task</span>
+            <span className="rounded-full bg-secondary px-4 py-2 text-sm font-black text-secondary-foreground">R2 upload enabled</span>
             <span className="rounded-full bg-accent px-4 py-2 text-sm font-black text-accent-foreground">Admin only</span>
           </div>
           <div className="text-right" dir="rtl">
             <h2 className="text-4xl font-black">{mode === "new" ? "إضافة منتج جديد" : "تعديل المنتج"}</h2>
             <p className="mt-3 max-w-4xl text-base font-bold leading-8 text-muted-foreground">
-              هذه الصفحة تتحكم في بطاقة المنتج، صفحة المنتج، الصور، صور التفاصيل، ونموذج الطلب. الصور تضاف كرابط مؤقتا إلى أن ننجز رفع R2 في Task 9.
+              هذه الصفحة تتحكم في بطاقة المنتج، صفحة المنتج، الصور، صور التفاصيل، ونموذج الطلب. الصور تضغط إلى WebP ثم ترفع إلى Cloudflare R2.
             </p>
           </div>
         </div>
@@ -283,15 +291,29 @@ export function ProductEditorForm({
 
           <AdminFormSection
             title="الصور"
-            description={`روابط الصور تحفظ الآن في Supabase. رفع R2 والتحويل إلى WebP سيأتي في Task 9 بجودة ${Math.round(imageUploadRules.webpQuality * 100)}%.`}
+            description={`الصور تضغط إلى WebP في المتصفح ثم ترفع إلى Cloudflare R2 بجودة ${Math.round(imageUploadRules.webpQuality * 100)}%.`}
             icon={ImageIcon}
           >
             <div id="section-2" className="grid gap-4">
               <Field label="رابط الصورة الرئيسية">
-                <Input {...register("main_image_url")} dir="ltr" placeholder="https://..." />
+                <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_180px]">
+                  <Input {...register("main_image_url")} dir="ltr" placeholder="https://..." />
+                  <AdminImageUploadButton
+                    label="رفع الرئيسية"
+                    onUploaded={(url) => setValue("main_image_url", url, { shouldDirty: true })}
+                    productId={productIdForUpload}
+                    purpose="main"
+                  />
+                </div>
               </Field>
               <Field label="صور المعرض - رابط واحد في كل سطر">
                 <Textarea {...register("gallery_image_urls")} dir="ltr" />
+                <AdminImageUploadButton
+                  label="رفع صورة للمعرض"
+                  onUploaded={(url) => appendImageUrl("gallery_image_urls", url)}
+                  productId={productIdForUpload}
+                  purpose="gallery"
+                />
               </Field>
             </div>
           </AdminFormSection>
@@ -300,6 +322,12 @@ export function ProductEditorForm({
             <div id="section-3">
               <Field label="صور التفاصيل - رابط واحد في كل سطر">
                 <Textarea {...register("detail_image_urls")} className="min-h-40" dir="ltr" />
+                <AdminImageUploadButton
+                  label="رفع صورة تفاصيل"
+                  onUploaded={(url) => appendImageUrl("detail_image_urls", url)}
+                  productId={productIdForUpload}
+                  purpose="detail"
+                />
               </Field>
             </div>
           </AdminFormSection>

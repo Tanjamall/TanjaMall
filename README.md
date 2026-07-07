@@ -130,6 +130,7 @@ Create `.env.local` from `.env.example`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_R2_PUBLIC_BASE_URL=
+NEXT_PUBLIC_IMAGE_UPLOAD_ENDPOINT=
 ADMIN_PREVIEW_ENABLED=false
 ```
 
@@ -207,8 +208,9 @@ Tracking settings added and applied this migration:
 
 This migration is applied to the connected Supabase project.
 
-Product image storage setup comes in Task 9 and will use Cloudflare R2, not Supabase Storage.
+Product image storage setup in Task 9 uses Cloudflare R2, not Supabase Storage.
 Supabase stores image metadata and public R2 URLs only.
+The admin upload Worker endpoint is configured through `NEXT_PUBLIC_IMAGE_UPLOAD_ENDPOINT`.
 
 Task 5 storefront pages use:
 
@@ -240,7 +242,14 @@ Cloudflare's current docs separate deployment paths:
 
 Because this app will need admin auth and dynamic ecommerce behavior, the final deployment path should be confirmed before Task 15. For now, keep the app compatible with standard Next.js and avoid a long-running custom Node.js server.
 
-Product images will be stored in Cloudflare R2 to reduce Supabase egress usage. Admin uploads should go through a Cloudflare-side endpoint with an R2 binding, and images should be converted/compressed to WebP before upload.
+Product images are stored in Cloudflare R2 to reduce Supabase egress usage. Admin uploads go through a Cloudflare Worker with an R2 binding, and images are converted/compressed to WebP in the browser before upload.
+
+Current image resources:
+
+- R2 bucket: `tanjamall-product-images`
+- Public image domain: `https://images.tanjamall.com`
+- Upload Worker: `tanjamall-image-upload`
+- Local/default upload endpoint: `https://tanjamall-image-upload.ecomtanger1.workers.dev`
 
 ## Design Rule
 

@@ -10,6 +10,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 dist
+.tmp
 tsconfig.tsbuildinfo
 .open-next
 worker.js

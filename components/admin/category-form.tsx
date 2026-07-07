@@ -5,6 +5,7 @@ import type { ReactNode, TextareaHTMLAttributes } from "react";
 import { useForm } from "react-hook-form";
 import { FolderPlus } from "lucide-react";
 import { saveCategoryAction, type CategoryFormState } from "@/app/admin/categories/actions";
+import { AdminImageUploadButton } from "@/components/admin/admin-image-upload-button";
 import { AdminFormSection } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +38,7 @@ function Field({
 
 export function CategoryForm({ category }: { category?: AdminCategory }) {
   const [state, formAction, isPending] = useActionState<CategoryFormState, FormData>(saveCategoryAction, {});
-  const { register } = useForm<CategoryFormInput>({
+  const { register, setValue } = useForm<CategoryFormInput>({
     defaultValues: {
       id: category?.id ?? null,
       name: category?.name ?? "",
@@ -67,7 +68,15 @@ export function CategoryForm({ category }: { category?: AdminCategory }) {
           <Textarea {...register("description")} placeholder="وصف مختصر للتصنيف" />
         </Field>
         <Field label="رابط الصورة">
-          <Input {...register("image_url")} dir="ltr" placeholder="https://..." />
+          <div className="grid gap-2">
+            <Input {...register("image_url")} dir="ltr" placeholder="https://..." />
+            <AdminImageUploadButton
+              label="رفع صورة التصنيف"
+              onUploaded={(url) => setValue("image_url", url, { shouldDirty: true })}
+              productId={category?.id ?? "new-category"}
+              purpose="category"
+            />
+          </div>
         </Field>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="الحالة">

@@ -8,6 +8,7 @@ import { AdminDataTable, AdminPageHeader, StatusBadge } from "@/components/admin
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { requireAdmin } from "@/lib/admin/auth";
 import { formatMad, getAdminProducts } from "@/lib/admin/catalog";
 
 type AdminProductsPageProps = {
@@ -41,6 +42,7 @@ function ProductStatusAction({
 }
 
 export default async function AdminProductsPage({ searchParams }: AdminProductsPageProps) {
+  await requireAdmin();
   const params = await searchParams;
   const products = await getAdminProducts({ query: params.q, status: params.status });
 

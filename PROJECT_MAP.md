@@ -138,6 +138,9 @@ Advanced product table grants have been tightened:
   - Source of truth for the product image storage decision.
   - Product image files go to Cloudflare R2 as compressed WebP.
   - Supabase stores image metadata and public R2 URLs only.
+  - Current bucket: `tanjamall-product-images`.
+  - Current public image domain: `https://images.tanjamall.com`.
+  - Current upload Worker: `tanjamall-image-upload`.
 
 ## Static Preview Links
 
@@ -264,7 +267,7 @@ Important:
 - Product/category CRUD is not connected yet.
 - Order management is not connected yet.
 - Product image uploads are not implemented yet.
-- Product images will use Cloudflare R2 and WebP compression, not Supabase Storage.
+- Product images use Cloudflare R2 and WebP compression, not Supabase Storage.
 - Tracking settings are partially wired: Meta Pixel, TikTok Pixel, and GTM IDs can be saved after the tracking migration is applied.
 - Runtime tracking scripts load only on public storefront routes and skip `/admin` and `/admin-preview`.
 
@@ -300,8 +303,8 @@ Implemented files:
 
 Important limitations still reserved for later tasks:
 
-- Product image file uploads are not implemented yet. Admin currently saves image URLs only.
-- Cloudflare R2 upload, WebP compression, and image replacement/deletion belong to Task 9.
+- Product image upload buttons now compress images to WebP in the browser and upload through the `tanjamall-image-upload` Cloudflare Worker.
+- Admin can upload main, gallery, detail, and category images. Removal/reordering polish remains for later.
 - Cart/checkout still need later updates to understand selected variants, offers, and bundles before those advanced selling options affect public ordering.
 - Order dashboard and order management remain later tasks.
 
@@ -328,7 +331,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue Task 8 by testing the live admin product/category flow with a real ADMIN profile, then move into Task 9 for Cloudflare R2 image uploads and WebP compression.
+Continue Task 9 by live-testing admin image upload with the logged-in ADMIN account, then polish removal/reordering and move on to cart/checkout support for variants, offers, and bundles.
 
 Task 7 design reference is now prepared in MagicPath:
 

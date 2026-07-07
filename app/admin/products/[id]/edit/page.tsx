@@ -1,6 +1,7 @@
 import { ProductEditorShell } from "@/components/admin/product-editor-shell";
 import { ProductEditorForm } from "@/components/admin/product-editor-form";
 import { notFound } from "next/navigation";
+import { requireAdmin } from "@/lib/admin/auth";
 import { getAdminCategories, getAdminProductEditorData } from "@/lib/admin/catalog";
 
 type EditProductPageProps = {
@@ -10,6 +11,7 @@ type EditProductPageProps = {
 };
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
+  await requireAdmin();
   const { id } = await params;
   const [categories, editorData] = await Promise.all([
     getAdminCategories(),

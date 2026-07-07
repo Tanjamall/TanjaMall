@@ -4,7 +4,7 @@
 
 TanjaMall uses Supabase for database, auth, RLS, and secure order creation.
 
-Product image files must be stored in Cloudflare R2, not Supabase Storage, to reduce Supabase free-plan egress usage.
+Product image files are stored in Cloudflare R2, not Supabase Storage, to reduce Supabase free-plan egress usage.
 
 Supabase stores only image metadata and public URLs:
 
@@ -16,11 +16,11 @@ Supabase stores only image metadata and public URLs:
 
 ## Upload Flow
 
-The final admin upload flow should be:
+The admin upload flow is:
 
 1. Admin selects image in the product editor.
 2. Browser compresses/converts the image to WebP before upload.
-3. Admin upload request goes through a Cloudflare-side endpoint using an R2 binding.
+3. Admin upload request goes through a Cloudflare Worker endpoint using an R2 binding.
 4. The R2 object key and public URL are returned to the admin UI.
 5. The admin form saves the R2 public URL and metadata to Supabase.
 
@@ -33,8 +33,16 @@ The storefront reads image URLs from Supabase and renders them directly from the
 Use:
 
 - `NEXT_PUBLIC_R2_PUBLIC_BASE_URL` for generated public image URLs.
+- `NEXT_PUBLIC_IMAGE_UPLOAD_ENDPOINT` for the admin upload Worker endpoint.
 - Cloudflare R2 bucket binding for server-side uploads.
 - A custom domain for public image delivery before production, if possible.
+
+Current Cloudflare resources:
+
+- Bucket: `tanjamall-product-images`
+- Public image domain: `https://images.tanjamall.com`
+- Upload Worker: `tanjamall-image-upload`
+- Local upload endpoint: `https://tanjamall-image-upload.ecomtanger1.workers.dev`
 
 ## WebP Compression Rules
 
@@ -63,7 +71,6 @@ Suggested initial limits:
 
 ## Implementation Notes
 
-Task 9 should be updated to implement R2, not Supabase Storage.
+Task 9 implements R2, not Supabase Storage.
 
-If the deployment uses Cloudflare Pages/Workers with OpenNext, image upload endpoints should run in the Cloudflare environment and use an R2 bucket binding.
-
+The upload endpoint runs as a standalone Cloudflare Worker with an R2 bucket binding. It verifies the Supabase Auth JWT, checks `profiles.role = 'ADMIN'`, accepts compressed WebP files only, and returns a public R2 URL for the admin form to save in Supabase.
