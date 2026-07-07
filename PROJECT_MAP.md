@@ -231,9 +231,10 @@ Implemented files:
 
 Current live Supabase state:
 
-- Auth user count is `0`.
-- ADMIN profile count is `0`.
-- Create an Auth user and matching profile row using `docs/ADMIN_AUTH_SETUP.md` before testing a successful login.
+- Auth user count is `1`.
+- ADMIN profile count is `1`.
+- Admin email enabled: `said.tchiche.work@gmail.com`.
+- Admin login can now be tested at `/admin/login`.
 
 ## Implemented Task 7 Admin UI Foundation
 
