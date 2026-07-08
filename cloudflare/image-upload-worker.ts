@@ -62,8 +62,10 @@ function createObjectKey({ productId, purpose, fileName }: { productId: string; 
   const safePurpose = safeSegment(purpose, "image");
   const safeName = safeSegment(fileName.replace(/\.[^.]+$/, ""), "image");
   const random = crypto.randomUUID();
+  const root = purpose === "category" ? "categories" : "products";
+  const folder = purpose === "category" ? "image" : safePurpose;
 
-  return `products/${safeProductId}/${safePurpose}/${Date.now()}-${random}-${safeName}.webp`;
+  return `${root}/${safeProductId}/${folder}/${Date.now()}-${random}-${safeName}.webp`;
 }
 
 async function getAdminUserId(request: Request, env: Env) {
@@ -120,7 +122,7 @@ export default {
 
     const formData = await request.formData();
     const file = formData.get("file");
-    const productId = String(formData.get("productId") ?? "unassigned");
+    const productId = String(formData.get("productId") ?? "");
     const purpose = String(formData.get("purpose") ?? "main");
 
     if (!(file instanceof File)) {
@@ -129,6 +131,10 @@ export default {
 
     if (!VALID_PURPOSES.has(purpose)) {
       return withCors(json({ error: "Invalid image purpose." }, { status: 400 }), request, env);
+    }
+
+    if (!productId.trim()) {
+      return withCors(json({ error: "Saved product or category id is required." }, { status: 400 }), request, env);
     }
 
     if (file.size > MAX_IMAGE_BYTES) {

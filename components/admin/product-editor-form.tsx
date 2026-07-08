@@ -134,7 +134,9 @@ export function ProductEditorForm({
   const product = editorData?.product;
   const isPublished = product?.status === "PUBLISHED";
   const previewHref = product?.slug ? `/products/${product.slug}` : "/products";
-  const productIdForUpload = product?.id ?? "new-product";
+  const canUploadImages = Boolean(product?.id);
+  const productIdForUpload = product?.id ?? "";
+  const uploadDisabledMessage = "احفظ المنتج كمسودة أولا قبل رفع الصور.";
 
   function appendImageUrl(field: "gallery_image_urls" | "detail_image_urls", url: string) {
     const current = getValues(field) ?? "";
@@ -299,6 +301,8 @@ export function ProductEditorForm({
                 <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_180px]">
                   <Input {...register("main_image_url")} dir="ltr" placeholder="https://..." />
                   <AdminImageUploadButton
+                    disabled={!canUploadImages}
+                    disabledMessage={uploadDisabledMessage}
                     label="رفع الرئيسية"
                     onUploaded={(url) => setValue("main_image_url", url, { shouldDirty: true })}
                     productId={productIdForUpload}
@@ -309,6 +313,8 @@ export function ProductEditorForm({
               <Field label="صور المعرض - رابط واحد في كل سطر">
                 <Textarea {...register("gallery_image_urls")} dir="ltr" />
                 <AdminImageUploadButton
+                  disabled={!canUploadImages}
+                  disabledMessage={uploadDisabledMessage}
                   label="رفع صورة للمعرض"
                   onUploaded={(url) => appendImageUrl("gallery_image_urls", url)}
                   productId={productIdForUpload}
@@ -323,6 +329,8 @@ export function ProductEditorForm({
               <Field label="صور التفاصيل - رابط واحد في كل سطر">
                 <Textarea {...register("detail_image_urls")} className="min-h-40" dir="ltr" />
                 <AdminImageUploadButton
+                  disabled={!canUploadImages}
+                  disabledMessage={uploadDisabledMessage}
                   label="رفع صورة تفاصيل"
                   onUploaded={(url) => appendImageUrl("detail_image_urls", url)}
                   productId={productIdForUpload}

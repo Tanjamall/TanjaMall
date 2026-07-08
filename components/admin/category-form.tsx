@@ -38,6 +38,7 @@ function Field({
 
 export function CategoryForm({ category }: { category?: AdminCategory }) {
   const [state, formAction, isPending] = useActionState<CategoryFormState, FormData>(saveCategoryAction, {});
+  const canUploadImage = Boolean(category?.id);
   const { register, setValue } = useForm<CategoryFormInput>({
     defaultValues: {
       id: category?.id ?? null,
@@ -71,9 +72,11 @@ export function CategoryForm({ category }: { category?: AdminCategory }) {
           <div className="grid gap-2">
             <Input {...register("image_url")} dir="ltr" placeholder="https://..." />
             <AdminImageUploadButton
+              disabled={!canUploadImage}
+              disabledMessage="احفظ التصنيف أولا قبل رفع الصورة."
               label="رفع صورة التصنيف"
               onUploaded={(url) => setValue("image_url", url, { shouldDirty: true })}
-              productId={category?.id ?? "new-category"}
+              productId={category?.id ?? ""}
               purpose="category"
             />
           </div>

@@ -18,13 +18,21 @@ Supabase stores only image metadata and public URLs:
 
 The admin upload flow is:
 
-1. Admin selects image in the product editor.
-2. Browser compresses/converts the image to WebP before upload.
-3. Admin upload request goes through a Cloudflare Worker endpoint using an R2 binding.
-4. The R2 object key and public URL are returned to the admin UI.
-5. The admin form saves the R2 public URL and metadata to Supabase.
+1. Admin saves the product or category first, so Supabase assigns a real record ID.
+2. Admin selects image in the product or category editor.
+3. Browser compresses/converts the image to WebP before upload.
+4. Admin upload request goes through a Cloudflare Worker endpoint using an R2 binding.
+5. The R2 object key and public URL are returned to the admin UI.
+6. The admin form saves the R2 public URL and metadata to Supabase.
 
 The browser must never receive R2 write credentials.
+
+Uploads without a saved product/category ID are rejected. This prevents preview placeholders such as `products/new-product/...` from becoming normal media paths.
+
+Current object key shape:
+
+- Product images: `products/{product_id}/{main|gallery|detail|variant|bundle}/{timestamp}-{uuid}-{name}.webp`
+- Category images: `categories/{category_id}/image/{timestamp}-{uuid}-{name}.webp`
 
 ## Delivery Flow
 

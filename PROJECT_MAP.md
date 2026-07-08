@@ -304,7 +304,11 @@ Implemented files:
 Important limitations still reserved for later tasks:
 
 - Product image upload buttons now compress images to WebP in the browser and upload through the `tanjamall-image-upload` Cloudflare Worker.
-- Admin can upload main, gallery, detail, and category images. Removal/reordering polish remains for later.
+- Admin can upload main, gallery, detail, and category images after the product/category has been saved once.
+- R2 upload paths are organized by saved record id:
+  - `products/{product_id}/{purpose}/...`
+  - `categories/{category_id}/image/...`
+- Removal/reordering polish remains for later.
 - Cart/checkout still need later updates to understand selected variants, offers, and bundles before those advanced selling options affect public ordering.
 - Order dashboard and order management remain later tasks.
 
@@ -331,7 +335,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Continue Task 9 by live-testing admin image upload with the logged-in ADMIN account, then polish removal/reordering and move on to cart/checkout support for variants, offers, and bundles.
+Finish Task 9 by re-testing upload after saving a product/category first, then move on to cart/checkout support for variants, offers, and bundles.
 
 Task 7 design reference is now prepared in MagicPath:
 

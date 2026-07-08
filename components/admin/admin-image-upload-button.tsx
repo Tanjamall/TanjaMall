@@ -10,12 +10,16 @@ export function AdminImageUploadButton({
   productId,
   purpose,
   onUploaded,
-  label = "رفع صورة"
+  label = "رفع صورة",
+  disabled = false,
+  disabledMessage = "احفظ السجل أولا قبل رفع الصورة."
 }: {
   productId: string;
   purpose: ImageUploadPurpose;
   onUploaded: (url: string) => void;
   label?: string;
+  disabled?: boolean;
+  disabledMessage?: string;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -54,10 +58,11 @@ export function AdminImageUploadButton({
         onChange={(event) => void handleFiles(event.currentTarget.files)}
         type="file"
       />
-      <Button disabled={isUploading} onClick={() => inputRef.current?.click()} type="button" variant="secondary">
+      <Button disabled={disabled || isUploading} onClick={() => inputRef.current?.click()} type="button" variant="secondary">
         <Upload className="h-4 w-4" aria-hidden="true" />
         {isUploading ? "جار الرفع..." : label}
       </Button>
+      {disabled ? <p className="text-xs font-black text-muted-foreground">{disabledMessage}</p> : null}
       {status ? <p className="text-xs font-black text-muted-foreground">{status}</p> : null}
     </div>
   );

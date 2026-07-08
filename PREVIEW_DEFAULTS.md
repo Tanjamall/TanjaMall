@@ -63,6 +63,10 @@ These live setup values are useful for development only and must be replaced or 
   - Phone: `0612345678`
   - Address: `Test address Tanger`
   - Purpose: verifies anonymous `create_cod_order` behavior.
+- R2 upload verification image created during Task 9:
+  - URL: `https://images.tanjamall.com/products/new-product/main/1783498976407-aea0a048-6216-421e-a81b-3db72a0ebc3c-whatsapp-image-2026-07-08-at-02-09-47.webp`
+  - Purpose: verifies laptop admin image upload, WebP conversion, R2 public delivery, and custom image domain.
+  - Cleanup note: this object used the old preview placeholder folder `products/new-product/...`; future uploads must use saved product/category IDs.
 
 ## Preview-Only Behavior
 
