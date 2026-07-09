@@ -17,15 +17,21 @@ function getUploadEndpoint() {
 
 async function imageBitmapFromFile(file: File) {
   if ("createImageBitmap" in window) {
-    return createImageBitmap(file);
+    try {
+      return await createImageBitmap(file);
+    } catch {
+      // Some mobile browsers expose createImageBitmap but fail on camera/WhatsApp images.
+    }
   }
 
   const image = new Image();
-  image.src = URL.createObjectURL(file);
+  const objectUrl = URL.createObjectURL(file);
+  image.src = objectUrl;
   await new Promise<void>((resolve, reject) => {
     image.onload = () => resolve();
     image.onerror = () => reject(new Error("تعذر قراءة الصورة."));
   });
+  URL.revokeObjectURL(objectUrl);
 
   return image;
 }
@@ -102,7 +108,7 @@ export async function uploadAdminImage({
 
   const formData = new FormData();
   formData.set("file", file);
-  formData.set("productId", productId || "unassigned");
+  formData.set("productId", productId);
   formData.set("purpose", purpose);
 
   const response = await fetch(endpoint, {

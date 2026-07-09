@@ -67,6 +67,9 @@ These live setup values are useful for development only and must be replaced or 
   - URL: `https://images.tanjamall.com/products/new-product/main/1783498976407-aea0a048-6216-421e-a81b-3db72a0ebc3c-whatsapp-image-2026-07-08-at-02-09-47.webp`
   - Purpose: verifies laptop admin image upload, WebP conversion, R2 public delivery, and custom image domain.
   - Cleanup note: this object used the old preview placeholder folder `products/new-product/...`; future uploads must use saved product/category IDs.
+- Unsaved admin image uploads use `admin-drafts/{admin_user_id}/{purpose}/...`.
+  - Purpose: lets the add/edit forms upload images before a product or category has been saved.
+  - Cleanup note: draft objects not attached to saved products/categories should be removed before production launch or by a later media cleanup task.
 
 ## Preview-Only Behavior
 

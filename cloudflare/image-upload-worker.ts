@@ -73,11 +73,28 @@ function safeSegment(value: string, fallback: string) {
     .slice(0, 80) || fallback;
 }
 
-function createObjectKey({ productId, purpose, fileName }: { productId: string; purpose: string; fileName: string }) {
+function createObjectKey({
+  productId,
+  purpose,
+  fileName,
+  adminUserId
+}: {
+  productId: string;
+  purpose: string;
+  fileName: string;
+  adminUserId: string;
+}) {
+  const hasRecordId = Boolean(productId.trim());
   const safeProductId = safeSegment(productId, "unassigned");
+  const safeAdminUserId = safeSegment(adminUserId, "admin");
   const safePurpose = safeSegment(purpose, "image");
   const safeName = safeSegment(fileName.replace(/\.[^.]+$/, ""), "image");
   const random = crypto.randomUUID();
+
+  if (!hasRecordId) {
+    return `admin-drafts/${safeAdminUserId}/${safePurpose}/${Date.now()}-${random}-${safeName}.webp`;
+  }
+
   const root = purpose === "category" ? "categories" : "products";
   const folder = purpose === "category" ? "image" : safePurpose;
 
@@ -149,10 +166,6 @@ export default {
       return withCors(json({ error: "Invalid image purpose." }, { status: 400 }), request, env);
     }
 
-    if (!productId.trim()) {
-      return withCors(json({ error: "Saved product or category id is required." }, { status: 400 }), request, env);
-    }
-
     if (file.size > MAX_IMAGE_BYTES) {
       return withCors(json({ error: "Image is too large." }, { status: 413 }), request, env);
     }
@@ -161,7 +174,7 @@ export default {
       return withCors(json({ error: "Only compressed WebP images are accepted." }, { status: 415 }), request, env);
     }
 
-    const key = createObjectKey({ productId, purpose, fileName: file.name });
+    const key = createObjectKey({ productId, purpose, fileName: file.name, adminUserId });
     const object = await env.PRODUCT_IMAGES.put(key, file.stream(), {
       httpMetadata: {
         contentType: "image/webp",
