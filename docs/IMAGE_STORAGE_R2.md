@@ -76,6 +76,7 @@ Suggested initial limits:
 - R2 write credentials must stay server-side in Cloudflare bindings or server-only environment variables.
 - Do not expose R2 access keys through `NEXT_PUBLIC_*`.
 - Supabase RLS protects the metadata rows, not the binary files.
+- The upload Worker allows local preview origins on port `3000` for `localhost`, `127.0.0.1`, and private-network IPs, but every upload still requires a valid ADMIN Supabase session.
 
 ## Implementation Notes
 

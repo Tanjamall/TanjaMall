@@ -11,6 +11,23 @@ type Env = {
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const VALID_PURPOSES = new Set(["main", "gallery", "detail", "variant", "bundle", "category"]);
 
+function isAllowedPreviewOrigin(origin: string) {
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== "http:" || url.port !== "3000") return false;
+
+    return (
+      url.hostname === "localhost" ||
+      url.hostname === "127.0.0.1" ||
+      url.hostname.startsWith("192.168.") ||
+      url.hostname.startsWith("10.") ||
+      /^172\.(1[6-9]|2\d|3[0-1])\./.test(url.hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 function json(data: unknown, init: ResponseInit = {}) {
   return Response.json(data, {
     ...init,
@@ -27,9 +44,8 @@ function corsHeaders(request: Request, env: Env) {
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
-  const allowOrigin = allowedOrigins.length === 0 || allowedOrigins.includes(requestOrigin)
-    ? requestOrigin || "*"
-    : allowedOrigins[0] ?? "*";
+  const isExplicitlyAllowed = allowedOrigins.length === 0 || allowedOrigins.includes(requestOrigin);
+  const allowOrigin = isExplicitlyAllowed || isAllowedPreviewOrigin(requestOrigin) ? requestOrigin || "*" : allowedOrigins[0] ?? "*";
 
   return {
     "access-control-allow-origin": allowOrigin,
