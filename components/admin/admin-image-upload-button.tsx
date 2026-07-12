@@ -63,7 +63,11 @@ export function AdminImageUploadButton({
         {isUploading ? "جار الرفع..." : label}
       </Button>
       {disabled ? <p className="text-xs font-black text-muted-foreground">{disabledMessage}</p> : null}
-      {status ? <p className="text-xs font-black text-muted-foreground">{status}</p> : null}
+      {status ? (
+        <p aria-live="polite" className={`text-xs font-black ${status.startsWith("فشل") || status.startsWith("تعذر") || status.startsWith("يجب") ? "text-destructive" : "text-muted-foreground"}`}>
+          {status}
+        </p>
+      ) : null}
     </div>
   );
 }

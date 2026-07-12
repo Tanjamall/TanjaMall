@@ -97,13 +97,23 @@ export async function uploadAdminImage({
   }
 
   const supabase = createClient();
+  // getUser validates and refreshes the browser session before the Worker sees it.
+  const {
+    data: { user },
+    error: userError
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("يجب تسجيل الدخول كمسؤول قبل رفع الصور.");
+  }
+
   const {
     data: { session },
-    error
+    error: sessionError
   } = await supabase.auth.getSession();
 
-  if (error || !session?.access_token) {
-    throw new Error("يجب تسجيل الدخول كمسؤول قبل رفع الصور.");
+  if (sessionError || !session?.access_token) {
+    throw new Error("تعذر تحديث جلسة الإدارة. سجّل الخروج ثم ادخل مرة أخرى.");
   }
 
   const formData = new FormData();
@@ -122,7 +132,8 @@ export async function uploadAdminImage({
   const payload = await response.json().catch(() => null) as Partial<UploadResult> & { error?: string } | null;
 
   if (!response.ok || !payload?.url || !payload.key) {
-    throw new Error(payload?.error ?? "تعذر رفع الصورة.");
+    const message = payload?.error ?? "تعذر رفع الصورة.";
+    throw new Error(`فشل الرفع (${response.status}): ${message}`);
   }
 
   return {
