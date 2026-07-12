@@ -1184,6 +1184,142 @@ a {
   font-weight: 900;
 }
 
+.cart-page {
+  display: grid;
+  gap: 12px;
+  padding-bottom: calc(18px + var(--safe-bottom));
+}
+
+.empty-cart-page {
+  padding-top: 26px;
+}
+
+.empty-cart-page .empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.empty-cart-page h1,
+.empty-cart-page p {
+  margin: 0;
+}
+
+.empty-cart-page p {
+  max-width: 300px;
+  line-height: 1.8;
+}
+
+.empty-cart-page .primary-btn {
+  max-width: 260px;
+}
+
+.empty-cart-icon {
+  width: 38px;
+  height: 38px;
+  color: var(--tm-orange-dark);
+}
+
+.cart-items-panel {
+  margin: 0;
+  padding: 0 13px;
+}
+
+.cart-page-item {
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: start;
+  padding: 13px 0;
+}
+
+.cart-page-item img,
+.cart-image-fallback {
+  width: 82px;
+  height: 82px;
+}
+
+.cart-image-fallback {
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f7f8f4;
+  color: var(--tm-muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.cart-item-content {
+  min-width: 0;
+}
+
+.cart-item-topline,
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cart-item-topline .cart-title {
+  margin: 0;
+}
+
+.cart-remove {
+  display: grid;
+  width: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--tm-orange-dark);
+}
+
+.cart-remove svg,
+.cart-qty-control svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cart-item-actions {
+  margin-top: 9px;
+}
+
+.cart-qty-control {
+  grid-template-columns: 42px 42px 42px;
+}
+
+.cart-qty-control button,
+.cart-qty-control span {
+  min-height: 42px;
+}
+
+.cart-summary {
+  margin: 0;
+}
+
+.cart-summary .cart-total {
+  margin-top: 0;
+}
+
+.cart-checkout-note {
+  margin: 0 0 12px;
+  color: var(--tm-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.8;
+}
+
+.cart-checkout-button {
+  min-height: 46px;
+}
+
+.cart-summary .secondary-btn {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
 .toast {
   position: fixed;
   right: 50%;

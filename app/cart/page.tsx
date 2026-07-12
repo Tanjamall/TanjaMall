@@ -1,10 +1,13 @@
-import { StorefrontPlaceholder } from "@/components/storefront/storefront-placeholder";
+import { CartPage } from "@/components/storefront/cart-page";
+import { StorefrontShell } from "@/components/storefront/storefront-shell";
+import { getCategories, getStoreSettings } from "@/lib/storefront/data";
 
-export default function CartPage() {
+export default async function CartRoute() {
+  const [categories, settings] = await Promise.all([getCategories(), getStoreSettings()]);
+
   return (
-    <StorefrontPlaceholder
-      title="السلة"
-      description="سيتم بناء السلة لاحقا باستخدام Zustand مع الحفاظ على الشكل الحالي."
-    />
+    <StorefrontShell categories={categories} settings={settings}>
+      <CartPage />
+    </StorefrontShell>
   );
 }

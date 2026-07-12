@@ -9,8 +9,8 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 7 from `BUILD_PLAN.md` are implemented.
-Task 8 is in progress: product/category admin pages now read and write live Supabase data, and the product editor extension migration has been applied to Supabase.
+Task 1 through Task 10 from `BUILD_PLAN.md` are implemented.
+Task 11 is next: connect the COD checkout to the secure Supabase order-creation RPC.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -145,14 +145,14 @@ Advanced product table grants have been tightened:
 ## Static Preview Links
 
 - Local desktop preview: http://localhost:5174/
-- Current phone preview on same Wi-Fi: http://192.168.11.123:5174/
+- Current phone preview on same Wi-Fi: http://192.168.11.117:5174/
 
 These links are for the old static storefront prototype only.
 
 ## Next.js Task 1 Preview Links
 
 - Local desktop preview: http://localhost:3000/
-- Current phone preview on same Wi-Fi: http://192.168.11.123:3000/
+- Current phone preview on same Wi-Fi: http://192.168.11.117:3000/
 
 ## Static Preview Routes
 
@@ -334,9 +334,22 @@ The production project should use:
 
 Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma, Express, MongoDB, Stripe, or customer accounts for the MVP.
 
+## Implemented Task 9 Image Storage
+
+- Main, gallery, detail, and category image uploads compress to WebP in the browser and upload through the admin-only Cloudflare Worker.
+- Product images are delivered publicly from `images.tanjamall.com`.
+- Unsaved uploads use an admin draft path and saved records use their product or category ID in the R2 path.
+
+## Implemented Task 10 Cart
+
+- `/cart` now uses persisted Zustand cart data rather than a placeholder page.
+- Customers can view cart items, adjust quantities, remove products, see the estimated subtotal, and continue to checkout.
+- The existing product-page order buttons add the item and open the cart.
+- Final totals remain database-calculated when Task 11 creates the COD order.
+
 ## Next Step
 
-Finish Task 9 by re-testing upload on both new and existing product/category forms, then move on to cart/checkout support for variants, offers, and bundles.
+Build Task 11: the short COD checkout form and secure call to `create_cod_order`, then clear the cart after a successful order.
 
 Task 7 design reference is now prepared in MagicPath:
 

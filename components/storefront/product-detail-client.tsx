@@ -4,6 +4,7 @@
 
 import Link from "next/link";
 import { Heart, MessageCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/storefront/product-card";
 import { useCartStore } from "@/lib/cart/store";
@@ -17,6 +18,7 @@ type ProductDetailClientProps = {
 };
 
 export function ProductDetailClient({ product, relatedProducts, settings }: ProductDetailClientProps) {
+  const router = useRouter();
   const gallery = product.images.length
     ? product.images
     : product.main_image_url
@@ -43,6 +45,11 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
       price: product.price,
       quantity
     });
+  }
+
+  function buyNow() {
+    addToCart();
+    router.push("/cart");
   }
 
   return (
@@ -109,7 +116,7 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
             <button type="button" aria-label="نقص الكمية" onClick={() => setQuantity((value) => Math.max(1, value - 1))}>-</button>
           </div>
         </div>
-        <button className="primary-btn" type="button" onClick={addToCart}>
+        <button className="primary-btn" type="button" onClick={buyNow}>
           اطلب الآن
         </button>
       </section>
@@ -146,7 +153,7 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
             واتساب
           </a>
         ) : null}
-        <button className="primary-btn floating-order-btn" type="button" onClick={addToCart}>
+        <button className="primary-btn floating-order-btn" type="button" onClick={buyNow}>
           اطلب الآن
         </button>
       </div>
