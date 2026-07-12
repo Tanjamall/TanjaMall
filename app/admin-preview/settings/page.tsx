@@ -11,6 +11,8 @@ const previewTrackingSettings: StoreSettings = {
   store_name: adminSettingsPreview.storeName,
   store_phone: adminSettingsPreview.phone,
   whatsapp_number: adminSettingsPreview.whatsapp,
+  default_city: adminSettingsPreview.defaultCity,
+  supported_cities: [adminSettingsPreview.defaultCity],
   announcement_text: null,
   delivery_fee_tanger: 0,
   free_delivery_threshold: 500,

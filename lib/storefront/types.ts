@@ -2,6 +2,8 @@ export type StoreSettings = {
   store_name: string;
   store_phone: string | null;
   whatsapp_number: string | null;
+  default_city: string;
+  supported_cities: string[];
   announcement_text: string | null;
   delivery_fee_tanger: number | null;
   free_delivery_threshold: number | null;

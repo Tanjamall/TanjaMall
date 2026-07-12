@@ -46,6 +46,8 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     "store_name",
     "store_phone",
     "whatsapp_number",
+    "default_city",
+    "supported_cities",
     "announcement_text",
     "delivery_fee_tanger",
     "free_delivery_threshold",
@@ -56,7 +58,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     "google_tag_manager_enabled",
     "google_tag_manager_id"
   ].join(", ");
-  const baseSettingsColumns = "store_name, store_phone, whatsapp_number, announcement_text, delivery_fee_tanger, free_delivery_threshold";
+  const baseSettingsColumns = "store_name, store_phone, whatsapp_number, default_city, supported_cities, announcement_text, delivery_fee_tanger, free_delivery_threshold";
 
   const { data, error } = await supabase
     .from("store_settings")
@@ -76,6 +78,10 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     store_name: settings?.store_name ? String(settings.store_name) : "TanjaMall",
     store_phone: settings?.store_phone ? String(settings.store_phone) : "0672975000",
     whatsapp_number: settings?.whatsapp_number ? String(settings.whatsapp_number) : "212672975000",
+    default_city: settings?.default_city ? String(settings.default_city) : "Tanger",
+    supported_cities: Array.isArray(settings?.supported_cities)
+      ? settings.supported_cities.map((city) => String(city)).filter(Boolean)
+      : ["Tanger"],
     announcement_text: settings?.announcement_text ? String(settings.announcement_text) : null,
     delivery_fee_tanger: toNumber(settings?.delivery_fee_tanger),
     free_delivery_threshold: toNumber(settings?.free_delivery_threshold),

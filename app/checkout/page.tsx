@@ -1,10 +1,13 @@
-import { StorefrontPlaceholder } from "@/components/storefront/storefront-placeholder";
+import { CheckoutPage } from "@/components/storefront/checkout-page";
+import { StorefrontShell } from "@/components/storefront/storefront-shell";
+import { getCategories, getStoreSettings } from "@/lib/storefront/data";
 
-export default function CheckoutPage() {
+export default async function CheckoutRoute() {
+  const [categories, settings] = await Promise.all([getCategories(), getStoreSettings()]);
+
   return (
-    <StorefrontPlaceholder
-      title="إتمام الطلب"
-      description="صفحة COD ستبقى قصيرة وواضحة ومرتبطة لاحقا بدالة create_cod_order."
-    />
+    <StorefrontShell categories={categories} settings={settings}>
+      <CheckoutPage settings={settings} />
+    </StorefrontShell>
   );
 }

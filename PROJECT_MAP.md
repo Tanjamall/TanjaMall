@@ -9,8 +9,8 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 10 from `BUILD_PLAN.md` are implemented.
-Task 11 is next: connect the COD checkout to the secure Supabase order-creation RPC.
+Task 1 through Task 11 from `BUILD_PLAN.md` are implemented.
+Task 12 is next: connect admin order management and WhatsApp confirmation to live order data.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -347,9 +347,17 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 - The existing product-page order buttons add the item and open the cart.
 - Final totals remain database-calculated when Task 11 creates the COD order.
 
+## Implemented Task 11 COD Checkout
+
+- `/checkout` now presents a short guest COD form for name, Moroccan phone number, city, area, address, and optional notes.
+- The checkout calls `create_cod_order` with customer details plus product IDs and quantities only.
+- Supabase validates availability and calculates the real subtotal, delivery fee, and total.
+- The cart clears only after a confirmed order response, then the customer sees the order number and confirmed total at `/order-success`.
+- The public RPC endpoint was checked with an invalid validation request only; no extra test order was created.
+
 ## Next Step
 
-Build Task 11: the short COD checkout form and secure call to `create_cod_order`, then clear the cart after a successful order.
+Build Task 12: live admin order tables, order detail, status updates, internal notes, and WhatsApp confirmation links.
 
 Task 7 design reference is now prepared in MagicPath:
 
