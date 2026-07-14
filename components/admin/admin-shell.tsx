@@ -39,16 +39,18 @@ const previewAdmin: AdminUser = {
 
 export async function AdminShell({
   children,
-  preview = false
+  preview = false,
+  adminUser
 }: Readonly<{
   children: ReactNode;
   preview?: boolean;
+  adminUser?: AdminUser;
 }>) {
   if (preview && process.env.NODE_ENV === "production" && process.env.ADMIN_PREVIEW_ENABLED !== "true") {
     notFound();
   }
 
-  const admin = preview ? previewAdmin : await requireAdmin();
+  const admin = preview ? previewAdmin : adminUser ?? await requireAdmin();
   const basePath = preview ? "/admin-preview" : "/admin";
 
   return (

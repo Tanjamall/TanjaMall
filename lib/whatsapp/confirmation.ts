@@ -12,6 +12,7 @@ type WhatsAppOrderMessageInput = {
 };
 
 export function buildWhatsAppConfirmationUrl(input: WhatsAppOrderMessageInput) {
+  const whatsappNumber = input.whatsappNumber.replace(/\D/g, "");
   const products = input.lines.map((line) => `- ${line.name} x${line.quantity}`).join("\n");
   const message = [
     `Salam ${input.customerName}, hna ${input.storeName}.`,
@@ -25,5 +26,5 @@ export function buildWhatsAppConfirmationUrl(input: WhatsAppOrderMessageInput) {
     "واش كتأكد الطلب باش نوجهوه ليك؟"
   ].join("\n");
 
-  return `https://wa.me/${input.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }

@@ -1,54 +1,45 @@
-import Link from "next/link";
-import { Search } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { adminOrders } from "@/components/admin/admin-demo-data";
-import { AdminDataTable, AdminPageHeader, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
-import { Button } from "@/components/ui/button";
+import { AdminOrdersTable, type AdminOrderTableRow } from "@/components/admin/admin-orders-table";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { requireAdmin } from "@/lib/admin/auth";
+import { getAdminOrders } from "@/lib/admin/orders";
+import { getStoreSettings } from "@/lib/storefront/data";
+import { buildWhatsAppConfirmationUrl } from "@/lib/whatsapp/confirmation";
 
-export default function AdminOrdersPage() {
+export default async function AdminOrdersPage() {
+  const admin = await requireAdmin();
+  const [orders, settings] = await Promise.all([getAdminOrders(), getStoreSettings()]);
+
+  const rows: AdminOrderTableRow[] = orders.map((order) => ({
+    ...order,
+    whatsapp_url: order.whatsapp_confirmation_url ?? buildWhatsAppConfirmationUrl({
+      storeName: settings.store_name,
+      whatsappNumber: settings.whatsapp_number ?? "",
+      customerName: order.customer_name,
+      orderNumber: order.order_number,
+      lines: order.items.map((item) => ({ name: item.product_name, quantity: item.quantity })),
+      total: order.total,
+      address: order.address
+    })
+  }));
+
   return (
-    <AdminShell>
+    <AdminShell adminUser={admin}>
       <div className="space-y-6">
         <AdminPageHeader
+          eyebrow="إدارة الطلبات"
           title="الطلبات"
-          description="متابعة طلبات الدفع عند الاستلام وتأكيدها عبر واتساب. الربط الحقيقي مع Supabase يأتي في Task 12."
+          description="تابع طلبات الدفع عند الاستلام، حدّث حالتها، وتواصل مع العميل عبر واتساب."
         />
 
         <Card>
           <CardHeader>
             <CardTitle>كل الطلبات</CardTitle>
-            <CardDescription>الحالات النهائية ستقرأ من جدول orders.</CardDescription>
+            <CardDescription>بيانات مباشرة من Supabase مع بحث وتصفية حسب حالة الطلب.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              <div className="relative max-w-sm flex-1">
-                <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <Input className="pr-9" placeholder="رقم الطلب أو الهاتف..." />
-              </div>
-              {["الكل", "NEW", "CONFIRMED", "DELIVERED", "CANCELLED"].map((status) => (
-                <Button key={status} type="button" variant="secondary">
-                  {status}
-                </Button>
-              ))}
-            </div>
-
-            <AdminDataTable
-              columns={["رقم الطلب", "العميل", "الهاتف", "المنطقة", "المجموع", "الحالة", "واتساب", "إجراءات"]}
-              rows={adminOrders.map((order) => [
-                order.id,
-                order.customer,
-                <span key={`${order.id}-phone`} dir="ltr">{order.phone}</span>,
-                order.area,
-                order.total,
-                <StatusBadge key={order.id} status={order.status} />,
-                <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212672975000" label="تأكيد" />,
-                <Button key={`${order.id}-view`} asChild variant="secondary" size="sm">
-                  <Link href={`/admin/orders/${order.id}`}>فتح</Link>
-                </Button>
-              ])}
-            />
+          <CardContent>
+            <AdminOrdersTable rows={rows} />
           </CardContent>
         </Card>
       </div>

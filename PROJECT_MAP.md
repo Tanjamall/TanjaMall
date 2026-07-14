@@ -9,8 +9,8 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 11 from `BUILD_PLAN.md` are implemented.
-Task 12 is next: connect admin order management and WhatsApp confirmation to live order data.
+Task 1 through Task 12 from `BUILD_PLAN.md` are implemented.
+Task 13 is next: connect the admin dashboard summary and operational metrics to live Supabase data.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -64,7 +64,7 @@ Advanced product table grants have been tightened:
 - `components/`
   - Shared React components.
   - Includes shadcn-style `components/ui/*`, admin shell components, and Supabase-backed storefront components.
-  - Includes Task 7 admin UI components, live product/category admin forms, and temporary demo rows only for admin-preview/order/dashboard areas not yet connected.
+  - Includes Task 7 admin UI components, live product/category/order admin forms, and temporary demo rows only for admin-preview/dashboard areas not yet connected.
 
 - `lib/`
   - Project utilities.
@@ -355,9 +355,18 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 - The cart clears only after a confirmed order response, then the customer sees the order number and confirmed total at `/order-success`.
 - The public RPC endpoint was checked with an invalid validation request only; no extra test order was created.
 
+## Implemented Task 12 Admin Order Management
+
+- `/admin/orders` now reads live Supabase orders and uses TanStack Table for order-number, customer-name, and phone search plus status filtering.
+- Every order row includes the customer, phone, city/area, total, status, creation date, WhatsApp confirmation, and detail actions.
+- `/admin/orders/[id]` now shows live customer and delivery data, product snapshots, totals, customer notes, and internal notes.
+- Admins can move orders through every MVP status and save internal notes through protected server actions.
+- WhatsApp confirmation links include the customer name, order number, products and quantities, confirmed total, delivery address, and confirmation question.
+- No database migration was needed because the existing order tables, timestamps, admin RLS policies, and checkout snapshot data already support this workflow.
+
 ## Next Step
 
-Build Task 12: live admin order tables, order detail, status updates, internal notes, and WhatsApp confirmation links.
+Build Task 13: live admin dashboard cards, recent orders, operational counts, and revenue summaries based on the order-status business rules.
 
 Task 7 design reference is now prepared in MagicPath:
 
