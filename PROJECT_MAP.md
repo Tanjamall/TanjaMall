@@ -9,8 +9,8 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 12 from `BUILD_PLAN.md` are implemented.
-Task 13 is next: connect the admin dashboard summary and operational metrics to live Supabase data.
+Task 1 through Task 13 from `BUILD_PLAN.md` are implemented.
+Task 14 is next: storefront polish, limited to explicit improvements that preserve the approved storefront visual design.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -34,6 +34,11 @@ Advanced product table grants have been tightened:
 - Applied to the connected Supabase project.
 - Anonymous users have SELECT only on public-safe advanced product tables.
 - Authenticated writes still require admin RLS policies.
+
+The admin dashboard summary RPC is applied:
+
+- `supabase/migrations/20260714113634_admin_dashboard_summary.sql`
+- Returns compact admin-only metrics, recent orders, and low-stock products in one request.
 
 ## Important Files And Folders
 
@@ -83,6 +88,7 @@ Advanced product table grants have been tightened:
   - Local tracking settings file: `20260703090017_tracking_pixel_settings.sql`.
   - Local public product projection grant file: `20260703091731_grant_public_product_projection_access.sql`.
   - Local advanced product grant hardening file: `20260707133816_tighten_product_extension_grants.sql`.
+  - Admin dashboard summary RPC file: `20260714113634_admin_dashboard_summary.sql`.
 
 - `supabase/seed.sql`
   - Local seed data for sample categories, products, product images, store settings, and disabled tracking defaults.
@@ -364,9 +370,20 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 - WhatsApp confirmation links include the customer name, order number, products and quantities, confirmed total, delivery address, and confirmation question.
 - No database migration was needed because the existing order tables, timestamps, admin RLS policies, and checkout snapshot data already support this workflow.
 
+## Implemented Task 13 Dashboard And Settings
+
+- `/admin/dashboard` now uses one compact admin-only Supabase RPC for all dashboard metrics, recent orders, and low-stock products.
+- Dashboard metrics follow the order rules: delivered revenue uses only `DELIVERED` orders, while confirmed revenue is shown separately as expected revenue.
+- Recent orders link to live order details and stored WhatsApp confirmation URLs.
+- `/admin/settings` now saves the store name, phone, WhatsApp number, default city, supported cities, delivery fee, free-delivery threshold, and homepage announcement.
+- Store settings use React Hook Form in the client and Zod validation in the protected server action.
+- Existing Meta, TikTok, and Google Tag Manager settings remain connected to Supabase.
+- R2 image configuration is shown as read-only because write credentials and bucket configuration must not be editable in browser code.
+- `get_admin_dashboard()` is restricted to authenticated admins and reduces dashboard egress to one compact request.
+
 ## Next Step
 
-Build Task 13: live admin dashboard cards, recent orders, operational counts, and revenue summaries based on the order-status business rules.
+Build Task 14 carefully. The storefront is visually locked, so only implement polish that the user explicitly approves or nonvisual states that preserve the existing design.
 
 Task 7 design reference is now prepared in MagicPath:
 

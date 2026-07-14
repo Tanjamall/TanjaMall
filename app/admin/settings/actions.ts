@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
+import { storeSettingsSchema } from "@/lib/validators/settings";
 import { trackingSettingsSchema } from "@/lib/validators/tracking";
 
 export type TrackingSettingsState = {
@@ -10,8 +11,54 @@ export type TrackingSettingsState = {
   message?: string;
 };
 
+export type StoreSettingsState = {
+  status?: "success" | "error";
+  message?: string;
+};
+
 function checkboxValue(formData: FormData, key: string) {
   return formData.get(key) === "on";
+}
+
+export async function updateStoreSettings(
+  _previousState: StoreSettingsState,
+  formData: FormData
+): Promise<StoreSettingsState> {
+  await requireAdmin();
+
+  const parsed = storeSettingsSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: parsed.error.issues[0]?.message ?? "إعدادات المتجر غير صحيحة."
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: existingSettings, error: existingError } = await supabase
+    .from("store_settings")
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+
+  if (existingError) {
+    return { status: "error", message: "تعذر تحميل إعدادات المتجر." };
+  }
+
+  const saveQuery = existingSettings?.id
+    ? supabase.from("store_settings").update(parsed.data).eq("id", existingSettings.id)
+    : supabase.from("store_settings").insert(parsed.data);
+  const { error } = await saveQuery;
+
+  if (error) {
+    return { status: "error", message: "تعذر حفظ إعدادات المتجر. حاول مرة أخرى." };
+  }
+
+  revalidatePath("/", "layout");
+  revalidatePath("/checkout");
+  revalidatePath("/admin/settings");
+
+  return { status: "success", message: "تم حفظ إعدادات المتجر والتوصيل." };
 }
 
 export async function updateTrackingSettings(

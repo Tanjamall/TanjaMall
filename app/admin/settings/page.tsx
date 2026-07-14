@@ -1,59 +1,33 @@
-import { Image, MessageCircle, Settings, Truck } from "lucide-react";
+import { Image } from "lucide-react";
+import { AdminStoreSettingsForm } from "@/components/admin/admin-store-settings-form";
 import { AdminTrackingSettingsForm } from "@/components/admin/admin-tracking-settings-form";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { adminSettingsPreview } from "@/components/admin/admin-demo-data";
 import { AdminFormSection, AdminPageHeader } from "@/components/admin/admin-ui";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { requireAdmin } from "@/lib/admin/auth";
 import { getStoreSettings } from "@/lib/storefront/data";
 
 export default async function AdminSettingsPage() {
+  const admin = await requireAdmin();
   const settings = await getStoreSettings();
 
   return (
-    <AdminShell>
+    <AdminShell adminUser={admin}>
       <div className="space-y-6">
         <AdminPageHeader
+          eyebrow="إعدادات مباشرة"
           title="الإعدادات"
-          description="إعدادات المتجر، واتساب، التوصيل، صور Cloudflare R2، وتتبع الإعلانات. إعدادات التتبع تحفظ مباشرة في Supabase بعد تطبيق migration الخاص بها."
+          description="إدارة بيانات المتجر، واتساب، التوصيل، صور Cloudflare R2، وتتبع الإعلانات."
         />
 
         <div className="grid gap-4 xl:grid-cols-2">
-          <AdminFormSection title="المتجر" description="الاسم والهاتف ونص الإعلان." icon={Settings}>
-            <div className="grid gap-4">
-              <Input defaultValue={settings.store_name} placeholder="اسم المتجر" />
-              <Input defaultValue={settings.store_phone ?? ""} dir="ltr" placeholder="رقم الهاتف" />
-              <Input defaultValue={settings.announcement_text ?? ""} placeholder="نص الإعلان في الصفحة الرئيسية" />
-              <Button type="button">حفظ إعدادات المتجر</Button>
-            </div>
-          </AdminFormSection>
+          <AdminStoreSettingsForm settings={settings} />
 
-          <AdminFormSection title="واتساب" description="رقم التأكيد وقالب الرسالة." icon={MessageCircle}>
+          <AdminFormSection title="صور المنتجات" description="إعدادات التخزين الفعلية للصور للقراءة فقط." icon={Image}>
             <div className="grid gap-4">
-              <Input defaultValue={settings.whatsapp_number ?? adminSettingsPreview.whatsapp} dir="ltr" placeholder="رقم واتساب" />
-              <textarea
-                className="min-h-28 rounded-md border border-input bg-card px-3 py-2 text-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                defaultValue="Salam [Customer Name], hna [Store Name]. واش كتأكد الطلب؟"
-              />
-              <Button type="button">حفظ إعدادات واتساب</Button>
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="التوصيل" description="طنجة هي المدينة الافتراضية في MVP." icon={Truck}>
-            <div className="grid gap-4">
-              <Input defaultValue={adminSettingsPreview.defaultCity} placeholder="المدينة الافتراضية" />
-              <Input defaultValue={`${settings.delivery_fee_tanger ?? 0} درهم`} placeholder="رسوم التوصيل في طنجة" />
-              <Input defaultValue={`${settings.free_delivery_threshold ?? 500} درهم`} placeholder="حد التوصيل المجاني" />
-              <Button type="button">حفظ إعدادات التوصيل</Button>
-            </div>
-          </AdminFormSection>
-
-          <AdminFormSection title="صور المنتجات" description="الملفات تذهب إلى Cloudflare R2، وSupabase يحفظ URLs فقط." icon={Image}>
-            <div className="grid gap-4">
-              <Input defaultValue={process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL ?? ""} dir="ltr" placeholder="R2 public base URL" />
-              <Input defaultValue="product-images" dir="ltr" placeholder="R2 bucket name" />
-              <Input defaultValue="WebP quality 82%" placeholder="قاعدة الضغط الافتراضية" />
-              <Button type="button">حفظ إعدادات الصور</Button>
+              <Input disabled defaultValue={process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL ?? "https://images.tanjamall.com"} dir="ltr" />
+              <Input disabled defaultValue="tanjamall-product-images" dir="ltr" />
+              <Input disabled defaultValue="WebP" dir="ltr" />
             </div>
           </AdminFormSection>
 

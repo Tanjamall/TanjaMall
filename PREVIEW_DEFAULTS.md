@@ -93,7 +93,7 @@ The MagicPath admin dashboard component is a design reference only:
 - MagicPath component ID: `422127044336447488`
 - Preview URL: `https://www.magicpath.ai/files/422127044336447488`
 
-The following design sample values must be replaced by Supabase data during implementation:
+The following values remain only in `/admin-preview/*` and are not used by the real authenticated admin pages:
 
 - Dashboard metrics such as `18` new orders, `12,480 درهم` confirmed sales, `64` published products, and `7` low-stock products.
 - Sample order numbers and customers such as `TM-1048`, `سعيد العمراني`, `مريم الإدريسي`, `يوسف العلوي`, and `هند المرابط`.
@@ -127,16 +127,15 @@ The following design sample values must be replaced by Supabase data during impl
 
 Final admin pages must calculate prices and stock from Supabase data and must not keep MagicPath mock selling options as production data.
 
-## Task 7 Admin UI Temporary Data
+## Admin Preview-Only Data
 
-The current real Next.js admin UI includes temporary sample rows only to shape the admin pages before Supabase CRUD is connected:
+The authenticated Next.js admin now uses live Supabase data. Temporary sample rows remain only for local design review:
 
 - File: `components/admin/admin-demo-data.ts`
 - Sample products, categories, orders, dashboard metrics, and settings preview values are not production data.
-- Product editor image controls mention Cloudflare R2/WebP but do not upload files yet.
-- Product/category management will replace these rows in Task 8.
-- Order management will replace these rows in Task 12.
-- Dashboard/settings will replace these rows in Task 13.
+- Dashboard preview metrics and rows are defined in `components/admin/admin-dashboard-content.tsx`.
+- Product, category, order, dashboard, and settings data on authenticated `/admin/*` routes now come from Supabase.
+- Product and category image controls upload compressed WebP files to Cloudflare R2.
 - Tracking preview IDs for Meta Pixel, TikTok Pixel, and Google Tag Manager are placeholders only.
 - `/admin-preview/*` routes bypass Supabase Auth for local/design review only.
 - `ADMIN_PREVIEW_ENABLED` should stay false outside local/design review.
