@@ -65,6 +65,9 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     .select(trackingSettingsColumns)
     .limit(1)
     .maybeSingle();
+  if (error) {
+    console.error("[storefront] Failed to load tracking settings; retrying base settings.", error);
+  }
   const settings = (error
     ? await supabase
         .from("store_settings")
@@ -105,7 +108,10 @@ export async function getCategories(): Promise<StoreCategory[]> {
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[storefront] Failed to load categories.", error);
+    throw error;
+  }
   return (data ?? []) as StoreCategory[];
 }
 
@@ -116,7 +122,10 @@ export async function getProducts(): Promise<StoreProduct[]> {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[storefront] Failed to load products.", error);
+    throw error;
+  }
   return (data ?? []).map((product) => normalizeProduct(product));
 }
 
@@ -128,7 +137,10 @@ export async function getProductBySlug(slug: string): Promise<ProductWithImages 
     .eq("slug", slug)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error("[storefront] Failed to load product by slug.", error);
+    throw error;
+  }
   if (!product) return null;
 
   const normalizedProduct = normalizeProduct(product);
@@ -145,8 +157,14 @@ export async function getProductBySlug(slug: string): Promise<ProductWithImages 
       .order("sort_order", { ascending: true })
   ]);
 
-  if (galleryResult.error) throw galleryResult.error;
-  if (detailResult.error) throw detailResult.error;
+  if (galleryResult.error) {
+    console.error("[storefront] Failed to load product gallery.", galleryResult.error);
+    throw galleryResult.error;
+  }
+  if (detailResult.error) {
+    console.error("[storefront] Failed to load product detail images.", detailResult.error);
+    throw detailResult.error;
+  }
 
   const normalizedImages = (galleryResult.data ?? []).map((image) => normalizeImage(image));
   const hasMainImage = normalizedProduct.main_image_url
@@ -179,7 +197,10 @@ export async function getProductsByCategorySlug(slug: string): Promise<StoreProd
     .eq("category_slug", slug)
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[storefront] Failed to load category products.", error);
+    throw error;
+  }
   return (data ?? []).map((product) => normalizeProduct(product));
 }
 

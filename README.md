@@ -21,7 +21,7 @@ The approved customer storefront design is locked. Do not visually redesign cust
 
 ## Current Build Stage
 
-Tasks 1 through 15 from `BUILD_PLAN.md` are implemented and release-tested. No deployment has been performed.
+Tasks 1 through 15 from `BUILD_PLAN.md` are implemented and release-tested. A non-production Cloudflare Worker preview is uploaded for review; no production target or custom domain is attached.
 
 Task 1 from `BUILD_PLAN.md` is implemented:
 

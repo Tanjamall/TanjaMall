@@ -22,6 +22,15 @@ Configure these for the storefront Worker build and runtime:
 
 The `NEXT_PUBLIC_*` values must be available during the OpenNext build because Next.js can inline them into browser bundles.
 
+## Current release candidate
+
+- Git release commit: `66ee3d6`
+- Worker version: `02fca7bd-1192-4fdc-9d3d-acfdd22896fe`
+- Review alias: `https://rc-66ee3d6-tanjamall-store.ecomtanger1.workers.dev`
+- `workers_dev` is disabled and preview URLs are enabled.
+- Cloudflare reports no production targets; no custom domain is attached.
+- `ADMIN_PREVIEW_ENABLED=false` is set on the Worker version.
+
 ## Release sequence
 
 1. Connect the Git repository to Cloudflare Workers Builds or authenticate Wrangler locally.
