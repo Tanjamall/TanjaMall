@@ -22,13 +22,14 @@ Configure these for the storefront Worker build and runtime:
 
 The `NEXT_PUBLIC_*` values must be available during the OpenNext build because Next.js can inline them into browser bundles.
 
-## Current release candidate
+## Current deployment
 
 - Git release commit: `66ee3d6`
 - Worker version: `02fca7bd-1192-4fdc-9d3d-acfdd22896fe`
 - Review alias: `https://rc-66ee3d6-tanjamall-store.ecomtanger1.workers.dev`
 - `workers_dev` is disabled and preview URLs are enabled.
-- Cloudflare reports no production targets; no custom domain is attached.
+- Version `02fca7bd-1192-4fdc-9d3d-acfdd22896fe` was approved and deployed at `100%` on 2026-07-23.
+- No public production route or custom domain is attached.
 - `ADMIN_PREVIEW_ENABLED=false` is set on the Worker version.
 - Preview COD smoke order `TM-20260723-72790` was created with a database-calculated `94 MAD` total and a preserved product snapshot.
 - The order appeared in authenticated admin, its WhatsApp link used stored order data, and its status was tested through `CONFIRMED`, `DELIVERED`, and final `RETURNED`.

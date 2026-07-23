@@ -21,7 +21,7 @@ The approved customer storefront design is locked. Do not visually redesign cust
 
 ## Current Build Stage
 
-Tasks 1 through 15 from `BUILD_PLAN.md` are implemented and release-tested. The non-production Cloudflare Worker preview passed the COD order/admin status smoke test; no production target or custom domain is attached.
+Tasks 1 through 15 from `BUILD_PLAN.md` are implemented and release-tested. The reviewed Worker version is the active Cloudflare deployment and passed the COD order/admin status smoke test; no public production route or custom domain is attached yet.
 
 Task 1 from `BUILD_PLAN.md` is implemented:
 
