@@ -14,6 +14,13 @@ const VALID_PURPOSES = new Set(["main", "gallery", "detail", "variant", "bundle"
 function isAllowedPreviewOrigin(origin: string) {
   try {
     const url = new URL(origin);
+    if (
+      url.protocol === "https:" &&
+      url.hostname.endsWith("-tanjamall-store.ecomtanger1.workers.dev")
+    ) {
+      return true;
+    }
+
     if (url.protocol !== "http:" || url.port !== "3000") return false;
 
     return (

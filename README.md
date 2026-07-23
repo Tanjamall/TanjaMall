@@ -267,6 +267,7 @@ Current image resources:
 - Public image domain: `https://images.tanjamall.com`
 - Upload Worker: `tanjamall-image-upload`
 - Local/default upload endpoint: `https://tanjamall-image-upload.ecomtanger1.workers.dev`
+- Non-secret deployment config: `wrangler.image-upload.jsonc`
 
 The storefront Worker and the image-upload Worker are separate deployments. No R2 write credentials are stored in the Next.js app.
 

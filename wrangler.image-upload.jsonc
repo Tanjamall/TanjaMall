@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tanjamall-image-upload",
+  "main": "cloudflare/image-upload-worker.ts",
+  "compatibility_date": "2026-07-23",
+  "workers_dev": true,
+  "keep_vars": true,
+  "r2_buckets": [
+    {
+      "binding": "PRODUCT_IMAGES",
+      "bucket_name": "tanjamall-product-images"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

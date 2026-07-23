@@ -316,6 +316,7 @@ Implemented files:
 Important limitations still reserved for later tasks:
 
 - Product image upload buttons now compress images to WebP in the browser and upload through the `tanjamall-image-upload` Cloudflare Worker.
+- `wrangler.image-upload.jsonc` is the non-secret source of truth for the upload Worker binding and preserves its remote Supabase/R2 variables during deployment.
 - Admin can upload main, gallery, detail, and category images before or after the product/category has been saved.
 - R2 upload paths are organized by saved record id when available:
   - `products/{product_id}/{purpose}/...`
