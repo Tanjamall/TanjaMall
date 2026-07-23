@@ -10,7 +10,7 @@ The active direction is now:
 - `BUILD_PLAN.md`
 
 Task 1 through Task 14 from `BUILD_PLAN.md` are implemented.
-Tasks 1 through 15 are implemented and release-tested. A non-production Cloudflare Worker preview is available; publishing to production still requires explicit approval.
+Tasks 1 through 15 are implemented and release-tested. The non-production Cloudflare Worker preview passed the COD order/admin workflow smoke test; publishing to production still requires explicit approval.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -418,7 +418,7 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 
 ## Next Step
 
-Review the Cloudflare release candidate, place one preview COD order, and confirm it in the authenticated admin. Production deployment and custom-domain attachment remain a separate explicit approval step.
+Obtain explicit production approval, deploy the reviewed Worker version to production traffic, and attach the production custom domain. Domain DNS or Cloudflare zone changes may require the store owner to confirm the intended hostname.
 
 Task 7 design reference is now prepared in MagicPath:
 

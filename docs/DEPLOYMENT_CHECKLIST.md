@@ -30,6 +30,8 @@ The `NEXT_PUBLIC_*` values must be available during the OpenNext build because N
 - `workers_dev` is disabled and preview URLs are enabled.
 - Cloudflare reports no production targets; no custom domain is attached.
 - `ADMIN_PREVIEW_ENABLED=false` is set on the Worker version.
+- Preview COD smoke order `TM-20260723-72790` was created with a database-calculated `94 MAD` total and a preserved product snapshot.
+- The order appeared in authenticated admin, its WhatsApp link used stored order data, and its status was tested through `CONFIRMED`, `DELIVERED`, and final `RETURNED`.
 
 ## Release sequence
 
