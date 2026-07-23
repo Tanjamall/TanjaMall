@@ -7,7 +7,7 @@ export type DashboardRecentOrder = {
   customer_name: string;
   customer_phone: string;
   city: string;
-  area: string;
+  area: string | null;
   total: number;
   status: OrderStatus;
   whatsapp_confirmation_url: string | null;
@@ -75,7 +75,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         customer_name: String(order.customer_name),
         customer_phone: String(order.customer_phone),
         city: String(order.city),
-        area: String(order.area),
+        area: order.area ? String(order.area) : null,
         total: toNumber(order.total),
         status: normalizeStatus(order.status),
         whatsapp_confirmation_url: order.whatsapp_confirmation_url ? String(order.whatsapp_confirmation_url) : null,

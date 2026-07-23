@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getAdminOrder } from "@/lib/admin/orders";
-import { formatOrderDate, formatOrderMad } from "@/lib/orders";
+import { formatOrderAddress, formatOrderDate, formatOrderMad } from "@/lib/orders";
 import { getStoreSettings } from "@/lib/storefront/data";
 import { buildWhatsAppConfirmationUrl } from "@/lib/whatsapp/confirmation";
 
@@ -22,6 +22,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
   const { id } = await params;
   const [order, settings] = await Promise.all([getAdminOrder(id), getStoreSettings()]);
   if (!order) notFound();
+  const deliveryAddress = formatOrderAddress(order.city, order.area, order.address);
 
   const whatsappUrl = buildWhatsAppConfirmationUrl({
     storeName: settings.store_name,
@@ -30,7 +31,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
     orderNumber: order.order_number,
     lines: order.items.map((item) => ({ name: item.product_name, quantity: item.quantity })),
     total: order.total,
-    address: `${order.city}، ${order.area}، ${order.address}`
+    address: deliveryAddress
   });
 
   return (
@@ -115,7 +116,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
               <CardContent className="grid gap-3 text-sm font-bold leading-7">
                 <p className="flex items-center gap-2"><UserRound className="h-4 w-4 text-accent-foreground" aria-hidden="true" />{order.customer_name}</p>
                 <p className="flex items-center gap-2" dir="ltr"><Phone className="h-4 w-4 text-accent-foreground" aria-hidden="true" />{order.customer_phone}</p>
-                <p className="flex items-start gap-2"><MapPin className="mt-1 h-4 w-4 shrink-0 text-accent-foreground" aria-hidden="true" />{order.city}، {order.area}، {order.address}</p>
+                <p className="flex items-start gap-2"><MapPin className="mt-1 h-4 w-4 shrink-0 text-accent-foreground" aria-hidden="true" />{deliveryAddress}</p>
                 <WhatsAppButton href={whatsappUrl} label="تأكيد الطلب عبر واتساب" />
               </CardContent>
             </Card>

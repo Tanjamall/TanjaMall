@@ -27,7 +27,7 @@ export type AdminOrderSummary = {
   customer_name: string;
   customer_phone: string;
   city: string;
-  area: string;
+  area: string | null;
   address: string;
   total: number;
   status: OrderStatus;
@@ -58,4 +58,8 @@ export function formatOrderDate(value: string) {
 
 export function formatOrderMad(value: number) {
   return `${new Intl.NumberFormat("fr-MA", { maximumFractionDigits: 2 }).format(value)} درهم`;
+}
+
+export function formatOrderAddress(city: string, area: string | null, address: string) {
+  return [city, area, address].filter(Boolean).join("، ");
 }

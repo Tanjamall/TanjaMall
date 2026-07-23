@@ -38,7 +38,7 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
               <span className="view-all">اكتشف العرض</span>
             </div>
             {heroProduct.main_image_url ? (
-              <img className="hero-img" src={heroProduct.main_image_url} alt={heroProduct.name} />
+              <img className="hero-img" src={heroProduct.main_image_url} alt={heroProduct.name} fetchPriority="high" decoding="async" />
             ) : null}
           </Link>
           <div className="hero-controls" aria-label="اختيار العرض">

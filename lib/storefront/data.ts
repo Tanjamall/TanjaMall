@@ -132,15 +132,23 @@ export async function getProductBySlug(slug: string): Promise<ProductWithImages 
   if (!product) return null;
 
   const normalizedProduct = normalizeProduct(product);
-  const { data: images, error: imageError } = await supabase
-    .from("product_images")
-    .select("id, product_id, image_url, alt_text, sort_order")
-    .eq("product_id", normalizedProduct.id)
-    .order("sort_order", { ascending: true });
+  const [galleryResult, detailResult] = await Promise.all([
+    supabase
+      .from("product_images")
+      .select("id, product_id, image_url, alt_text, sort_order")
+      .eq("product_id", normalizedProduct.id)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("product_detail_images")
+      .select("id, product_id, image_url, alt_text, sort_order")
+      .eq("product_id", normalizedProduct.id)
+      .order("sort_order", { ascending: true })
+  ]);
 
-  if (imageError) throw imageError;
+  if (galleryResult.error) throw galleryResult.error;
+  if (detailResult.error) throw detailResult.error;
 
-  const normalizedImages = (images ?? []).map((image) => normalizeImage(image));
+  const normalizedImages = (galleryResult.data ?? []).map((image) => normalizeImage(image));
   const hasMainImage = normalizedProduct.main_image_url
     ? normalizedImages.some((image) => image.image_url === normalizedProduct.main_image_url)
     : true;
@@ -158,13 +166,21 @@ export async function getProductBySlug(slug: string): Promise<ProductWithImages 
             sort_order: 0
           },
           ...normalizedImages
-        ]
+        ],
+    detail_images: (detailResult.data ?? []).map((image) => normalizeImage(image))
   };
 }
 
 export async function getProductsByCategorySlug(slug: string): Promise<StoreProduct[]> {
-  const products = await getProducts();
-  return products.filter((product) => product.category_slug === slug);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("public_products")
+    .select("*")
+    .eq("category_slug", slug)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []).map((product) => normalizeProduct(product));
 }
 
 export function getRelatedProducts(product: StoreProduct, products: StoreProduct[]) {

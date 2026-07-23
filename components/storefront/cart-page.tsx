@@ -3,16 +3,20 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Banknote, Minus, PhoneCall, Plus, ShoppingBag, Trash2, Truck } from "lucide-react";
 import { useCartStore } from "@/lib/cart/store";
 import { formatPrice } from "@/lib/storefront/format";
+import type { StoreSettings } from "@/lib/storefront/types";
 
-export function CartPage() {
+export function CartPage({ settings }: { settings: StoreSettings }) {
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  const qualifiesForFreeDelivery = settings.free_delivery_threshold !== null && subtotal >= settings.free_delivery_threshold;
+  const deliveryFee = qualifiesForFreeDelivery ? 0 : settings.delivery_fee_tanger;
+  const estimatedTotal = subtotal + (deliveryFee ?? 0);
 
   if (!items.length) {
     return (
@@ -75,11 +79,21 @@ export function CartPage() {
       </div>
 
       <section className="panel cart-summary" aria-label="ملخص الطلب">
-        <div className="cart-total">
-          <span>المجموع المبدئي</span>
-          <strong aria-live="polite">{formatPrice(subtotal)}</strong>
+        <h2>ملخص الطلب</h2>
+        <div className="summary-lines">
+          <div><span>ثمن المنتجات</span><strong>{formatPrice(subtotal)}</strong></div>
+          <div><span>التوصيل إلى {settings.default_city}</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
         </div>
-        <p className="cart-checkout-note">الدفع عند الاستلام. السعر النهائي وتكلفة التوصيل يتم تأكيدهما عند إتمام الطلب.</p>
+        <div className="cart-total">
+          <span>المجموع التقديري</span>
+          <strong aria-live="polite">{deliveryFee === null ? formatPrice(subtotal) : formatPrice(estimatedTotal)}</strong>
+        </div>
+        <div className="cart-trust-list">
+          <span><Banknote aria-hidden="true" /> الدفع عند الاستلام</span>
+          <span><Truck aria-hidden="true" /> توصيل داخل {settings.default_city}</span>
+          <span><PhoneCall aria-hidden="true" /> تأكيد عبر الهاتف أو واتساب</span>
+        </div>
+        <p className="cart-checkout-note">يحسب المتجر السعر النهائي بأحدث أسعار المنتجات عند تأكيد الطلب.</p>
         <Link className="primary-btn cart-checkout-button" href="/checkout">إتمام الطلب</Link>
         <Link className="secondary-btn" href="/products">متابعة التسوق</Link>
       </section>

@@ -30,7 +30,7 @@ Use:
 * Supabase PostgreSQL
 * Supabase Auth
 * Supabase Row Level Security
-* Cloudflare Pages
+* Cloudflare Workers via OpenNext
 * Cloudflare R2 for product images
 * TanStack Table
 * React Hook Form
@@ -105,7 +105,7 @@ Our backend remains Supabase.
 
 Our checkout remains COD only.
 
-Our hosting remains Cloudflare Pages.
+Our hosting remains Cloudflare Workers via OpenNext.
 
 ### Important rule
 
@@ -115,7 +115,7 @@ Do not blindly copy backend assumptions, database models, payment flows, or depl
 
 ## Hosting
 
-The app will be hosted on Cloudflare Pages.
+The app will be hosted on Cloudflare Workers using the OpenNext adapter.
 
 Do not assume a traditional long-running Node.js backend.
 
@@ -128,7 +128,7 @@ Use Supabase as the backend for:
 
 Use Cloudflare R2 for product image files.
 
-The app must be compatible with Cloudflare Pages.
+The app must be compatible with the Cloudflare Workers runtime through OpenNext.
 
 Prefer frontend + Supabase architecture.
 
@@ -694,9 +694,9 @@ Tوصلنا بالطلب ديالك رقم [Order Number]:
 
 واش كتأكد الطلب باش نوجهوه ليك؟
 
-## Cloudflare Pages rules
+## Cloudflare Workers rules
 
-The app must be compatible with Cloudflare Pages.
+The app must be compatible with Cloudflare Workers through OpenNext.
 
 Avoid features that require a long-running Node.js server.
 

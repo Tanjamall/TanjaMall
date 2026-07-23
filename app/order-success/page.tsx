@@ -21,6 +21,11 @@ export default async function OrderSuccessPage({ searchParams }: OrderSuccessPag
           {order ? <p>رقم طلبك: <strong dir="ltr">{order}</strong></p> : null}
           {Number.isFinite(orderTotal) && orderTotal > 0 ? <p>المجموع المؤكد: <strong>{formatPrice(orderTotal)}</strong></p> : null}
           <p className="cart-checkout-note">سنتواصل معك عبر الهاتف أو واتساب لتأكيد الطلب قبل التوصيل.</p>
+          <ol className="order-next-steps">
+            <li><span>1</span> نراجع طلبك والتوفر</li>
+            <li><span>2</span> نتصل بك لتأكيد العنوان</li>
+            <li><span>3</span> تدفع عند استلام الطلب</li>
+          </ol>
           <Link className="primary-btn" href="/">العودة للرئيسية</Link>
         </div>
       </section>

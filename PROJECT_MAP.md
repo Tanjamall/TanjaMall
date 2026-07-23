@@ -9,8 +9,8 @@ The active direction is now:
 - `AGENTS.md`
 - `BUILD_PLAN.md`
 
-Task 1 through Task 13 from `BUILD_PLAN.md` are implemented.
-Task 14 is next: storefront polish, limited to explicit improvements that preserve the approved storefront visual design.
+Task 1 through Task 14 from `BUILD_PLAN.md` are implemented.
+Tasks 1 through 15 are implemented and release-tested. Deployment is the next step and still requires explicit approval.
 
 Tasks 2, 3, and 4 have been applied to the connected Supabase project:
 
@@ -39,6 +39,12 @@ The admin dashboard summary RPC is applied:
 
 - `supabase/migrations/20260714113634_admin_dashboard_summary.sql`
 - Returns compact admin-only metrics, recent orders, and low-stock products in one request.
+
+Custom COD order cities are enabled:
+
+- `supabase/migrations/20260714125717_allow_custom_order_cities.sql`
+- Applied to the connected Supabase project.
+- City suggestions come from store settings, but any non-empty customer-entered city is accepted and stored.
 
 ## Important Files And Folders
 
@@ -158,7 +164,7 @@ These links are for the old static storefront prototype only.
 ## Next.js Task 1 Preview Links
 
 - Local desktop preview: http://localhost:3000/
-- Current phone preview on same Wi-Fi: http://192.168.11.117:3000/
+- Current phone preview on same Wi-Fi: http://192.168.11.112:3000/
 
 ## Static Preview Routes
 
@@ -331,7 +337,7 @@ The production project should use:
 - Supabase Auth
 - Supabase PostgreSQL
 - Supabase Row Level Security
-- Cloudflare Pages
+- Cloudflare Workers via OpenNext
 - Cloudflare R2 for product images
 - TanStack Table
 - React Hook Form
@@ -381,9 +387,38 @@ Do not use Medusa, Saleor backend, Shopify backend, WooCommerce backend, Prisma,
 - R2 image configuration is shown as read-only because write credentials and bucket configuration must not be editable in browser code.
 - `get_admin_dashboard()` is restricted to authenticated admins and reduces dashboard egress to one compact request.
 
+## Implemented Task 14 Storefront Polish
+
+- Preserved the approved Shoppex-style structure, Cairo typography, and TanjaMall color palette while refining mobile usability.
+- Product listing filters now work for availability and discounts, with result counts, reset controls, and a useful empty state.
+- Product-card order buttons lead directly to the visible product-page order form; cart remains optional for multi-product orders.
+- Product pages load the dedicated `product_detail_images` stack and support multiple gallery records with thumbnails, previous/next controls, and an image counter.
+- A compact four-field COD form now appears immediately below the product title and price and submits one product directly through `create_cod_order`.
+- Checkout collects only full name, phone, city, and `العنوان`; city is a typing field with suggestions and accepts custom text.
+- The top phone/customer-service elements and the duplicate product-page trust grid were removed to reduce repetition.
+- Cart and checkout now show delivery estimates from store settings, a clearer COD summary, product thumbnails, and stronger validation feedback.
+- Product and category routes include loading and error recovery states.
+- Product pages output Product/Offer JSON-LD without exposing admin-only fields.
+- Verified at 390px with no horizontal page overflow; the 520px desktop storefront frame remains centered.
+
+## Implemented Task 15 Release Preparation
+
+- Added the pinned `@opennextjs/cloudflare` adapter and Cloudflare Workers configuration without deploying.
+- Added local Workers preview/upload/deploy scripts, immutable Next static-asset headers, and a deployment checklist.
+- Kept the R2 image-upload Worker separate from the full-stack storefront Worker.
+- Switched production builds to webpack because OpenNext's Windows preview omitted Turbopack server chunks.
+- Kept Supabase session refresh in Edge `middleware.ts`; Next 16 Node-runtime `proxy.ts` is not yet supported by OpenNext.
+- Verified the OpenNext bundle locally: homepage, admin login, and product routes return HTTP 200.
+- Verified anonymous access can read `public_products` but receives HTTP 401 for private products and orders.
+- Verified R2 serves the uploaded product image as WebP with immutable one-year caching.
+- Placed order `TM-20260714-84727`, confirmed its 249 MAD database total and product snapshot, opened it in authenticated admin, moved it to `CONTACTED`, and finished it as `CANCELLED` test data.
+- Fixed optional checkout area values so admin delivery addresses and WhatsApp links no longer render `null`.
+- Applied `20260714224500_harden_internal_functions.sql` to revoke public execution of internal trigger functions and fix the timestamp trigger search path.
+- Tracking controls remain disabled by default and no Meta, TikTok, or GTM scripts load on admin routes.
+
 ## Next Step
 
-Build Task 14 carefully. The storefront is visually locked, so only implement polish that the user explicitly approves or nonvisual states that preserve the existing design.
+Review the local storefront/admin one final time, then configure the Cloudflare storefront Worker environment and create a non-live uploaded version. Publishing remains a separate explicit approval step.
 
 Task 7 design reference is now prepared in MagicPath:
 
@@ -398,4 +433,4 @@ Product editor design reference is also prepared in MagicPath:
 - Preview URL: `https://www.magicpath.ai/files/422393827496726528`
 - Detailed spec: `docs/PRODUCT_EDITOR_SPEC.md`
 
-Important: customer-facing visual design remains locked. Do not visually redesign it while building admin/auth/order features.
+Important: the polished customer-facing design remains locked again after Task 14. Do not visually change it unless the user explicitly requests another storefront change.

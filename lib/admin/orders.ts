@@ -38,7 +38,7 @@ function normalizeSummary(row: Record<string, unknown>): AdminOrderSummary {
     customer_name: String(row.customer_name),
     customer_phone: String(row.customer_phone),
     city: String(row.city),
-    area: String(row.area),
+    area: row.area ? String(row.area) : null,
     address: String(row.address),
     total: toNumber(row.total),
     status: normalizeStatus(row.status),

@@ -1,9 +1,11 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { MapPin, ShoppingBag } from "lucide-react";
+import { Banknote, MapPin, ShieldCheck, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/lib/cart/store";
 import { formatPrice } from "@/lib/storefront/format";
 import type { StoreSettings } from "@/lib/storefront/types";
@@ -28,6 +30,9 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  const qualifiesForFreeDelivery = settings.free_delivery_threshold !== null && subtotal >= settings.free_delivery_threshold;
+  const deliveryFee = qualifiesForFreeDelivery ? 0 : settings.delivery_fee_tanger;
+  const estimatedTotal = subtotal + (deliveryFee ?? 0);
   const cities = settings.supported_cities.length ? settings.supported_cities : [settings.default_city];
   const {
     register,
@@ -36,6 +41,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
     clearErrors,
     formState: { errors, isSubmitting }
   } = useForm<CheckoutInput>({
+    mode: "onTouched",
     defaultValues: {
       city: cities.includes(settings.default_city) ? settings.default_city : cities[0]
     }
@@ -63,9 +69,9 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
       full_name: parsed.data.fullName,
       phone: parsed.data.phone,
       city: parsed.data.city,
-      area: parsed.data.area || null,
+      area: null,
       address: parsed.data.address,
-      notes: parsed.data.notes || null,
+      notes: null,
       items: items.map((item) => ({ product_id: item.productId, quantity: item.quantity }))
     });
 
@@ -102,36 +108,30 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
       <form className="checkout-form" noValidate onSubmit={handleSubmit(submitOrder)}>
         <section className="panel checkout-details">
           <h2><MapPin aria-hidden="true" /> معلومات التوصيل</h2>
+          <p className="checkout-intro">أدخل معلومات صحيحة لنتمكن من تأكيد الطلب وتوصيله بدون تأخير.</p>
           <div className="checkout-fields">
             <label>
               <span>الاسم الكامل</span>
-              <input {...register("fullName")} autoComplete="name" placeholder="الاسم الكامل" />
+              <input {...register("fullName")} autoComplete="name" autoFocus aria-invalid={Boolean(errors.fullName)} placeholder="الاسم الكامل" />
               {errors.fullName ? <small>{errors.fullName.message}</small> : null}
             </label>
             <label>
               <span>رقم الهاتف</span>
-              <input {...register("phone")} autoComplete="tel" dir="ltr" inputMode="tel" placeholder="06xxxxxxxx" type="tel" />
+              <input {...register("phone")} autoComplete="tel" dir="ltr" inputMode="tel" aria-invalid={Boolean(errors.phone)} placeholder="06xxxxxxxx" type="tel" />
               {errors.phone ? <small>{errors.phone.message}</small> : null}
             </label>
             <label>
               <span>المدينة</span>
-              <select {...register("city")}>
-                {cities.map((city) => <option key={city} value={city}>{city}</option>)}
-              </select>
+              <input {...register("city")} autoComplete="address-level1" aria-invalid={Boolean(errors.city)} list="checkout-city-suggestions" placeholder="المدينة" />
+              <datalist id="checkout-city-suggestions">
+                {cities.map((city) => <option key={city} value={city} />)}
+              </datalist>
               {errors.city ? <small>{errors.city.message}</small> : null}
             </label>
-            <label>
-              <span>المنطقة أو الحي <em>اختياري</em></span>
-              <input {...register("area")} autoComplete="address-level2" placeholder="مثال: بني مكادة" />
-            </label>
             <label className="checkout-wide-field">
-              <span>العنوان الكامل</span>
-              <textarea {...register("address")} autoComplete="street-address" placeholder="الحي، الشارع، رقم المنزل أو الشقة" rows={3} />
+              <span>العنوان</span>
+              <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder="العنوان" />
               {errors.address ? <small>{errors.address.message}</small> : null}
-            </label>
-            <label className="checkout-wide-field">
-              <span>ملاحظات للطلب <em>اختياري</em></span>
-              <textarea {...register("notes")} placeholder="أي ملاحظة تساعد في التوصيل" rows={2} />
             </label>
           </div>
         </section>
@@ -139,13 +139,24 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
         <section className="panel checkout-summary" aria-label="ملخص الطلب">
           <h2>ملخص الطلب</h2>
           <div className="checkout-items">
-            {items.map((item) => <div key={item.productId}><span>{item.name} × {item.quantity}</span><strong>{formatPrice(item.price * item.quantity)}</strong></div>)}
+            {items.map((item) => (
+              <div className="checkout-item" key={item.productId}>
+                {item.image ? <img src={item.image} alt="" loading="lazy" decoding="async" /> : <span className="checkout-item-fallback" />}
+                <span>{item.name} × {item.quantity}</span>
+                <strong>{formatPrice(item.price * item.quantity)}</strong>
+              </div>
+            ))}
+          </div>
+          <div className="summary-lines">
+            <div><span>ثمن المنتجات</span><strong>{formatPrice(subtotal)}</strong></div>
+            <div><span>التوصيل</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
           </div>
           <div className="cart-total">
-            <span>المجموع المبدئي</span>
-            <strong>{formatPrice(subtotal)}</strong>
+            <span>المجموع التقديري</span>
+            <strong>{deliveryFee === null ? formatPrice(subtotal) : formatPrice(estimatedTotal)}</strong>
           </div>
-          <p className="cart-checkout-note">سيتم احتساب السعر النهائي والتوصيل من المتجر عند تأكيد الطلب.</p>
+          <div className="cod-method"><Banknote aria-hidden="true" /><span><strong>الدفع عند الاستلام</strong><small>لن تدفع أي شيء الآن</small></span><ShieldCheck aria-hidden="true" /></div>
+          <p className="cart-checkout-note">سنراجع الأسعار والتوفر ثم نتصل بك لتأكيد الطلب قبل التوصيل.</p>
           {errors.root ? <p className="checkout-error" role="alert">{errors.root.message}</p> : null}
           <button className="primary-btn checkout-submit" disabled={isSubmitting} type="submit">
             {isSubmitting ? "جار إرسال الطلب..." : "تأكيد الطلب"}

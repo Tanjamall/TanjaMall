@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SlidersHorizontal } from "lucide-react";
+import { SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
@@ -28,15 +28,23 @@ export function ProductListing({
 }: ProductListingProps) {
   const [sortMode, setSortMode] = useState<SortMode>("featured");
   const [visibleCount, setVisibleCount] = useState(8);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [onSaleOnly, setOnSaleOnly] = useState(false);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query?.trim().toLowerCase();
-    const matching = normalizedQuery
+    const matchingQuery = normalizedQuery
       ? products.filter((product) => {
           const haystack = `${product.name} ${product.short_description ?? ""} ${product.category_name ?? ""}`.toLowerCase();
           return haystack.includes(normalizedQuery);
         })
       : products;
+    const matching = matchingQuery.filter((product) => {
+      if (inStockOnly && product.stock <= 0) return false;
+      if (onSaleOnly && (!product.compare_at_price || product.compare_at_price <= product.price)) return false;
+      return true;
+    });
 
     return [...matching].sort((a, b) => {
       if (sortMode === "price-asc") return a.price - b.price;
@@ -44,7 +52,7 @@ export function ProductListing({
       if (sortMode === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       return Number(b.is_featured) - Number(a.is_featured) || Number(b.is_best_seller) - Number(a.is_best_seller);
     });
-  }, [products, query, sortMode]);
+  }, [inStockOnly, onSaleOnly, products, query, sortMode]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
@@ -73,15 +81,21 @@ export function ProductListing({
       </div>
 
       <div className="toolbar">
-        <button className="filter-btn" type="button" aria-label="الفلاتر">
+        <button
+          className={`filter-btn ${filtersOpen ? "active" : ""}`}
+          type="button"
+          aria-expanded={filtersOpen}
+          aria-controls="product-filters"
+          onClick={() => setFiltersOpen((open) => !open)}
+        >
           <SlidersHorizontal aria-hidden="true" />
-          <span>الفلاتر</span>
+          <span>الفلاتر{inStockOnly || onSaleOnly ? ` (${Number(inStockOnly) + Number(onSaleOnly)})` : ""}</span>
         </button>
         <select
           className="sort-select"
           value={sortMode}
           aria-label="ترتيب المنتجات"
-          onChange={(event) => setSortMode(event.target.value as SortMode)}
+          onChange={(event) => { setSortMode(event.target.value as SortMode); setVisibleCount(8); }}
         >
           <option value="featured">الأبرز</option>
           <option value="newest">الأحدث</option>
@@ -89,6 +103,26 @@ export function ProductListing({
           <option value="price-desc">السعر من الأعلى</option>
         </select>
       </div>
+
+      {filtersOpen ? (
+        <div className="filter-panel" id="product-filters">
+          <label>
+            <input type="checkbox" checked={inStockOnly} onChange={(event) => { setInStockOnly(event.target.checked); setVisibleCount(8); }} />
+            <span>المتوفر حاليا</span>
+          </label>
+          <label>
+            <input type="checkbox" checked={onSaleOnly} onChange={(event) => { setOnSaleOnly(event.target.checked); setVisibleCount(8); }} />
+            <span>المنتجات المخفضة</span>
+          </label>
+          {inStockOnly || onSaleOnly ? (
+            <button type="button" onClick={() => { setInStockOnly(false); setOnSaleOnly(false); }}>
+              <X aria-hidden="true" /> مسح الفلاتر
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      <p className="results-count" aria-live="polite">{filteredProducts.length} منتج</p>
 
       {visibleProducts.length ? (
         <>
@@ -104,7 +138,14 @@ export function ProductListing({
           ) : null}
         </>
       ) : (
-        <div className="empty-state">لا توجد منتجات مطابقة حاليا.</div>
+        <div className="empty-state listing-empty-state">
+          <SearchX aria-hidden="true" />
+          <h2>لا توجد منتجات مطابقة</h2>
+          <p>جرب مسح الفلاتر أو البحث بكلمة أخرى.</p>
+          <button type="button" className="secondary-btn" onClick={() => { setInStockOnly(false); setOnSaleOnly(false); }}>
+            عرض كل المنتجات
+          </button>
+        </div>
       )}
     </>
   );

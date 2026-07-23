@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, ReactNode, useMemo, useState } from "react";
-import { Heart, Menu, Phone, Search, ShoppingCart, X } from "lucide-react";
+import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { Heart, Menu, PackageCheck, Search, ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/lib/cart/store";
 import type { StoreCategory, StoreSettings } from "@/lib/storefront/types";
 
@@ -24,6 +24,18 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
   const phone = settings.store_phone ?? "0672975000";
   const visibleCategories = useMemo(() => categories.slice(0, 8), [categories]);
 
+  useEffect(() => {
+    document.body.classList.toggle("drawer-open", menuOpen);
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.classList.remove("drawer-open");
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
+
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = query.trim();
@@ -34,12 +46,6 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
     <div className="site-shell">
       <div className="page-frame">
         <header>
-          <div className="service-line">
-            <Phone aria-hidden="true" />
-            <span>خدمة الزبائن: </span>
-            <span className="phone-ltr">{phone}</span>
-          </div>
-
           <div className="topbar">
             <Link
               href="/cart"
@@ -72,9 +78,9 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
           </div>
 
           <form className="search-row" onSubmit={submitSearch}>
-            <Link href="/products" className="icon-button light" aria-label="بحث">
+            <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
               <Search aria-hidden="true" />
-            </Link>
+            </button>
             <div className="search-box">
               <Search aria-hidden="true" />
               <input
@@ -89,10 +95,6 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
 
         <div className="notice-strip" aria-label="مميزات الخدمة">
           <div className="notice-item">
-            <Phone aria-hidden="true" />
-            <span>خدمة الزبائن</span>
-          </div>
-          <div className="notice-item">
             <ShoppingCart aria-hidden="true" />
             <span>الدفع عند الاستلام</span>
           </div>
@@ -101,12 +103,22 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
             <span>الجودة الأفضل</span>
           </div>
           <div className="notice-item">
-            <PackageIcon />
+            <PackageCheck aria-hidden="true" />
             <span>ضمان الإسترجاع</span>
           </div>
         </div>
 
         <main className="content">{children}</main>
+
+        <footer className="store-footer">
+          <strong dir="ltr"><span>Tanja</span>Mall</strong>
+          <p>الدفع عند الاستلام والتأكيد عبر الهاتف أو واتساب.</p>
+          <nav aria-label="روابط المتجر">
+            <Link href="/">الرئيسية</Link>
+            <Link href="/products">المنتجات</Link>
+            <a href={`tel:${phone.replace(/\s/g, "")}`}>اتصل بنا</a>
+          </nav>
+        </footer>
 
         <div
           className={`drawer-backdrop ${menuOpen ? "active" : ""}`}
@@ -136,8 +148,4 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
       </div>
     </div>
   );
-}
-
-function PackageIcon() {
-  return <ShoppingCart aria-hidden="true" />;
 }

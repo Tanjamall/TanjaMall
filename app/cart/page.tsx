@@ -7,7 +7,7 @@ export default async function CartRoute() {
 
   return (
     <StorefrontShell categories={categories} settings={settings}>
-      <CartPage />
+      <CartPage settings={settings} />
     </StorefrontShell>
   );
 }

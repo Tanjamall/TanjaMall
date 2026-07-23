@@ -15,4 +15,6 @@ dist
 .tmp
 tsconfig.tsbuildinfo
 .open-next
+.wrangler
+.wrangler-*.log
 worker.js

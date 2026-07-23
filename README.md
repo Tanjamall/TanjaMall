@@ -17,9 +17,11 @@ The approved customer storefront design is locked. Do not visually redesign cust
 - React Hook Form
 - Zod
 - Zustand
-- Cloudflare deployment target
+- Cloudflare Workers deployment through OpenNext
 
 ## Current Build Stage
+
+Tasks 1 through 15 from `BUILD_PLAN.md` are implemented and release-tested. No deployment has been performed.
 
 Task 1 from `BUILD_PLAN.md` is implemented:
 
@@ -71,7 +73,7 @@ Task 6 is implemented in code:
 - Logout is available from the admin header.
 - One-time admin user setup is documented in `docs/ADMIN_AUTH_SETUP.md`.
 
-The connected Supabase project currently has no ADMIN profile. Create an Auth user and matching profile row before expecting admin login to succeed.
+The connected Supabase project has a working ADMIN user and protected admin login.
 
 Task 7 is implemented in code:
 
@@ -97,6 +99,12 @@ Tracking settings preparation is implemented and applied to Supabase:
 - Adds Meta/Facebook Pixel, TikTok Pixel, and Google Tag Manager fields to `store_settings`.
 - Tracking is disabled by default in seed data.
 - Enabled tracking scripts load only on public storefront routes, not `/admin` or `/admin-preview`.
+
+Task 15 security hardening is implemented and applied to Supabase:
+
+- `supabase/migrations/20260714224500_harden_internal_functions.sql`
+- Internal trigger helpers are no longer callable through the public API.
+- The timestamp trigger uses a fixed search path.
 
 The old static storefront prototype remains in `index.html` and `assets/` as a visual reference only.
 
@@ -233,14 +241,23 @@ The current utilities use:
 
 ## Cloudflare Notes
 
-The build currently passes with standard Next.js tooling.
+This is a full-stack SSR Next.js app, so it uses Cloudflare Workers through the OpenNext adapter. A static Cloudflare Pages export would break admin auth, middleware, and server actions.
 
-Cloudflare's current docs separate deployment paths:
+Deployment preparation files:
 
-- Cloudflare Pages is for static Next.js exports.
-- Full-stack SSR Next.js apps use Cloudflare Workers with the OpenNext adapter.
+- `open-next.config.ts`
+- `wrangler.jsonc`
+- `public/_headers`
 
-Because this app will need admin auth and dynamic ecommerce behavior, the final deployment path should be confirmed before Task 15. For now, keep the app compatible with standard Next.js and avoid a long-running custom Node.js server.
+Useful commands:
+
+```bash
+npm run preview:cloudflare
+npm run upload:cloudflare
+npm run deploy:cloudflare
+```
+
+`upload:cloudflare` creates a Worker version without making it live. `deploy:cloudflare` publishes and must not be run until deployment is explicitly approved.
 
 Product images are stored in Cloudflare R2 to reduce Supabase egress usage. Admin uploads go through a Cloudflare Worker with an R2 binding, and images are converted/compressed to WebP in the browser before upload.
 
@@ -250,6 +267,24 @@ Current image resources:
 - Public image domain: `https://images.tanjamall.com`
 - Upload Worker: `tanjamall-image-upload`
 - Local/default upload endpoint: `https://tanjamall-image-upload.ecomtanger1.workers.dev`
+
+The storefront Worker and the image-upload Worker are separate deployments. No R2 write credentials are stored in the Next.js app.
+
+See `docs/DEPLOYMENT_CHECKLIST.md` for the production checklist.
+
+## Release Verification
+
+- Standard TypeScript and Next.js production builds pass.
+- The OpenNext Cloudflare bundle builds and serves the homepage, admin login, and product page locally.
+- Anonymous users can read safe published products but receive HTTP 401 for private product and order tables.
+- Three published products are visible through `public_products`; the current draft remains private.
+- R2 serves the verified product upload as `image/webp` with immutable caching.
+- Controlled order `TM-20260714-84727` completed the product checkout and appeared in authenticated admin with a database-confirmed total of `249 MAD`.
+- The order status changed from `NEW` to `CONTACTED`, then to `CANCELLED` for test-data cleanup.
+- WhatsApp confirmation includes the order number, product and quantity, confirmed total, and clean delivery address.
+- Meta, TikTok, and GTM are disabled by default and their scripts do not load on admin routes.
+
+Remaining production account action: enable Supabase leaked-password protection before launch. The public `create_cod_order` security-definer advisory is intentional for guest checkout and the function validates all trusted prices and products inside PostgreSQL.
 
 ## Design Rule
 

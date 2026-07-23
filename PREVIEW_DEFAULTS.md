@@ -63,10 +63,20 @@ These live setup values are useful for development only and must be replaced or 
   - Phone: `0612345678`
   - Address: `Test address Tanger`
   - Purpose: verifies anonymous `create_cod_order` behavior.
+- Release verification order created during Task 15:
+  - Order number: `TM-20260714-84727`
+  - Customer name: `اختبار إطلاق TanjaMall`
+  - Phone: `0612345678`
+  - City: `مدينة اختبار`
+  - Purpose: verifies the four-field product checkout, custom city handling, database totals, admin visibility, WhatsApp content, and status updates.
+  - Final status: `CANCELLED`. Remove this order/customer record before production launch if a clean order history is required.
 - R2 upload verification image created during Task 9:
   - URL: `https://images.tanjamall.com/products/new-product/main/1783498976407-aea0a048-6216-421e-a81b-3db72a0ebc3c-whatsapp-image-2026-07-08-at-02-09-47.webp`
   - Purpose: verifies laptop admin image upload, WebP conversion, R2 public delivery, and custom image domain.
   - Cleanup note: this object used the old preview placeholder folder `products/new-product/...`; future uploads must use saved product/category IDs.
+- Saved-product R2 upload verification image:
+  - URL: `https://images.tanjamall.com/products/89f83d5b-7701-4e17-beb4-2c8fa07aec8d/main/1783852776249-5b7eaae9-a092-472c-9b54-f41d5f5529e2-chatgpt-image-jul-8-2026-12_00_33-pm.webp`
+  - Purpose: verifies product-ID paths, WebP delivery, the custom image domain, and immutable public caching.
 - Unsaved admin image uploads use `admin-drafts/{admin_user_id}/{purpose}/...`.
   - Purpose: lets the add/edit forms upload images before a product or category has been saved.
   - Cleanup note: draft objects not attached to saved products/categories should be removed before production launch or by a later media cleanup task.

@@ -9,7 +9,7 @@ Build a cash-on-delivery ecommerce store for Tanger using:
 * Tailwind CSS
 * shadcn/ui
 * Supabase
-* Cloudflare Pages
+* Cloudflare Workers via OpenNext
 * Cloudflare R2 for product images
 
 The main flow is:
@@ -64,7 +64,7 @@ Backend:
 
 Hosting:
 
-* Cloudflare Pages
+* Cloudflare Workers via OpenNext
 * Cloudflare R2 for product image delivery
 
 ## Supporting tools and open-source strategy
@@ -109,7 +109,7 @@ This project backend remains Supabase.
 
 This project checkout remains COD only.
 
-This project hosting remains Cloudflare Pages.
+This project hosting remains Cloudflare Workers via OpenNext.
 
 ## Out of scope for MVP
 
@@ -193,7 +193,7 @@ Requirements:
 * TypeScript
 * Tailwind CSS
 * Supabase client
-* Cloudflare Pages compatibility
+* Cloudflare Workers/OpenNext compatibility
 * shadcn/ui setup
 * Basic admin dashboard layout or starter integration
 * Basic folder structure
@@ -1402,7 +1402,7 @@ Done when:
 
 # Task 15 — Final testing and deployment preparation
 
-Prepare the app for Cloudflare Pages deployment.
+Prepare the app for Cloudflare Workers deployment through OpenNext.
 
 Check:
 
@@ -1436,7 +1436,7 @@ README should include:
 * How to run locally
 * Required environment variables
 * Supabase setup notes
-* Cloudflare Pages deployment notes
+* Cloudflare Workers/OpenNext deployment notes
 * Basic testing checklist
 * Note that Saleor is used only for UX inspiration, not backend architecture
 
@@ -1445,7 +1445,7 @@ Done when:
 * README is complete.
 * Build passes.
 * Main ecommerce flow works end to end.
-* App is ready for Cloudflare Pages.
+* App is ready for Cloudflare Workers through OpenNext.
 
 ---
 

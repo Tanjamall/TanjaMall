@@ -53,4 +53,5 @@ export type ProductImage = {
 
 export type ProductWithImages = StoreProduct & {
   images: ProductImage[];
+  detail_images: ProductImage[];
 };
