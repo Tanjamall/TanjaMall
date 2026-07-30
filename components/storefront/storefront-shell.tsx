@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { Heart, Menu, PackageCheck, Search, ShoppingCart, X } from "lucide-react";
+import { Headphones, Heart, MapPin, Menu, PackageCheck, PhoneCall, Search, ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/lib/cart/store";
 import type { StoreCategory, StoreSettings } from "@/lib/storefront/types";
 
@@ -46,6 +46,20 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
     <div className="site-shell">
       <div className="page-frame">
         <header>
+          <div className="desktop-utility-bar desktop-only">
+            <div className="desktop-utility-inner">
+              <div>
+                <MapPin aria-hidden="true" />
+                <span>التوصيل داخل {settings.default_city}</span>
+              </div>
+              <a href={`tel:${phone.replace(/\s/g, "")}`}>
+                <PhoneCall aria-hidden="true" />
+                <span>خدمة الزبناء:</span>
+                <b className="phone-ltr">{phone}</b>
+              </a>
+            </div>
+          </div>
+
           <div className="header-main">
             <div className="topbar">
               <Link
@@ -60,6 +74,10 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 ) : null}
+                <span className="desktop-cart-copy desktop-only">
+                  <small>سلة التسوق</small>
+                  <strong>{cartCount ? `${cartCount} منتج` : "فارغة"}</strong>
+                </span>
               </Link>
 
               <Link href="/" className="brand" dir="ltr" aria-label="TanjaMall">
@@ -102,6 +120,10 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                 {category.name}
               </Link>
             ))}
+            <a className="desktop-nav-help" href={`tel:${phone.replace(/\s/g, "")}`}>
+              <Headphones aria-hidden="true" />
+              مساعدة في الطلب
+            </a>
           </nav>
         </header>
 

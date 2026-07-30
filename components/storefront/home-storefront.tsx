@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
+import { Banknote, PhoneCall, Truck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
@@ -25,9 +26,11 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
   const slides = featuredProducts.length ? featuredProducts.slice(0, 3) : products.slice(0, 3);
   const [activeSlide, setActiveSlide] = useState(0);
   const heroProduct = slides[activeSlide] ?? products[0];
+  const sideProducts = slides.slice(1, 3);
 
   return (
     <>
+      <div className="home-hero-grid">
       {heroProduct ? (
         <section className="hero" aria-label="العروض الرئيسية">
           <Link href={`/products/${heroProduct.slug}`} className="hero-slide">
@@ -54,6 +57,37 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
           </div>
         </section>
       ) : null}
+        <aside className="desktop-hero-aside desktop-only" aria-label="عروض مختارة">
+          {sideProducts.map((product) => (
+            <Link className="desktop-promo-card" href={`/products/${product.slug}`} key={product.id}>
+              <div>
+                <span>{product.is_best_seller ? "الأكثر طلبا" : "منتج مختار"}</span>
+                <strong>{product.name}</strong>
+                <small>اكتشف المنتج</small>
+              </div>
+              {product.main_image_url ? (
+                <img src={product.main_image_url} alt="" loading="lazy" decoding="async" />
+              ) : null}
+            </Link>
+          ))}
+          {sideProducts.length < 2 ? (
+            <div className="desktop-promo-card desktop-service-card">
+              <Banknote aria-hidden="true" />
+              <div>
+                <span>شراء بدون مخاطرة</span>
+                <strong>الدفع عند الاستلام</strong>
+                <small>نؤكد الطلب معك قبل التوصيل</small>
+              </div>
+            </div>
+          ) : null}
+        </aside>
+      </div>
+
+      <section className="desktop-home-services desktop-only" aria-label="خدمات المتجر">
+        <div><Truck aria-hidden="true" /><span><strong>توصيل محلي</strong><small>توصيل سريع داخل طنجة</small></span></div>
+        <div><Banknote aria-hidden="true" /><span><strong>الدفع عند الاستلام</strong><small>لا تدفع أي شيء مسبقا</small></span></div>
+        <div><PhoneCall aria-hidden="true" /><span><strong>تأكيد شخصي</strong><small>عبر الهاتف أو واتساب</small></span></div>
+      </section>
 
       <CategoryStrip categories={categories} />
 
@@ -67,7 +101,7 @@ function ProductSection({ title, products }: { title: string; products: StorePro
   if (!products.length) return null;
 
   return (
-    <section aria-label={title}>
+    <section className="home-product-section" aria-label={title}>
       <div className="section-head">
         <h2 className="section-title">{title}</h2>
         <Link className="view-all" href="/products">مشاهدة الكل</Link>

@@ -58,7 +58,56 @@ export function ProductListing({
 
   return (
     <>
-      <CategoryStrip categories={categories} />
+      <div className="listing-category-strip">
+        <CategoryStrip categories={categories} />
+      </div>
+
+      <div className="listing-page-layout">
+        <aside className="desktop-filter-sidebar desktop-only" aria-label="تصفية المنتجات">
+          <div className="desktop-filter-group">
+            <h2>التصنيفات</h2>
+            <nav>
+              <Link className={!activeCategorySlug ? "active" : ""} href="/products">
+                كل المنتجات
+              </Link>
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  className={activeCategorySlug === category.slug ? "active" : ""}
+                  href={`/category/${category.slug}`}
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+          <div className="desktop-filter-group">
+            <h2>حالة المنتج</h2>
+            <label>
+              <input
+                type="checkbox"
+                checked={inStockOnly}
+                onChange={(event) => { setInStockOnly(event.target.checked); setVisibleCount(8); }}
+              />
+              <span>متوفر حاليا</span>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={onSaleOnly}
+                onChange={(event) => { setOnSaleOnly(event.target.checked); setVisibleCount(8); }}
+              />
+              <span>عروض وتخفيضات</span>
+            </label>
+            {inStockOnly || onSaleOnly ? (
+              <button type="button" onClick={() => { setInStockOnly(false); setOnSaleOnly(false); }}>
+                <X aria-hidden="true" /> مسح الفلاتر
+              </button>
+            ) : null}
+          </div>
+        </aside>
+
+        <div className="listing-main">
 
       <section className="category-hero">
         <h1>{title}</h1>
@@ -80,7 +129,7 @@ export function ProductListing({
         ))}
       </div>
 
-      <div className="toolbar">
+      <div className="toolbar mobile-listing-toolbar">
         <button
           className={`filter-btn ${filtersOpen ? "active" : ""}`}
           type="button"
@@ -105,7 +154,7 @@ export function ProductListing({
       </div>
 
       {filtersOpen ? (
-        <div className="filter-panel" id="product-filters">
+        <div className="filter-panel mobile-filter-panel" id="product-filters">
           <label>
             <input type="checkbox" checked={inStockOnly} onChange={(event) => { setInStockOnly(event.target.checked); setVisibleCount(8); }} />
             <span>المتوفر حاليا</span>
@@ -123,6 +172,24 @@ export function ProductListing({
       ) : null}
 
       <p className="results-count" aria-live="polite">{filteredProducts.length} منتج</p>
+
+      <div className="desktop-results-toolbar desktop-only">
+        <p aria-live="polite">{filteredProducts.length} منتج</p>
+        <label>
+          <span>ترتيب حسب</span>
+          <select
+            className="sort-select"
+            value={sortMode}
+            aria-label="ترتيب المنتجات"
+            onChange={(event) => { setSortMode(event.target.value as SortMode); setVisibleCount(8); }}
+          >
+            <option value="featured">الأبرز</option>
+            <option value="newest">الأحدث</option>
+            <option value="price-asc">السعر من الأقل</option>
+            <option value="price-desc">السعر من الأعلى</option>
+          </select>
+        </label>
+      </div>
 
       {visibleProducts.length ? (
         <>
@@ -147,6 +214,8 @@ export function ProductListing({
           </button>
         </div>
       )}
+        </div>
+      </div>
     </>
   );
 }

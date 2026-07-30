@@ -40,6 +40,10 @@ export function CartPage({ settings }: { settings: StoreSettings }) {
 
       <div className="cart-layout">
         <div className="panel cart-items-panel">
+          <div className="desktop-cart-table-head desktop-only">
+            <span>المنتج</span>
+            <span>الكمية والمجموع</span>
+          </div>
           {items.map((item) => {
             const lineTotal = item.price * item.quantity;
 

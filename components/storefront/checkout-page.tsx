@@ -105,6 +105,12 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
         <span className="view-all">الدفع عند الاستلام</span>
       </div>
 
+      <div className="desktop-checkout-steps desktop-only" aria-label="مراحل إتمام الطلب">
+        <div className="active"><span>1</span><strong>معلومات التوصيل</strong></div>
+        <div><span>2</span><strong>مراجعة الطلب</strong></div>
+        <div><span>3</span><strong>التأكيد عند الاستلام</strong></div>
+      </div>
+
       <form className="checkout-form" noValidate onSubmit={handleSubmit(submitOrder)}>
         <section className="panel checkout-details">
           <h2><MapPin aria-hidden="true" /> معلومات التوصيل</h2>

@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Heart, MessageCircle } from "lucide-react";
+import { Banknote, ChevronLeft, ChevronRight, Heart, MessageCircle, PhoneCall, Truck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { InlineProductCheckout } from "@/components/storefront/inline-product-checkout";
 import { ProductCard } from "@/components/storefront/product-card";
@@ -49,6 +49,14 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
 
   return (
     <>
+      <nav className="product-breadcrumb desktop-only" aria-label="مسار الصفحة">
+        <Link href="/">الرئيسية</Link>
+        <span>/</span>
+        <Link href="/products">كل المنتجات</Link>
+        <span>/</span>
+        <strong>{product.name}</strong>
+      </nav>
+
       <div className="product-buy-layout">
         <section className="product-page-media" aria-label="صور المنتج">
           <div className="main-gallery">
@@ -109,6 +117,20 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
               <strong className="price">{formatPrice(product.price)}</strong>
               {product.compare_at_price ? <span className="old-price">{formatPrice(product.compare_at_price)}</span> : null}
             </div>
+            <div className="desktop-product-assurances desktop-only">
+              <div>
+                <Banknote aria-hidden="true" />
+                <span><strong>الدفع عند الاستلام</strong><small>لا تدفع مسبقا</small></span>
+              </div>
+              <div>
+                <Truck aria-hidden="true" />
+                <span><strong>توصيل إلى {settings.default_city}</strong><small>نؤكد الموعد معك</small></span>
+              </div>
+              <div>
+                <PhoneCall aria-hidden="true" />
+                <span><strong>تأكيد شخصي</strong><small>عبر الهاتف أو واتساب</small></span>
+              </div>
+            </div>
           </section>
 
           <InlineProductCheckout
@@ -120,6 +142,19 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
           />
         </div>
       </div>
+
+      {product.full_description ? (
+        <section className="desktop-product-description desktop-only">
+          <div className="desktop-detail-tabs" role="tablist" aria-label="معلومات المنتج">
+            <span role="tab" aria-selected="true">وصف المنتج</span>
+            <span role="tab" aria-selected="false">التوصيل والدفع</span>
+          </div>
+          <div>
+            <h2>معلومات عن المنتج</h2>
+            <p>{product.full_description}</p>
+          </div>
+        </section>
+      ) : null}
 
       {detailImages.length ? (
         <section className="product-details-panel">
