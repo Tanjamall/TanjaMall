@@ -46,51 +46,63 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
     <div className="site-shell">
       <div className="page-frame">
         <header>
-          <div className="topbar">
-            <Link
-              href="/cart"
-              className="icon-button"
-              data-action="open-cart"
-              aria-label={`السلة فيها ${cartCount} منتجات`}
-            >
-              <ShoppingCart aria-hidden="true" />
-              {cartCount > 0 ? (
-                <span className="badge" aria-live="polite">
-                  {cartCount > 99 ? "99+" : cartCount}
-                </span>
-              ) : null}
-            </Link>
+          <div className="header-main">
+            <div className="topbar">
+              <Link
+                href="/cart"
+                className="icon-button"
+                data-action="open-cart"
+                aria-label={`السلة فيها ${cartCount} منتجات`}
+              >
+                <ShoppingCart aria-hidden="true" />
+                {cartCount > 0 ? (
+                  <span className="badge" aria-live="polite">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                ) : null}
+              </Link>
 
-            <Link href="/" className="brand" dir="ltr" aria-label="TanjaMall">
-              <span>Tanja</span>Mall
-            </Link>
+              <Link href="/" className="brand" dir="ltr" aria-label="TanjaMall">
+                <span>Tanja</span>Mall
+              </Link>
 
-            <button
-              type="button"
-              className="icon-button"
-              data-action="open-menu"
-              aria-label="فتح القائمة"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(true)}
-            >
-              <Menu aria-hidden="true" />
-            </button>
+              <button
+                type="button"
+                className="icon-button"
+                data-action="open-menu"
+                aria-label="فتح القائمة"
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen(true)}
+              >
+                <Menu aria-hidden="true" />
+              </button>
+            </div>
+
+            <form className="search-row" onSubmit={submitSearch}>
+              <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
+                <Search aria-hidden="true" />
+              </button>
+              <div className="search-box">
+                <Search aria-hidden="true" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="شنو كتقلب عليه؟"
+                  aria-label="بحث عن منتج"
+                />
+              </div>
+            </form>
           </div>
 
-          <form className="search-row" onSubmit={submitSearch}>
-            <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
-              <Search aria-hidden="true" />
-            </button>
-            <div className="search-box">
-              <Search aria-hidden="true" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="شنو كتقلب عليه؟"
-                aria-label="بحث عن منتج"
-              />
-            </div>
-          </form>
+          <nav className="desktop-category-nav" aria-label="التنقل الرئيسي">
+            <Link href="/">الرئيسية</Link>
+            <Link href="/products">كل المنتجات</Link>
+            {visibleCategories.map((category) => (
+              <Link key={category.id} href={`/category/${category.slug}`}>
+                {category.name}
+              </Link>
+            ))}
+          </nav>
         </header>
 
         <div className="notice-strip" aria-label="مميزات الخدمة">
@@ -111,13 +123,31 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
         <main className="content">{children}</main>
 
         <footer className="store-footer">
-          <strong dir="ltr"><span>Tanja</span>Mall</strong>
-          <p>الدفع عند الاستلام والتأكيد عبر الهاتف أو واتساب.</p>
-          <nav aria-label="روابط المتجر">
-            <Link href="/">الرئيسية</Link>
-            <Link href="/products">المنتجات</Link>
-            <a href={`tel:${phone.replace(/\s/g, "")}`}>اتصل بنا</a>
-          </nav>
+          <div className="footer-inner">
+            <div className="footer-brand">
+              <strong dir="ltr"><span>Tanja</span>Mall</strong>
+              <p>تسوق بسهولة، ادفع عند الاستلام، ونؤكد معك الطلب عبر الهاتف أو واتساب.</p>
+            </div>
+            <nav className="footer-links" aria-label="روابط المتجر">
+              <strong>المتجر</strong>
+              <Link href="/">الرئيسية</Link>
+              <Link href="/products">كل المنتجات</Link>
+              {visibleCategories.slice(0, 3).map((category) => (
+                <Link key={category.id} href={`/category/${category.slug}`}>{category.name}</Link>
+              ))}
+            </nav>
+            <nav className="footer-links" aria-label="خدمة العملاء">
+              <strong>خدمة العملاء</strong>
+              <a href={`tel:${phone.replace(/\s/g, "")}`}>اتصل بنا</a>
+              <span>الدفع عند الاستلام</span>
+              <span>تأكيد عبر واتساب</span>
+              <span>توصيل إلى {settings.default_city}</span>
+            </nav>
+          </div>
+          <div className="footer-bottom">
+            <span>© {new Date().getFullYear()} TanjaMall</span>
+            <span>متجر مغربي للدفع عند الاستلام</span>
+          </div>
         </footer>
 
         <div

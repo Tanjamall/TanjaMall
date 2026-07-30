@@ -49,73 +49,77 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
 
   return (
     <>
-      <section className="product-page-media" aria-label="صور المنتج">
-        <div className="main-gallery">
-          {activeImage ? (
-            <img src={activeImage.image_url} alt={activeImage.alt_text ?? product.name} fetchPriority="high" decoding="async" />
-          ) : (
-            <span className="skeleton-image">صورة المنتج</span>
-          )}
-          <div className="gallery-actions">
-            <button
-              className={`fav ${favorite ? "active" : ""}`}
-              type="button"
-              aria-label="إضافة للمفضلة"
-              aria-pressed={favorite}
-              onClick={() => setFavorite((current) => !current)}
-            >
-              <Heart aria-hidden="true" fill={favorite ? "currentColor" : "none"} />
-            </button>
+      <div className="product-buy-layout">
+        <section className="product-page-media" aria-label="صور المنتج">
+          <div className="main-gallery">
+            {activeImage ? (
+              <img src={activeImage.image_url} alt={activeImage.alt_text ?? product.name} fetchPriority="high" decoding="async" />
+            ) : (
+              <span className="skeleton-image">صورة المنتج</span>
+            )}
+            <div className="gallery-actions">
+              <button
+                className={`fav ${favorite ? "active" : ""}`}
+                type="button"
+                aria-label="إضافة للمفضلة"
+                aria-pressed={favorite}
+                onClick={() => setFavorite((current) => !current)}
+              >
+                <Heart aria-hidden="true" fill={favorite ? "currentColor" : "none"} />
+              </button>
+            </div>
+            {gallery.length > 1 ? (
+              <>
+                <button className="gallery-nav gallery-next" type="button" aria-label="الصورة التالية" onClick={() => moveGallery(1)}>
+                  <ChevronRight aria-hidden="true" />
+                </button>
+                <button className="gallery-nav gallery-previous" type="button" aria-label="الصورة السابقة" onClick={() => moveGallery(-1)}>
+                  <ChevronLeft aria-hidden="true" />
+                </button>
+                <span className="gallery-count" aria-live="polite">{activeIndex + 1} / {gallery.length}</span>
+              </>
+            ) : null}
           </div>
           {gallery.length > 1 ? (
-            <>
-              <button className="gallery-nav gallery-next" type="button" aria-label="الصورة التالية" onClick={() => moveGallery(1)}>
-                <ChevronRight aria-hidden="true" />
-              </button>
-              <button className="gallery-nav gallery-previous" type="button" aria-label="الصورة السابقة" onClick={() => moveGallery(-1)}>
-                <ChevronLeft aria-hidden="true" />
-              </button>
-              <span className="gallery-count" aria-live="polite">{activeIndex + 1} / {gallery.length}</span>
-            </>
+            <div className="thumb-row" aria-label="صور المنتج">
+              {gallery.map((image, index) => (
+                <button
+                  key={image.id}
+                  type="button"
+                  className={`thumb ${activeIndex === index ? "active" : ""}`}
+                  aria-label={image.alt_text ?? `${product.name} - صورة ${index + 1}`}
+                  aria-current={activeIndex === index ? "true" : undefined}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <img src={image.image_url} alt="" loading="lazy" decoding="async" />
+                </button>
+              ))}
+            </div>
           ) : null}
-        </div>
-        {gallery.length > 1 ? (
-          <div className="thumb-row" aria-label="صور المنتج">
-            {gallery.map((image, index) => (
-              <button
-                key={image.id}
-                type="button"
-                className={`thumb ${activeIndex === index ? "active" : ""}`}
-                aria-label={image.alt_text ?? `${product.name} - صورة ${index + 1}`}
-                aria-current={activeIndex === index ? "true" : undefined}
-                onClick={() => setActiveIndex(index)}
-              >
-                <img src={image.image_url} alt="" loading="lazy" decoding="async" />
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </section>
+        </section>
 
-      <section className="product-detail">
-        <div className={`availability-badge ${canOrder ? "available" : "unavailable"}`}>
-          {canOrder ? "متوفر للطلب" : "غير متوفر حاليا"}
-        </div>
-        <h1>{product.name}</h1>
-        {product.short_description ? <p className="product-lead">{product.short_description}</p> : null}
-        <div className="detail-price">
-          <strong className="price">{formatPrice(product.price)}</strong>
-          {product.compare_at_price ? <span className="old-price">{formatPrice(product.compare_at_price)}</span> : null}
-        </div>
-      </section>
+        <div className="product-purchase-column">
+          <section className="product-detail">
+            <div className={`availability-badge ${canOrder ? "available" : "unavailable"}`}>
+              {canOrder ? "متوفر للطلب" : "غير متوفر حاليا"}
+            </div>
+            <h1>{product.name}</h1>
+            {product.short_description ? <p className="product-lead">{product.short_description}</p> : null}
+            <div className="detail-price">
+              <strong className="price">{formatPrice(product.price)}</strong>
+              {product.compare_at_price ? <span className="old-price">{formatPrice(product.compare_at_price)}</span> : null}
+            </div>
+          </section>
 
-      <InlineProductCheckout
-        product={product}
-        settings={settings}
-        quantity={quantity}
-        onIncrease={() => setQuantity((value) => Math.min(maxQuantity, value + 1))}
-        onDecrease={() => setQuantity((value) => Math.max(1, value - 1))}
-      />
+          <InlineProductCheckout
+            product={product}
+            settings={settings}
+            quantity={quantity}
+            onIncrease={() => setQuantity((value) => Math.min(maxQuantity, value + 1))}
+            onDecrease={() => setQuantity((value) => Math.max(1, value - 1))}
+          />
+        </div>
+      </div>
 
       {detailImages.length ? (
         <section className="product-details-panel">

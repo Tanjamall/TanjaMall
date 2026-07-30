@@ -38,65 +38,67 @@ export function CartPage({ settings }: { settings: StoreSettings }) {
         <span className="view-all" aria-live="polite">{itemCount} منتجات</span>
       </div>
 
-      <div className="panel cart-items-panel">
-        {items.map((item) => {
-          const lineTotal = item.price * item.quantity;
+      <div className="cart-layout">
+        <div className="panel cart-items-panel">
+          {items.map((item) => {
+            const lineTotal = item.price * item.quantity;
 
-          return (
-            <article className="cart-item cart-page-item" key={item.productId}>
-              <Link href={`/products/${item.slug}`} aria-label={item.name}>
-                {item.image ? <img src={item.image} alt={item.name} loading="lazy" /> : <span className="cart-image-fallback">صورة المنتج</span>}
-              </Link>
-              <div className="cart-item-content">
-                <div className="cart-item-topline">
-                  <Link className="cart-title" href={`/products/${item.slug}`}>{item.name}</Link>
-                  <button
-                    className="cart-remove"
-                    type="button"
-                    aria-label={`حذف ${item.name} من السلة`}
-                    onClick={() => removeItem(item.productId)}
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </button>
-                </div>
-                <p className="cart-meta">{formatPrice(item.price)} للقطعة</p>
-                <div className="cart-item-actions">
-                  <div className="qty-control cart-qty-control" aria-label={`كمية ${item.name}`}>
-                    <button type="button" aria-label={`زيادة كمية ${item.name}`} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
-                      <Plus aria-hidden="true" />
-                    </button>
-                    <span aria-live="polite">{item.quantity}</span>
-                    <button type="button" aria-label={`تقليل كمية ${item.name}`} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
-                      <Minus aria-hidden="true" />
+            return (
+              <article className="cart-item cart-page-item" key={item.productId}>
+                <Link href={`/products/${item.slug}`} aria-label={item.name}>
+                  {item.image ? <img src={item.image} alt={item.name} loading="lazy" /> : <span className="cart-image-fallback">صورة المنتج</span>}
+                </Link>
+                <div className="cart-item-content">
+                  <div className="cart-item-topline">
+                    <Link className="cart-title" href={`/products/${item.slug}`}>{item.name}</Link>
+                    <button
+                      className="cart-remove"
+                      type="button"
+                      aria-label={`حذف ${item.name} من السلة`}
+                      onClick={() => removeItem(item.productId)}
+                    >
+                      <Trash2 aria-hidden="true" />
                     </button>
                   </div>
-                  <strong className="price">{formatPrice(lineTotal)}</strong>
+                  <p className="cart-meta">{formatPrice(item.price)} للقطعة</p>
+                  <div className="cart-item-actions">
+                    <div className="qty-control cart-qty-control" aria-label={`كمية ${item.name}`}>
+                      <button type="button" aria-label={`زيادة كمية ${item.name}`} onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
+                        <Plus aria-hidden="true" />
+                      </button>
+                      <span aria-live="polite">{item.quantity}</span>
+                      <button type="button" aria-label={`تقليل كمية ${item.name}`} onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
+                        <Minus aria-hidden="true" />
+                      </button>
+                    </div>
+                    <strong className="price">{formatPrice(lineTotal)}</strong>
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
 
-      <section className="panel cart-summary" aria-label="ملخص الطلب">
-        <h2>ملخص الطلب</h2>
-        <div className="summary-lines">
-          <div><span>ثمن المنتجات</span><strong>{formatPrice(subtotal)}</strong></div>
-          <div><span>التوصيل إلى {settings.default_city}</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
-        </div>
-        <div className="cart-total">
-          <span>المجموع التقديري</span>
-          <strong aria-live="polite">{deliveryFee === null ? formatPrice(subtotal) : formatPrice(estimatedTotal)}</strong>
-        </div>
-        <div className="cart-trust-list">
-          <span><Banknote aria-hidden="true" /> الدفع عند الاستلام</span>
-          <span><Truck aria-hidden="true" /> توصيل داخل {settings.default_city}</span>
-          <span><PhoneCall aria-hidden="true" /> تأكيد عبر الهاتف أو واتساب</span>
-        </div>
-        <p className="cart-checkout-note">يحسب المتجر السعر النهائي بأحدث أسعار المنتجات عند تأكيد الطلب.</p>
-        <Link className="primary-btn cart-checkout-button" href="/checkout">إتمام الطلب</Link>
-        <Link className="secondary-btn" href="/products">متابعة التسوق</Link>
-      </section>
+        <section className="panel cart-summary" aria-label="ملخص الطلب">
+          <h2>ملخص الطلب</h2>
+          <div className="summary-lines">
+            <div><span>ثمن المنتجات</span><strong>{formatPrice(subtotal)}</strong></div>
+            <div><span>التوصيل إلى {settings.default_city}</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
+          </div>
+          <div className="cart-total">
+            <span>المجموع التقديري</span>
+            <strong aria-live="polite">{deliveryFee === null ? formatPrice(subtotal) : formatPrice(estimatedTotal)}</strong>
+          </div>
+          <div className="cart-trust-list">
+            <span><Banknote aria-hidden="true" /> الدفع عند الاستلام</span>
+            <span><Truck aria-hidden="true" /> توصيل داخل {settings.default_city}</span>
+            <span><PhoneCall aria-hidden="true" /> تأكيد عبر الهاتف أو واتساب</span>
+          </div>
+          <p className="cart-checkout-note">يحسب المتجر السعر النهائي بأحدث أسعار المنتجات عند تأكيد الطلب.</p>
+          <Link className="primary-btn cart-checkout-button" href="/checkout">إتمام الطلب</Link>
+          <Link className="secondary-btn" href="/products">متابعة التسوق</Link>
+        </section>
+      </div>
     </section>
   );
 }
