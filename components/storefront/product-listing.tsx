@@ -58,9 +58,11 @@ export function ProductListing({
 
   return (
     <>
-      <div className="listing-category-strip">
-        <CategoryStrip categories={categories} />
-      </div>
+      {!activeCategorySlug ? (
+        <div className="listing-category-strip">
+          <CategoryStrip categories={categories} />
+        </div>
+      ) : null}
 
       <div className="listing-page-layout">
         <aside className="desktop-filter-sidebar desktop-only" aria-label="تصفية المنتجات">
@@ -109,10 +111,14 @@ export function ProductListing({
 
         <div className="listing-main">
 
-      <section className="category-hero">
-        <h1>{title}</h1>
-        <p>{description ?? `${filteredProducts.length} منتج متوفر للطلب`}</p>
-      </section>
+      {activeCategorySlug ? (
+        <h1 className="state-sr-only">{title}</h1>
+      ) : (
+        <section className="category-hero">
+          <h1>{title}</h1>
+          <p>{description ?? `${filteredProducts.length} منتج متوفر للطلب`}</p>
+        </section>
+      )}
 
       <div className="chips" aria-label="التصنيفات">
         <Link className={`chip ${!activeCategorySlug ? "active" : ""}`} href="/products">
