@@ -143,19 +143,6 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
         </div>
       </div>
 
-      {product.full_description ? (
-        <section className="desktop-product-description desktop-only">
-          <div className="desktop-detail-tabs" role="tablist" aria-label="معلومات المنتج">
-            <span role="tab" aria-selected="true">وصف المنتج</span>
-            <span role="tab" aria-selected="false">التوصيل والدفع</span>
-          </div>
-          <div>
-            <h2>معلومات عن المنتج</h2>
-            <p>{product.full_description}</p>
-          </div>
-        </section>
-      ) : null}
-
       {detailImages.length ? (
         <section className="product-details-panel">
           <h2>تفاصيل المنتج</h2>

@@ -89,7 +89,9 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
         <div><PhoneCall aria-hidden="true" /><span><strong>تأكيد شخصي</strong><small>عبر الهاتف أو واتساب</small></span></div>
       </section>
 
-      <CategoryStrip categories={categories} />
+      <div className="home-category-cards">
+        <CategoryStrip categories={categories} />
+      </div>
 
       <ProductSection title="أقوى العروض" products={featuredProducts.length ? featuredProducts : products} />
       <ProductSection title="الأكثر طلبا" products={bestSellers.length ? bestSellers : products.slice(0, 6)} />
