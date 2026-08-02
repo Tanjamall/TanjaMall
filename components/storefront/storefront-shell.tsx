@@ -96,7 +96,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
               </button>
             </div>
 
-            <form className="search-row" onSubmit={submitSearch}>
+            <form className="search-row" role="search" aria-label="البحث في المتجر" onSubmit={submitSearch}>
               <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
                 <Search aria-hidden="true" />
               </button>
@@ -105,7 +105,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="شنو كتقلب عليه؟"
+                  placeholder="ابحث عن منتج"
                   aria-label="بحث عن منتج"
                 />
               </div>
