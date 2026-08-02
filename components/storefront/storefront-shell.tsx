@@ -16,6 +16,7 @@ type StorefrontShellProps = {
 export function StorefrontShell({ categories, settings, children }: StorefrontShellProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const cartCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0)
@@ -86,6 +87,18 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
 
               <button
                 type="button"
+                className="icon-button header-search-button"
+                data-action="open-search"
+                aria-label="فتح البحث"
+                aria-expanded={searchOpen}
+                aria-controls="store-search"
+                onClick={() => setSearchOpen((open) => !open)}
+              >
+                {searchOpen ? <X aria-hidden="true" /> : <Search aria-hidden="true" />}
+              </button>
+
+              <button
+                type="button"
                 className="icon-button"
                 data-action="open-menu"
                 aria-label="فتح القائمة"
@@ -96,7 +109,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
               </button>
             </div>
 
-            <form className="search-row" role="search" aria-label="البحث في المتجر" onSubmit={submitSearch}>
+            <form id="store-search" className={`search-row ${searchOpen ? "active" : ""}`} role="search" aria-label="البحث في المتجر" onSubmit={submitSearch}>
               <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
                 <Search aria-hidden="true" />
               </button>

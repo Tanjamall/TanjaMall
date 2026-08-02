@@ -111,7 +111,7 @@ a {
 
 .topbar {
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 44px 1fr 44px 44px;
   align-items: center;
   gap: 8px;
   padding: 12px 14px 9px;
@@ -137,6 +137,11 @@ a {
 }
 
 .topbar [data-action="open-menu"] {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.topbar [data-action="open-search"] {
   grid-column: 3;
   grid-row: 1;
 }
@@ -206,13 +211,17 @@ a {
 }
 
 .search-row {
-  display: grid;
+  display: none;
   grid-template-columns: 44px 1fr;
   gap: 8px;
   padding: 0 14px 13px;
   background: var(--tm-dark);
   direction: ltr;
   width: 100%;
+}
+
+.search-row.active {
+  display: grid;
 }
 
 .search-box {
@@ -444,6 +453,14 @@ a {
   text-align: start;
   scroll-snap-align: start;
   overflow: hidden;
+}
+
+.category-tile-all {
+  background: var(--tm-cream);
+}
+
+.category-tile.active {
+  box-shadow: inset 0 0 0 2px var(--tm-orange);
 }
 
 .category-tile::after {
@@ -2353,7 +2370,12 @@ button:disabled,
     display: none;
   }
 
+  .topbar [data-action="open-search"] {
+    display: none;
+  }
+
   .search-row {
+    display: grid;
     grid-column: 1;
     grid-row: 1;
     grid-template-columns: 48px minmax(0, 1fr);
@@ -3737,7 +3759,7 @@ button:disabled,
 
 @media (max-width: 360px) {
   .topbar {
-    grid-template-columns: 40px 1fr 40px;
+    grid-template-columns: 40px 1fr 40px 40px;
     padding-inline: 10px;
   }
 

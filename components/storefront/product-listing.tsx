@@ -22,7 +22,6 @@ export function ProductListing({
   categories,
   products,
   title,
-  description,
   activeCategorySlug,
   query
 }: ProductListingProps) {
@@ -58,11 +57,9 @@ export function ProductListing({
 
   return (
     <>
-      {!activeCategorySlug ? (
-        <div className="listing-category-strip">
-          <CategoryStrip categories={categories} />
-        </div>
-      ) : null}
+      <div className="listing-category-strip">
+        <CategoryStrip categories={categories} includeAll activeCategorySlug={activeCategorySlug} showViewAll={false} />
+      </div>
 
       <div className="listing-page-layout">
         <aside className="desktop-filter-sidebar desktop-only" aria-label="تصفية المنتجات">
@@ -111,29 +108,7 @@ export function ProductListing({
 
         <div className="listing-main">
 
-      {activeCategorySlug ? (
-        <h1 className="state-sr-only">{title}</h1>
-      ) : (
-        <section className="category-hero">
-          <h1>{title}</h1>
-          <p>{description ?? `${filteredProducts.length} منتج متوفر للطلب`}</p>
-        </section>
-      )}
-
-      <div className="chips" aria-label="التصنيفات">
-        <Link className={`chip ${!activeCategorySlug ? "active" : ""}`} href="/products">
-          الكل
-        </Link>
-        {categories.map((category) => (
-          <Link
-            key={category.id}
-            className={`chip ${activeCategorySlug === category.slug ? "active" : ""}`}
-            href={`/category/${category.slug}`}
-          >
-            {category.name}
-          </Link>
-        ))}
-      </div>
+      <h1 className="state-sr-only">{title}</h1>
 
       <div className="toolbar mobile-listing-toolbar">
         <button
