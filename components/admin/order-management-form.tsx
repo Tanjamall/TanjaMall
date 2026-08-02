@@ -48,13 +48,14 @@ export function OrderManagementForm({
           <span className="text-sm font-black">الحالة الحالية</span>
           <StatusBadge status={currentStatus} />
         </div>
-        <form action={statusAction} className="grid grid-cols-2 gap-2">
+        <form action={statusAction} className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
           <input name="order_id" type="hidden" value={orderId} />
           {ORDER_STATUSES.map((status) => (
             <Button
               disabled={statusPending || status === currentStatus}
               key={status}
               name="status"
+              className="min-h-11"
               size="sm"
               type="submit"
               value={status}

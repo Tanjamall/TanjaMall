@@ -72,7 +72,7 @@ export function CategoryForm({ category }: { category?: AdminCategory }) {
             <Input {...register("image_url")} dir="ltr" placeholder="https://..." />
             <AdminImageUploadButton
               label="رفع صورة التصنيف"
-              onUploaded={(url) => setValue("image_url", url, { shouldDirty: true })}
+              onUploaded={(urls) => setValue("image_url", urls[0] ?? "", { shouldDirty: true })}
               productId={category?.id ?? ""}
               purpose="category"
             />

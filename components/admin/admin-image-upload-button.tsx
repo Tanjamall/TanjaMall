@@ -11,13 +11,15 @@ export function AdminImageUploadButton({
   purpose,
   onUploaded,
   label = "رفع صورة",
+  multiple = false,
   disabled = false,
   disabledMessage = "احفظ السجل أولا قبل رفع الصورة."
 }: {
   productId: string;
   purpose: ImageUploadPurpose;
-  onUploaded: (url: string) => void;
+  onUploaded: (urls: string[]) => void;
   label?: string;
+  multiple?: boolean;
   disabled?: boolean;
   disabledMessage?: string;
 }) {
@@ -26,20 +28,29 @@ export function AdminImageUploadButton({
   const [isUploading, setIsUploading] = useState(false);
 
   async function handleFiles(files: FileList | null) {
-    const file = files?.[0];
-    if (!file) return;
+    const selectedFiles = Array.from(files ?? []);
+    if (!selectedFiles.length) return;
 
     setIsUploading(true);
     setStatus("جار ضغط الصورة...");
+    const uploadedUrls: string[] = [];
 
     try {
       const maxWidth = purpose === "detail" ? imageUploadRules.detailMaxWidth : imageUploadRules.galleryMaxWidth;
-      const webpFile = await compressImageToWebp(file, maxWidth);
-      setStatus("جار الرفع إلى R2...");
-      const result = await uploadAdminImage({ file: webpFile, productId, purpose });
-      onUploaded(result.url);
-      setStatus("تم رفع الصورة.");
+
+      for (let index = 0; index < selectedFiles.length; index += 1) {
+        const file = selectedFiles[index];
+        setStatus(`جار تجهيز الصورة ${index + 1} من ${selectedFiles.length}...`);
+        const webpFile = await compressImageToWebp(file, maxWidth);
+        setStatus(`جار رفع الصورة ${index + 1} من ${selectedFiles.length} إلى R2...`);
+        const result = await uploadAdminImage({ file: webpFile, productId, purpose });
+        uploadedUrls.push(result.url);
+      }
+
+      onUploaded(uploadedUrls);
+      setStatus(`تم رفع ${uploadedUrls.length} ${uploadedUrls.length === 1 ? "صورة" : "صور"}.`);
     } catch (error) {
+      if (uploadedUrls.length) onUploaded(uploadedUrls);
       setStatus(error instanceof Error ? error.message : "تعذر رفع الصورة.");
     } finally {
       setIsUploading(false);
@@ -56,6 +67,7 @@ export function AdminImageUploadButton({
         accept="image/png,image/jpeg,image/webp"
         className="sr-only"
         onChange={(event) => void handleFiles(event.currentTarget.files)}
+        multiple={multiple}
         type="file"
       />
       <Button disabled={disabled || isUploading} onClick={() => inputRef.current?.click()} type="button" variant="secondary">

@@ -20,15 +20,15 @@ export function AdminPageHeader({
   children?: ReactNode;
 }) {
   return (
-    <header className="rounded-xl border border-[#d8e2dc] bg-white p-6 shadow-sm">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_410px] md:items-end" style={{ direction: "ltr" }}>
-        <div className="flex flex-wrap items-center gap-2" dir="ltr">
+    <header className="rounded-xl border border-[#d8e2dc] bg-white p-4 shadow-sm sm:p-6">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_410px] md:items-end md:gap-6" style={{ direction: "ltr" }}>
+        <div className="flex flex-wrap items-center gap-2 max-md:order-2" dir="ltr">
           {children}
         </div>
         <div className="text-right" dir="rtl">
           <p className="text-sm font-black text-accent-foreground">{eyebrow}</p>
-          <h1 className="mt-2 text-3xl font-black text-foreground md:text-4xl">{title}</h1>
-          <p className="mt-4 text-base font-bold leading-8 text-muted-foreground">{description}</p>
+          <h1 className="mt-1 text-2xl font-black text-foreground sm:text-3xl md:mt-2 md:text-4xl">{title}</h1>
+          <p className="mt-2 text-sm font-bold leading-7 text-muted-foreground sm:mt-4 sm:text-base sm:leading-8">{description}</p>
         </div>
       </div>
     </header>

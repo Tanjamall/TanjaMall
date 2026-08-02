@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import type { ReactNode, TextareaHTMLAttributes } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   BadgePercent,
   Boxes,
@@ -11,6 +11,8 @@ import {
   PackageCheck,
   Settings2,
   ShoppingBag,
+  Star,
+  Trash2,
   Tags
 } from "lucide-react";
 import { saveProductAction, type ProductEditorState } from "@/app/admin/products/actions";
@@ -77,6 +79,58 @@ function lines(values: string[]) {
   return values.filter(Boolean).join("\n");
 }
 
+function imageUrls(value: string | null | undefined) {
+  return (value ?? "").split(/\r?\n/).map((url) => url.trim()).filter(Boolean);
+}
+
+function ImageTile({
+  url,
+  label,
+  isPrimary = false,
+  onMakePrimary,
+  onDelete
+}: {
+  url: string;
+  label: string;
+  isPrimary?: boolean;
+  onMakePrimary?: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className={`overflow-hidden rounded-lg border bg-card ${isPrimary ? "border-primary ring-2 ring-primary/20" : "border-border"}`}>
+      <div className="relative aspect-square bg-secondary">
+        <div
+          aria-label={label}
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+          role="img"
+          style={{ backgroundImage: `url(${JSON.stringify(url)})` }}
+        />
+        {isPrimary ? (
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-black text-primary-foreground shadow-sm">
+            <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+            الرئيسية
+          </span>
+        ) : null}
+      </div>
+      <div className="grid grid-cols-[minmax(0,1fr)_44px] gap-2 p-2">
+        {isPrimary ? (
+          <span className="flex min-h-11 items-center px-2 text-xs font-black text-muted-foreground">صورة العرض الرئيسية</span>
+        ) : onMakePrimary ? (
+          <Button className="min-w-0 px-2 text-xs" onClick={onMakePrimary} type="button" variant="secondary">
+            <Star className="h-4 w-4" aria-hidden="true" />
+            جعلها الرئيسية
+          </Button>
+        ) : (
+          <span className="flex min-h-11 items-center px-2 text-xs font-black text-muted-foreground">صورة تفاصيل</span>
+        )}
+        <Button aria-label={`حذف ${label}`} className="w-11 px-0" onClick={onDelete} type="button" variant="destructive">
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function productDefaults(editorData?: ProductEditorData): Partial<ProductFormInput> {
   const product = editorData?.product;
   return {
@@ -130,16 +184,45 @@ export function ProductEditorForm({
 }) {
   const defaults = productDefaults(editorData);
   const [state, formAction, isPending] = useActionState<ProductEditorState, FormData>(saveProductAction, {});
-  const { getValues, register, setValue } = useForm<ProductFormInput>({ defaultValues: defaults });
+  const { control, register, setValue } = useForm<ProductFormInput>({ defaultValues: defaults });
   const product = editorData?.product;
   const isPublished = product?.status === "PUBLISHED";
   const previewHref = product?.slug ? `/products/${product.slug}` : "/products";
   const productIdForUpload = product?.id ?? "";
+  const mainImageUrl = useWatch({ control, name: "main_image_url" }) ?? "";
+  const galleryImageUrls = imageUrls(useWatch({ control, name: "gallery_image_urls" }));
+  const detailImageUrls = imageUrls(useWatch({ control, name: "detail_image_urls" }));
 
-  function appendImageUrl(field: "gallery_image_urls" | "detail_image_urls", url: string) {
-    const current = getValues(field) ?? "";
-    const next = [current.trim(), url].filter(Boolean).join("\n");
-    setValue(field, next, { shouldDirty: true });
+  function addProductImages(urls: string[]) {
+    const uniqueUrls = urls.filter((url) => url && url !== mainImageUrl && !galleryImageUrls.includes(url));
+    if (!uniqueUrls.length) return;
+
+    if (!mainImageUrl) {
+      setValue("main_image_url", uniqueUrls[0], { shouldDirty: true });
+      setValue("gallery_image_urls", lines([...galleryImageUrls, ...uniqueUrls.slice(1)]), { shouldDirty: true });
+      return;
+    }
+    setValue("gallery_image_urls", lines([...galleryImageUrls, ...uniqueUrls]), { shouldDirty: true });
+  }
+
+  function makePrimary(url: string) {
+    setValue("main_image_url", url, { shouldDirty: true });
+    setValue("gallery_image_urls", lines([mainImageUrl, ...galleryImageUrls.filter((imageUrl) => imageUrl !== url)].filter(Boolean)), { shouldDirty: true });
+  }
+
+  function deleteProductImage(url: string) {
+    if (url === mainImageUrl) {
+      const [nextPrimary = "", ...remainingGallery] = galleryImageUrls;
+      setValue("main_image_url", nextPrimary, { shouldDirty: true });
+      setValue("gallery_image_urls", lines(remainingGallery), { shouldDirty: true });
+      return;
+    }
+    setValue("gallery_image_urls", lines(galleryImageUrls.filter((imageUrl) => imageUrl !== url)), { shouldDirty: true });
+  }
+
+  function addDetailImages(urls: string[]) {
+    const uniqueUrls = urls.filter((url) => url && !detailImageUrls.includes(url));
+    setValue("detail_image_urls", lines([...detailImageUrls, ...uniqueUrls]), { shouldDirty: true });
   }
 
   return (
@@ -213,8 +296,8 @@ export function ProductEditorForm({
               <CardTitle>جاهزية النشر</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-2">
-              {!defaults.main_image_url ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صورة رئيسية قبل النشر</div> : null}
-              {!defaults.detail_image_urls ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صور تفاصيل Shoppex-style</div> : null}
+              {!mainImageUrl ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صورة رئيسية قبل النشر</div> : null}
+              {!detailImageUrls.length ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صور تفاصيل Shoppex-style</div> : null}
               {!defaults.category_id ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">اختر التصنيف</div> : null}
             </CardContent>
           </Card>
@@ -295,40 +378,56 @@ export function ProductEditorForm({
             icon={ImageIcon}
           >
             <div id="section-2" className="grid gap-4">
-              <Field label="رابط الصورة الرئيسية">
-                <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_180px]">
-                  <Input {...register("main_image_url")} dir="ltr" placeholder="https://..." />
-                  <AdminImageUploadButton
-                    label="رفع الرئيسية"
-                    onUploaded={(url) => setValue("main_image_url", url, { shouldDirty: true })}
-                    productId={productIdForUpload}
-                    purpose="main"
-                  />
+              <input type="hidden" {...register("main_image_url")} />
+              <textarea className="hidden" {...register("gallery_image_urls")} aria-hidden="true" tabIndex={-1} />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-black">صور المنتج</p>
+                  <p className="mt-1 text-xs font-bold text-muted-foreground">اختر عدة صور دفعة واحدة، ثم حدد الصورة الرئيسية.</p>
                 </div>
-              </Field>
-              <Field label="صور المعرض - رابط واحد في كل سطر">
-                <Textarea {...register("gallery_image_urls")} dir="ltr" />
                 <AdminImageUploadButton
-                  label="رفع صورة للمعرض"
-                  onUploaded={(url) => appendImageUrl("gallery_image_urls", url)}
+                  label="رفع صور المنتج"
+                  multiple
+                  onUploaded={addProductImages}
                   productId={productIdForUpload}
                   purpose="gallery"
                 />
-              </Field>
+              </div>
+              {mainImageUrl || galleryImageUrls.length ? (
+                <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-3">
+                  {mainImageUrl ? <ImageTile isPrimary label="الصورة الرئيسية" onDelete={() => deleteProductImage(mainImageUrl)} url={mainImageUrl} /> : null}
+                  {galleryImageUrls.map((url, index) => (
+                    <ImageTile key={url} label={`صورة المنتج ${index + 1}`} onDelete={() => deleteProductImage(url)} onMakePrimary={() => makePrimary(url)} url={url} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-lg border border-dashed border-border px-4 py-10 text-center text-sm font-bold text-muted-foreground">لم ترفع صورا بعد. أول صورة ترفعها ستصبح الصورة الرئيسية.</div>
+              )}
             </div>
           </AdminFormSection>
 
           <AdminFormSection title="تفاصيل المنتج" description="قسم تفاصيل المنتج في Shoppex يعتمد أساسا على صور متتالية، وليس جدول نصوص طويل." icon={ImageIcon}>
-            <div id="section-3">
-              <Field label="صور التفاصيل - رابط واحد في كل سطر">
-                <Textarea {...register("detail_image_urls")} className="min-h-40" dir="ltr" />
+            <div id="section-3" className="grid gap-4">
+                <textarea className="hidden" {...register("detail_image_urls")} aria-hidden="true" tabIndex={-1} />
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-sm font-black">صور تفاصيل المنتج</p>
                 <AdminImageUploadButton
-                  label="رفع صورة تفاصيل"
-                  onUploaded={(url) => appendImageUrl("detail_image_urls", url)}
+                  label="رفع صور التفاصيل"
+                  multiple
+                  onUploaded={addDetailImages}
                   productId={productIdForUpload}
                   purpose="detail"
                 />
-              </Field>
+                </div>
+                {detailImageUrls.length ? (
+                  <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-3">
+                    {detailImageUrls.map((url, index) => (
+                      <ImageTile key={url} label={`صورة التفاصيل ${index + 1}`} onDelete={() => setValue("detail_image_urls", lines(detailImageUrls.filter((imageUrl) => imageUrl !== url)), { shouldDirty: true })} url={url} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-border px-4 py-10 text-center text-sm font-bold text-muted-foreground">لا توجد صور تفاصيل بعد.</div>
+                )}
             </div>
           </AdminFormSection>
 

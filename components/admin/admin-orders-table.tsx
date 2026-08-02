@@ -77,7 +77,7 @@ const columns: ColumnDef<AdminOrderTableRow>[] = [
   }
 ];
 
-export function AdminOrdersTable({ rows }: { rows: AdminOrderTableRow[] }) {
+export function AdminOrdersTable({ rows, basePath = "/admin" }: { rows: AdminOrderTableRow[]; basePath?: "/admin" | "/admin-preview" }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"ALL" | OrderStatus>("ALL");
 
@@ -99,8 +99,8 @@ export function AdminOrdersTable({ rows }: { rows: AdminOrderTableRow[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
-        <div className="relative min-w-64 flex-1">
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_12rem]">
+        <div className="relative min-w-0">
           <Search className="absolute right-3 top-3.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             className="pr-9"
@@ -111,7 +111,7 @@ export function AdminOrdersTable({ rows }: { rows: AdminOrderTableRow[] }) {
         </div>
         <select
           aria-label="تصفية الطلبات حسب الحالة"
-          className="h-11 min-w-48 rounded-md border border-input bg-card px-3 text-sm font-black outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-11 w-full rounded-md border border-input bg-card px-3 text-sm font-black outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onChange={(event) => setStatus(event.target.value as "ALL" | OrderStatus)}
           value={status}
         >
@@ -122,6 +122,38 @@ export function AdminOrdersTable({ rows }: { rows: AdminOrderTableRow[] }) {
         </select>
       </div>
 
+      <div className="grid gap-3 md:hidden">
+        {filteredRows.length ? filteredRows.map((order) => (
+          <article className="rounded-lg border border-border bg-card p-4 shadow-sm" key={order.id}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-black">{order.customer_name}</p>
+                <a className="mt-1 block w-fit text-sm font-bold text-muted-foreground" dir="ltr" href={`tel:${order.customer_phone}`}>{order.customer_phone}</a>
+              </div>
+              <div className="shrink-0 text-left">
+                <p className="font-black text-accent-foreground">{formatOrderMad(order.total)}</p>
+                <p className="mt-1 text-xs font-bold text-muted-foreground" dir="ltr">{order.order_number}</p>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between gap-3 border-t border-border pt-3">
+              <div className="min-w-0">
+                <StatusBadge status={order.status} />
+                <p className="mt-2 truncate text-xs font-bold text-muted-foreground">{[order.city, order.area].filter(Boolean).join(" / ")}</p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <WhatsAppButton href={order.whatsapp_url} label="واتساب" />
+                <Button asChild variant="secondary" size="sm" aria-label={`فتح الطلب ${order.order_number}`}>
+                  <Link href={`${basePath}/orders/${order.id}` as Route}><Eye className="h-4 w-4" aria-hidden="true" />فتح</Link>
+                </Button>
+              </div>
+            </div>
+          </article>
+        )) : (
+          <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm font-bold text-muted-foreground">لا توجد طلبات مطابقة.</p>
+        )}
+      </div>
+
+      <div className="hidden md:block">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -150,6 +182,7 @@ export function AdminOrdersTable({ rows }: { rows: AdminOrderTableRow[] }) {
           )}
         </TableBody>
       </Table>
+      </div>
 
       <p className="text-xs font-bold text-muted-foreground">النتائج: {filteredRows.length} من {rows.length}</p>
     </div>
