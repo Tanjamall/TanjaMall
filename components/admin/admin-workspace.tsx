@@ -1,0 +1,123 @@
+"use client";
+
+import Link from "next/link";
+import type { Route } from "next";
+import { usePathname } from "next/navigation";
+import { useState, type ReactNode } from "react";
+import { PanelRightClose, PanelRightOpen, ShieldCheck } from "lucide-react";
+import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
+import { adminNavItems, isAdminNavItemActive } from "@/components/admin/admin-nav-items";
+
+export function AdminWorkspace({
+  children,
+  basePath,
+  preview
+}: Readonly<{
+  children: ReactNode;
+  basePath: "/admin" | "/admin-preview";
+  preview: boolean;
+}>) {
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <>
+      <div
+        className={`mx-auto grid max-w-[1720px] gap-6 ${
+          collapsed
+            ? "lg:grid-cols-[minmax(0,1fr)_76px]"
+            : "lg:grid-cols-[minmax(0,1fr)_288px]"
+        }`}
+        style={{ direction: "ltr" }}
+      >
+        <section className="min-w-0 space-y-4 md:space-y-8" dir="rtl">
+          {children}
+        </section>
+
+        <aside
+          className={`relative sticky top-6 hidden h-[calc(100vh-48px)] rounded-xl border border-white/10 bg-[#131921] text-white shadow-xl shadow-slate-950/10 lg:block ${
+            collapsed ? "p-3" : "p-4"
+          }`}
+          dir="rtl"
+        >
+          <button
+            type="button"
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? "توسيع القائمة الجانبية" : "طي القائمة الجانبية"}
+            className="absolute -left-3 top-6 grid h-8 w-8 place-items-center rounded-full border border-[#2d3642] bg-[#131921] text-white/75 shadow-md transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#ece8df]"
+            onClick={() => setCollapsed((current) => !current)}
+            title={collapsed ? "توسيع القائمة" : "طي القائمة"}
+          >
+            {collapsed ? (
+              <PanelRightOpen className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <PanelRightClose className="h-4 w-4" aria-hidden="true" />
+            )}
+          </button>
+
+          <Link
+            className={`mb-8 flex min-h-11 items-center ${collapsed ? "justify-center" : "justify-between"}`}
+            href={`${basePath}/dashboard` as Route}
+            aria-label={collapsed ? "TanjaMall، لوحة التحكم" : undefined}
+            title={collapsed ? "TanjaMall" : undefined}
+          >
+            {!collapsed ? (
+              <div>
+                <p className="text-xs font-bold text-orange-300">
+                  {preview ? "معاينة محلية" : "لوحة إدارة"}
+                </p>
+                <p className="text-2xl font-black" dir="ltr">
+                  <span className="text-primary">Tanja</span>Mall
+                </p>
+              </div>
+            ) : null}
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white/10">
+              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+            </div>
+          </Link>
+
+          <nav className="space-y-1" aria-label="التنقل في لوحة الإدارة">
+            {adminNavItems.map((item) => {
+              const href = `${basePath}${item.path}`;
+              const active = isAdminNavItemActive(pathname, href, item);
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  aria-current={active ? "page" : undefined}
+                  aria-label={collapsed ? item.label : undefined}
+                  className={`flex min-h-11 items-center rounded-md text-sm font-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#131921] ${
+                    collapsed ? "justify-center px-0" : "gap-3 px-3"
+                  } ${
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-white/72 hover:bg-white/10 hover:text-white"
+                  }`}
+                  href={href as Route}
+                  key={item.id}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+                  {!collapsed ? <span>{item.label}</span> : null}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {!collapsed ? (
+            <div className="absolute bottom-4 left-4 right-4 rounded-lg border border-white/10 bg-white/7 p-4">
+              <p className="text-sm font-extrabold">{preview ? "وضع معاينة" : "وضع الإدارة"}</p>
+              <p className="mt-2 text-xs font-bold leading-6 text-white/62">
+                {preview
+                  ? "هذه الصفحات لا تحفظ بيانات ولا تتصل بتسجيل دخول Supabase."
+                  : "الصفحات محمية بحساب مسؤول في Supabase."}
+              </p>
+            </div>
+          ) : null}
+        </aside>
+      </div>
+
+      <AdminMobileNav basePath={basePath} />
+    </>
+  );
+}
