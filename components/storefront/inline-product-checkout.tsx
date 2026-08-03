@@ -109,18 +109,12 @@ export function InlineProductCheckout({
             <input {...register("phone")} autoComplete="tel" dir="ltr" inputMode="tel" aria-invalid={Boolean(errors.phone)} placeholder="06xxxxxxxx" type="tel" />
             {errors.phone ? <small>{errors.phone.message}</small> : null}
           </label>
+          <input type="hidden" {...register("city")} />
           <label className="inline-checkout-wide">
-            <span>المدينة</span>
-            <input {...register("city")} autoComplete="address-level1" aria-invalid={Boolean(errors.city)} list="inline-city-suggestions" placeholder="المدينة" />
-            <datalist id="inline-city-suggestions">
-              {cities.map((city) => <option key={city} value={city} />)}
-            </datalist>
-            {errors.city ? <small>{errors.city.message}</small> : null}
-          </label>
-          <label className="inline-checkout-wide">
-            <span>العنوان</span>
-            <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder="العنوان" />
+            <span>المدينة والعنوان</span>
+            <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address || errors.city)} placeholder="مثال: طنجة، بني مكادة، شارع..." />
             {errors.address ? <small>{errors.address.message}</small> : null}
+            {errors.city ? <small>{errors.city.message}</small> : null}
           </label>
         </div>
 
