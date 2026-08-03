@@ -439,6 +439,10 @@ a {
   grid-auto-columns: minmax(154px, 48%);
 }
 
+.listing-category-strip .category-strip {
+  grid-auto-columns: minmax(136px, 40%);
+}
+
 .category-tile {
   position: relative;
   display: flex;
