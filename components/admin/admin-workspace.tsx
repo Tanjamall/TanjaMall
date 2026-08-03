@@ -3,8 +3,8 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
-import { PanelRightClose, PanelRightOpen, ShieldCheck } from "lucide-react";
+import { useState, type FocusEvent, type ReactNode } from "react";
+import { ShieldCheck } from "lucide-react";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { adminNavItems, isAdminNavItemActive } from "@/components/admin/admin-nav-items";
 
@@ -18,7 +18,11 @@ export function AdminWorkspace({
   preview: boolean;
 }>) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+
+  function handleSidebarBlur(event: FocusEvent<HTMLElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget)) setCollapsed(true);
+  }
 
   return (
     <>
@@ -39,22 +43,11 @@ export function AdminWorkspace({
             collapsed ? "p-3" : "p-4"
           }`}
           dir="rtl"
+          onBlur={handleSidebarBlur}
+          onFocus={() => setCollapsed(false)}
+          onMouseEnter={() => setCollapsed(false)}
+          onMouseLeave={() => setCollapsed(true)}
         >
-          <button
-            type="button"
-            aria-expanded={!collapsed}
-            aria-label={collapsed ? "توسيع القائمة الجانبية" : "طي القائمة الجانبية"}
-            className="absolute -left-3 top-6 grid h-8 w-8 place-items-center rounded-full border border-[#2d3642] bg-[#131921] text-white/75 shadow-md transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#ece8df]"
-            onClick={() => setCollapsed((current) => !current)}
-            title={collapsed ? "توسيع القائمة" : "طي القائمة"}
-          >
-            {collapsed ? (
-              <PanelRightOpen className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <PanelRightClose className="h-4 w-4" aria-hidden="true" />
-            )}
-          </button>
-
           <Link
             className={`mb-8 flex min-h-11 items-center ${collapsed ? "justify-center" : "justify-between"}`}
             href={`${basePath}/dashboard` as Route}

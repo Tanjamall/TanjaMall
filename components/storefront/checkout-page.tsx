@@ -33,7 +33,6 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
   const qualifiesForFreeDelivery = settings.free_delivery_threshold !== null && subtotal >= settings.free_delivery_threshold;
   const deliveryFee = qualifiesForFreeDelivery ? 0 : settings.delivery_fee_tanger;
   const estimatedTotal = subtotal + (deliveryFee ?? 0);
-  const cities = settings.supported_cities.length ? settings.supported_cities : [settings.default_city];
   const {
     register,
     handleSubmit,
@@ -43,7 +42,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
   } = useForm<CheckoutInput>({
     mode: "onTouched",
     defaultValues: {
-      city: cities.includes(settings.default_city) ? settings.default_city : cities[0]
+      city: settings.default_city
     }
   });
 
@@ -116,6 +115,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
           <h2><MapPin aria-hidden="true" /> معلومات التوصيل</h2>
           <p className="checkout-intro">أدخل معلومات صحيحة لنتمكن من تأكيد الطلب وتوصيله بدون تأخير.</p>
           <div className="checkout-fields">
+            <input {...register("city")} type="hidden" value={settings.default_city} />
             <label>
               <span>الاسم الكامل</span>
               <input {...register("fullName")} autoComplete="name" autoFocus aria-invalid={Boolean(errors.fullName)} placeholder="الاسم الكامل" />
@@ -126,18 +126,11 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
               <input {...register("phone")} autoComplete="tel" dir="ltr" inputMode="tel" aria-invalid={Boolean(errors.phone)} placeholder="06xxxxxxxx" type="tel" />
               {errors.phone ? <small>{errors.phone.message}</small> : null}
             </label>
-            <label>
-              <span>المدينة</span>
-              <input {...register("city")} autoComplete="address-level1" aria-invalid={Boolean(errors.city)} list="checkout-city-suggestions" placeholder="المدينة" />
-              <datalist id="checkout-city-suggestions">
-                {cities.map((city) => <option key={city} value={city} />)}
-              </datalist>
-              {errors.city ? <small>{errors.city.message}</small> : null}
-            </label>
             <label className="checkout-wide-field">
-              <span>العنوان</span>
-              <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder="العنوان" />
+              <span>المدينة والعنوان</span>
+              <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder={`مثال: ${settings.default_city}، الحي، الشارع ورقم المنزل`} />
               {errors.address ? <small>{errors.address.message}</small> : null}
+              {errors.city ? <small>{errors.city.message}</small> : null}
             </label>
           </div>
         </section>

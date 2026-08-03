@@ -3341,12 +3341,20 @@ button:disabled,
   }
 
   .product-info {
-    padding: 14px 15px 16px;
+    padding: 11px 12px 13px;
   }
 
   .product-title {
-    min-height: 52px;
-    font-size: 15px;
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 19px;
+  }
+
+  .buy-btn {
+    min-height: 40px;
   }
 
   .home-product-section .product-info {
@@ -3371,45 +3379,46 @@ button:disabled,
   }
 
   .listing-page-layout {
-    display: grid;
-    grid-template-columns: 260px minmax(0, 1fr);
-    align-items: start;
-    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     padding-top: 28px;
     direction: rtl;
   }
 
   .desktop-filter-sidebar {
-    display: block;
-    position: sticky;
-    top: 178px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
     border: 1px solid var(--tm-border);
     border-radius: 9px;
     background: #ffffff;
   }
 
   .desktop-filter-group {
-    padding: 22px;
+    padding: 16px 18px;
   }
 
   .desktop-filter-group + .desktop-filter-group {
-    border-top: 1px solid var(--tm-border);
+    min-width: 320px;
+    border-inline-start: 1px solid var(--tm-border);
   }
 
   .desktop-filter-group h2 {
-    margin: 0 0 14px;
-    font-size: 17px;
+    margin: 0 0 10px;
+    font-size: 15px;
     font-weight: 900;
   }
 
   .desktop-filter-group nav {
-    display: grid;
-    gap: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .desktop-filter-group nav a {
     display: flex;
-    min-height: 38px;
+    min-height: 36px;
     align-items: center;
     padding: 7px 10px;
     border-radius: 7px;
@@ -3425,13 +3434,17 @@ button:disabled,
   }
 
   .desktop-filter-group label {
-    display: flex;
-    min-height: 42px;
+    display: inline-flex;
+    min-height: 38px;
     align-items: center;
     gap: 9px;
     color: var(--tm-ink);
     font-size: 13px;
     font-weight: 800;
+  }
+
+  .desktop-filter-group label + label {
+    margin-inline-start: 18px;
   }
 
   .desktop-filter-group input {
@@ -3508,8 +3521,25 @@ button:disabled,
   }
 
   .listing-main .product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+
+  .listing-main .product-info {
+    padding: 11px 12px 13px;
+  }
+
+  .listing-main .product-title {
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .listing-main .price {
+    font-size: 19px;
+  }
+
+  .listing-main .buy-btn {
+    min-height: 40px;
   }
 
   .product-breadcrumb {
