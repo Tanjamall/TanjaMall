@@ -81,10 +81,10 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     store_name: settings?.store_name ? String(settings.store_name) : "TanjaMall",
     store_phone: settings?.store_phone ? String(settings.store_phone) : null,
     whatsapp_number: settings?.whatsapp_number ? String(settings.whatsapp_number) : null,
-    default_city: settings?.default_city ? String(settings.default_city) : "Tanger",
+    default_city: settings?.default_city ? String(settings.default_city) : "المغرب",
     supported_cities: Array.isArray(settings?.supported_cities)
       ? settings.supported_cities.map((city) => String(city)).filter(Boolean)
-      : ["Tanger"],
+      : ["المغرب"],
     announcement_text: settings?.announcement_text ? String(settings.announcement_text) : null,
     delivery_fee_tanger: toNumber(settings?.delivery_fee_tanger),
     free_delivery_threshold: toNumber(settings?.free_delivery_threshold),

@@ -52,7 +52,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
             <div className="desktop-utility-inner">
               <div>
                 <MapPin aria-hidden="true" />
-                <span>التوصيل داخل {settings.default_city}</span>
+                <span>التوصيل إلى جميع مدن المغرب</span>
               </div>
               {phoneHref ? (
                 <a href={phoneHref}>
@@ -181,7 +181,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
               {phoneHref ? <a href={phoneHref}>اتصل بنا</a> : null}
               <span>الدفع عند الاستلام</span>
               <span>تأكيد عبر واتساب</span>
-              <span>توصيل إلى {settings.default_city}</span>
+              <span>توصيل إلى جميع مدن المغرب</span>
             </nav>
           </div>
           <div className="footer-bottom">

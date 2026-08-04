@@ -124,7 +124,7 @@ export function ProductDetailClient({ product, relatedProducts, settings }: Prod
               </div>
               <div>
                 <Truck aria-hidden="true" />
-                <span><strong>توصيل إلى {settings.default_city}</strong><small>نؤكد الموعد معك</small></span>
+                <span><strong>توصيل إلى جميع مدن المغرب</strong><small>نؤكد الموعد معك</small></span>
               </div>
               <div>
                 <PhoneCall aria-hidden="true" />

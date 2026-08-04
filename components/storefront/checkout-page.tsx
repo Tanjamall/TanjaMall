@@ -42,7 +42,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
   } = useForm<CheckoutInput>({
     mode: "onTouched",
     defaultValues: {
-      city: settings.default_city
+      city: "المغرب"
     }
   });
 
@@ -115,7 +115,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
           <h2><MapPin aria-hidden="true" /> معلومات التوصيل</h2>
           <p className="checkout-intro">أدخل معلومات صحيحة لنتمكن من تأكيد الطلب وتوصيله بدون تأخير.</p>
           <div className="checkout-fields">
-            <input {...register("city")} type="hidden" value={settings.default_city} />
+            <input {...register("city")} type="hidden" value="المغرب" />
             <label>
               <span>الاسم الكامل</span>
               <input {...register("fullName")} autoComplete="name" autoFocus aria-invalid={Boolean(errors.fullName)} placeholder="الاسم الكامل" />
@@ -128,7 +128,7 @@ export function CheckoutPage({ settings }: { settings: StoreSettings }) {
             </label>
             <label className="checkout-wide-field">
               <span>المدينة والعنوان</span>
-              <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder={`مثال: ${settings.default_city}، الحي، الشارع ورقم المنزل`} />
+              <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder="مثال: الدار البيضاء، الحي، الشارع ورقم المنزل" />
               {errors.address ? <small>{errors.address.message}</small> : null}
               {errors.city ? <small>{errors.city.message}</small> : null}
             </label>
