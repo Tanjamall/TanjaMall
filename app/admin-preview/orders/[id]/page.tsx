@@ -17,7 +17,7 @@ export default async function AdminPreviewOrderPage({ params }: AdminPreviewOrde
     <AdminShell preview>
       <div className="space-y-6">
         <AdminPageHeader title={`تفاصيل الطلب ${id}`} description="معاينة تفاصيل الطلب وتأكيد واتساب.">
-          <WhatsAppButton href="https://wa.me/212672975000" label="فتح واتساب" />
+          <WhatsAppButton href="https://wa.me/212708012888" label="فتح واتساب" />
         </AdminPageHeader>
 
         <div className="grid gap-4 xl:grid-cols-[1fr_420px]">

@@ -22,7 +22,8 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
     state.items.reduce((total, item) => total + item.quantity, 0)
   );
 
-  const phone = settings.store_phone ?? "0672975000";
+  const phone = settings.store_phone?.trim() || null;
+  const phoneHref = phone ? `tel:${phone.replace(/\s/g, "")}` : null;
   const visibleCategories = useMemo(() => categories.slice(0, 8), [categories]);
 
   useEffect(() => {
@@ -53,11 +54,13 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                 <MapPin aria-hidden="true" />
                 <span>التوصيل داخل {settings.default_city}</span>
               </div>
-              <a href={`tel:${phone.replace(/\s/g, "")}`}>
-                <PhoneCall aria-hidden="true" />
-                <span>خدمة الزبناء:</span>
-                <b className="phone-ltr">{phone}</b>
-              </a>
+              {phoneHref ? (
+                <a href={phoneHref}>
+                  <PhoneCall aria-hidden="true" />
+                  <span>خدمة الزبناء:</span>
+                  <b className="phone-ltr">{phone}</b>
+                </a>
+              ) : null}
             </div>
           </div>
 
@@ -133,10 +136,12 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                 {category.name}
               </Link>
             ))}
-            <a className="desktop-nav-help" href={`tel:${phone.replace(/\s/g, "")}`}>
-              <Headphones aria-hidden="true" />
-              مساعدة في الطلب
-            </a>
+            {phoneHref ? (
+              <a className="desktop-nav-help" href={phoneHref}>
+                <Headphones aria-hidden="true" />
+                مساعدة في الطلب
+              </a>
+            ) : null}
           </nav>
         </header>
 
@@ -173,7 +178,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
             </nav>
             <nav className="footer-links" aria-label="خدمة العملاء">
               <strong>خدمة العملاء</strong>
-              <a href={`tel:${phone.replace(/\s/g, "")}`}>اتصل بنا</a>
+              {phoneHref ? <a href={phoneHref}>اتصل بنا</a> : null}
               <span>الدفع عند الاستلام</span>
               <span>تأكيد عبر واتساب</span>
               <span>توصيل إلى {settings.default_city}</span>

@@ -297,7 +297,7 @@ export function ProductEditorForm({
             </CardHeader>
             <CardContent className="grid gap-2">
               {!mainImageUrl ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صورة رئيسية قبل النشر</div> : null}
-              {!detailImageUrls.length ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صور تفاصيل Shoppex-style</div> : null}
+              {!detailImageUrls.length ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">أضف صور تفاصيل متتالية</div> : null}
               {!defaults.category_id ? <div className="rounded-md bg-accent px-3 py-2 text-sm font-black text-accent-foreground">اختر التصنيف</div> : null}
             </CardContent>
           </Card>
@@ -406,7 +406,7 @@ export function ProductEditorForm({
             </div>
           </AdminFormSection>
 
-          <AdminFormSection title="تفاصيل المنتج" description="قسم تفاصيل المنتج في Shoppex يعتمد أساسا على صور متتالية، وليس جدول نصوص طويل." icon={ImageIcon}>
+          <AdminFormSection title="تفاصيل المنتج" description="اعرض تفاصيل المنتج بصور متتالية واضحة بدلا من جدول نصوص طويل." icon={ImageIcon}>
             <div id="section-3" className="grid gap-4">
                 <textarea className="hidden" {...register("detail_image_urls")} aria-hidden="true" tabIndex={-1} />
                 <div className="flex flex-wrap items-center justify-between gap-3">

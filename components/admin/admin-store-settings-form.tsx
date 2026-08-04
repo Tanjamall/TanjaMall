@@ -82,7 +82,7 @@ export function AdminStoreSettingsForm({ settings }: { settings: StoreSettings }
             <Input
               dir="ltr"
               inputMode="tel"
-              placeholder="مثال: 212672975000"
+              placeholder="مثال: 212600000000"
               {...register("whatsapp_number", { required: "رقم واتساب مطلوب." })}
             />
             <FieldError message={errors.whatsapp_number?.message} />

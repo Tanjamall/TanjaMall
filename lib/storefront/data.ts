@@ -79,8 +79,8 @@ export async function getStoreSettings(): Promise<StoreSettings> {
 
   return {
     store_name: settings?.store_name ? String(settings.store_name) : "TanjaMall",
-    store_phone: settings?.store_phone ? String(settings.store_phone) : "0672975000",
-    whatsapp_number: settings?.whatsapp_number ? String(settings.whatsapp_number) : "212672975000",
+    store_phone: settings?.store_phone ? String(settings.store_phone) : null,
+    whatsapp_number: settings?.whatsapp_number ? String(settings.whatsapp_number) : null,
     default_city: settings?.default_city ? String(settings.default_city) : "Tanger",
     supported_cities: Array.isArray(settings?.supported_cities)
       ? settings.supported_cities.map((city) => String(city)).filter(Boolean)

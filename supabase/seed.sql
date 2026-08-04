@@ -63,7 +63,7 @@ values
     'TM-LIGHT-120W',
     25,
     'PUBLISHED',
-    'https://aga-shoppex.com/media/6581/conversions/BeRweRlfsPcNG8s3yukpeAMLTdbnsQ3WMbB8Ozvi-media-compressed.webp',
+    null,
     true,
     true,
     'Seed product. Replace with real sourcing notes in admin only.'
@@ -81,7 +81,7 @@ values
     'TM-HOME-SHOWER',
     18,
     'PUBLISHED',
-    'https://aga-shoppex.com/media/9329/h5KaxF2bZrxfy1uko2eHoNXQtm0aB3kfrWNI4oaR.jpg',
+    null,
     true,
     false,
     'Seed product. Replace before production launch.'
@@ -99,7 +99,7 @@ values
     'TM-CAR-HOLDER',
     40,
     'PUBLISHED',
-    'https://aga-shoppex.com/media/6960/conversions/A730p6nzLcj0SvR3Z9vTWHwpyFCRgQUa6iG8Q3B5-media-compressed.webp',
+    null,
     false,
     true,
     'Seed product. Keep private.'
@@ -121,30 +121,8 @@ set
   is_best_seller = excluded.is_best_seller,
   internal_notes = excluded.internal_notes;
 
-insert into public.product_images (product_id, image_url, alt_text, sort_order)
-values
-  (
-    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1',
-    'https://aga-shoppex.com/media/6581/conversions/BeRweRlfsPcNG8s3yukpeAMLTdbnsQ3WMbB8Ozvi-media-compressed.webp',
-    'بروجيكتور 120 واط',
-    1
-  ),
-  (
-    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2',
-    'https://aga-shoppex.com/media/9329/h5KaxF2bZrxfy1uko2eHoNXQtm0aB3kfrWNI4oaR.jpg',
-    'حقيبة استحمام محمولة',
-    1
-  ),
-  (
-    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa3',
-    'https://aga-shoppex.com/media/6960/conversions/A730p6nzLcj0SvR3Z9vTWHwpyFCRgQUa6iG8Q3B5-media-compressed.webp',
-    'حامل أكواب للسيارة',
-    1
-  )
-on conflict (product_id, sort_order) do update
-set
-  image_url = excluded.image_url,
-  alt_text = excluded.alt_text;
+delete from public.product_images
+where lower(image_url) like '%shoppex%';
 
 insert into public.store_settings (
   id,
@@ -166,8 +144,8 @@ insert into public.store_settings (
 values (
   '99999999-9999-4999-8999-999999999999',
   'TanjaMall',
-  '0672975000',
-  '212672975000',
+  '+212708012888',
+  '212708012888',
   'Tanger',
   array['Tanger'],
   0,

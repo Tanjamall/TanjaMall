@@ -41,7 +41,7 @@ export default function AdminPreviewOrdersPage() {
                 order.area,
                 order.total,
                 <StatusBadge key={order.id} status={order.status} />,
-                <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212672975000" label="تأكيد" />,
+                <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212708012888" label="تأكيد" />,
                 <Button key={`${order.id}-view`} asChild variant="secondary" size="sm">
                   <Link href={`/admin-preview/orders/${order.id}` as Route}>فتح</Link>
                 </Button>

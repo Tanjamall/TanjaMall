@@ -34,7 +34,7 @@ const previewDashboard: AdminDashboardData = {
       area: "طنجة البالية",
       total: 498,
       status: "NEW",
-      whatsapp_confirmation_url: "https://wa.me/212672975000",
+      whatsapp_confirmation_url: "https://wa.me/212708012888",
       created_at: "2026-07-14T10:24:00Z"
     },
     {
@@ -46,7 +46,7 @@ const previewDashboard: AdminDashboardData = {
       area: "مرشان",
       total: 549,
       status: "CONTACTED",
-      whatsapp_confirmation_url: "https://wa.me/212672975000",
+      whatsapp_confirmation_url: "https://wa.me/212708012888",
       created_at: "2026-07-14T09:12:00Z"
     }
   ],
