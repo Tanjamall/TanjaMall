@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Archive, EyeOff, Plus, Search, Send } from "lucide-react";
 import { updateProductStatusAction } from "@/app/admin/products/actions";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminDataTable, AdminPageHeader, StatusBadge } from "@/components/admin/admin-ui";
+import { AdminDataTable, StatusBadge } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,23 +49,18 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   return (
     <AdminShell>
       <div className="space-y-6">
-        <AdminPageHeader
-          title="المنتجات"
-          description="إدارة المنتجات والمسودات والنشر. هذه البيانات متصلة الآن بـ Supabase، والمنتجات المنشورة فقط تظهر في المتجر."
-          eyebrow="Task 8 live Supabase data"
-        >
-          <Button asChild>
-            <Link href="/admin/products/new">
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              منتج جديد
-            </Link>
-          </Button>
-        </AdminPageHeader>
-
         <Card>
-          <CardHeader>
-            <CardTitle>كل المنتجات</CardTitle>
-            <CardDescription>ابحث، صف حسب الحالة، عدل، انشر، أو أرشف المنتج من نفس الجدول.</CardDescription>
+          <CardHeader className="flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>كل المنتجات</CardTitle>
+              <CardDescription className="mt-1">ابحث، صف حسب الحالة، عدل، انشر، أو أرشف المنتج من نفس الجدول.</CardDescription>
+            </div>
+            <Button asChild className="shrink-0">
+              <Link href="/admin/products/new">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                منتج جديد
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <form className="flex flex-wrap gap-2" dir="rtl">

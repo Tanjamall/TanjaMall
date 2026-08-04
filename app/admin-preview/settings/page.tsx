@@ -2,7 +2,7 @@ import { Image, MessageCircle, Settings, Truck } from "lucide-react";
 import { AdminTrackingSettingsForm } from "@/components/admin/admin-tracking-settings-form";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { adminSettingsPreview } from "@/components/admin/admin-demo-data";
-import { AdminFormSection, AdminPageHeader } from "@/components/admin/admin-ui";
+import { AdminFormSection } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { StoreSettings } from "@/lib/storefront/types";
@@ -28,8 +28,6 @@ export default function AdminPreviewSettingsPage() {
   return (
     <AdminShell preview>
       <div className="space-y-6">
-        <AdminPageHeader title="الإعدادات" description="معاينة إعدادات المتجر وواتساب والتوصيل وCloudflare R2 وتتبع الإعلانات." />
-
         <div className="grid gap-4 xl:grid-cols-2">
           <AdminFormSection title="المتجر" description="الاسم والهاتف ونص الإعلان." icon={Settings}>
             <div className="grid gap-4">

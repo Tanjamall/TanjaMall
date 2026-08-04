@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminFormSection, AdminPageHeader, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
+import { AdminFormSection, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -16,15 +16,16 @@ export default async function AdminPreviewOrderPage({ params }: AdminPreviewOrde
   return (
     <AdminShell preview>
       <div className="space-y-6">
-        <AdminPageHeader title={`تفاصيل الطلب ${id}`} description="معاينة تفاصيل الطلب وتأكيد واتساب.">
-          <WhatsAppButton href="https://wa.me/212708012888" label="فتح واتساب" />
-        </AdminPageHeader>
-
         <div className="grid gap-4 xl:grid-cols-[1fr_420px]">
           <Card>
             <CardHeader>
-              <CardTitle>منتجات الطلب</CardTitle>
-              <CardDescription>Order items ستأتي من Supabase مع snapshot للمنتجات والأسعار.</CardDescription>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle>تفاصيل الطلب {id}</CardTitle>
+                  <CardDescription className="mt-1">معاينة المنتجات والأسعار المحفوظة.</CardDescription>
+                </div>
+                <WhatsAppButton href="https://wa.me/212612345678" label="فتح واتساب" />
+              </div>
             </CardHeader>
             <CardContent className="grid gap-3">
               {["بروجيكتور 120 واط بالطاقة الشمسية", "جهاز الطوارئ للسيارة ونفخ العجلات"].map((item) => (

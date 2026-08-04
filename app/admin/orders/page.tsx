@@ -1,6 +1,5 @@
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminOrdersTable, type AdminOrderTableRow } from "@/components/admin/admin-orders-table";
-import { AdminPageHeader } from "@/components/admin/admin-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getAdminOrders } from "@/lib/admin/orders";
@@ -27,12 +26,6 @@ export default async function AdminOrdersPage() {
   return (
     <AdminShell adminUser={admin}>
       <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow="إدارة الطلبات"
-          title="الطلبات"
-          description="تابع طلبات الدفع عند الاستلام، حدّث حالتها، وتواصل مع العميل عبر واتساب."
-        />
-
         <Card>
           <CardHeader>
             <CardTitle>كل الطلبات</CardTitle>

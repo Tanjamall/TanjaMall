@@ -3,7 +3,7 @@ import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, MessageCircle, Phone, UserRound } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminFormSection, AdminPageHeader, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
+import { AdminFormSection, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
 import { OrderManagementForm } from "@/components/admin/order-management-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,30 +37,25 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
   return (
     <AdminShell adminUser={admin}>
       <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow={`أنشئ في ${formatOrderDate(order.created_at)}`}
-          title={`الطلب ${order.order_number}`}
-          description="بيانات العميل، المنتجات المحفوظة وقت الشراء، حالة التنفيذ، وتأكيد واتساب."
-        >
-          <Button asChild variant="secondary">
-            <Link href={"/admin/orders" as Route}>
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              كل الطلبات
-            </Link>
-          </Button>
-          <WhatsAppButton href={whatsappUrl} label="فتح واتساب" />
-        </AdminPageHeader>
-
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
           <div className="space-y-4">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <CardTitle>منتجات الطلب</CardTitle>
-                    <CardDescription className="mt-1">الاسم والسعر والصورة محفوظة كما كانت عند إنشاء الطلب.</CardDescription>
+                    <CardTitle>الطلب {order.order_number}</CardTitle>
+                    <CardDescription className="mt-1">أنشئ في {formatOrderDate(order.created_at)}</CardDescription>
                   </div>
                   <StatusBadge status={order.status} />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button asChild variant="secondary">
+                    <Link href={"/admin/orders" as Route}>
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      كل الطلبات
+                    </Link>
+                  </Button>
+                  <WhatsAppButton href={whatsappUrl} label="فتح واتساب" />
                 </div>
               </CardHeader>
               <CardContent className="grid gap-3">

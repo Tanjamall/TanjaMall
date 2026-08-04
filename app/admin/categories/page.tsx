@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Eye, EyeOff, FolderPlus } from "lucide-react";
 import { updateCategoryStatusAction } from "@/app/admin/categories/actions";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminDataTable, AdminPageHeader, StatusBadge } from "@/components/admin/admin-ui";
+import { AdminDataTable, StatusBadge } from "@/components/admin/admin-ui";
 import { CategoryForm } from "@/components/admin/category-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,24 +45,19 @@ export default async function AdminCategoriesPage({ searchParams }: AdminCategor
   return (
     <AdminShell>
       <div className="space-y-6">
-        <AdminPageHeader
-          title="التصنيفات"
-          description="إدارة تصنيفات الواجهة وترتيب ظهورها في الشريط الأفقي. البيانات متصلة الآن بـ Supabase."
-          eyebrow="Task 8 live Supabase data"
-        >
-          <Button asChild>
-            <Link href="/admin/categories">
-              <FolderPlus className="h-4 w-4" aria-hidden="true" />
-              تصنيف جديد
-            </Link>
-          </Button>
-        </AdminPageHeader>
-
         <div className="grid gap-4 xl:grid-cols-[1fr_420px]">
           <Card>
-            <CardHeader>
-              <CardTitle>كل التصنيفات</CardTitle>
-              <CardDescription>ACTIVE يظهر للعميل، HIDDEN يبقى للإدارة فقط.</CardDescription>
+            <CardHeader className="flex-row items-center justify-between gap-3">
+              <div>
+                <CardTitle>كل التصنيفات</CardTitle>
+                <CardDescription className="mt-1">ACTIVE يظهر للعميل، HIDDEN يبقى للإدارة فقط.</CardDescription>
+              </div>
+              <Button asChild className="shrink-0">
+                <Link href="/admin/categories">
+                  <FolderPlus className="h-4 w-4" aria-hidden="true" />
+                  تصنيف جديد
+                </Link>
+              </Button>
             </CardHeader>
             <CardContent>
               <AdminDataTable

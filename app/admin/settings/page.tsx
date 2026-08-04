@@ -2,7 +2,7 @@ import { Image } from "lucide-react";
 import { AdminStoreSettingsForm } from "@/components/admin/admin-store-settings-form";
 import { AdminTrackingSettingsForm } from "@/components/admin/admin-tracking-settings-form";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminFormSection, AdminPageHeader } from "@/components/admin/admin-ui";
+import { AdminFormSection } from "@/components/admin/admin-ui";
 import { Input } from "@/components/ui/input";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getStoreSettings } from "@/lib/storefront/data";
@@ -14,12 +14,6 @@ export default async function AdminSettingsPage() {
   return (
     <AdminShell adminUser={admin}>
       <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow="إعدادات مباشرة"
-          title="الإعدادات"
-          description="إدارة بيانات المتجر، واتساب، التوصيل، صور Cloudflare R2، وتتبع الإعلانات."
-        />
-
         <div className="grid gap-4 xl:grid-cols-2">
           <AdminStoreSettingsForm settings={settings} />
 

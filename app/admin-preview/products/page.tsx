@@ -3,7 +3,7 @@ import type { Route } from "next";
 import { Plus, Search } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { adminProducts } from "@/components/admin/admin-demo-data";
-import { AdminDataTable, AdminPageHeader, StatusBadge } from "@/components/admin/admin-ui";
+import { AdminDataTable, StatusBadge } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,19 +12,18 @@ export default function AdminPreviewProductsPage() {
   return (
     <AdminShell preview>
       <div className="space-y-6">
-        <AdminPageHeader title="المنتجات" description="معاينة جدول المنتجات قبل الربط مع Supabase.">
-          <Button asChild>
-            <Link href={"/admin-preview/products/new" as Route}>
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              منتج جديد
-            </Link>
-          </Button>
-        </AdminPageHeader>
-
         <Card>
-          <CardHeader>
-            <CardTitle>كل المنتجات</CardTitle>
-            <CardDescription>صفوف مؤقتة لمعاينة الشكل فقط.</CardDescription>
+          <CardHeader className="flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>كل المنتجات</CardTitle>
+              <CardDescription className="mt-1">صفوف مؤقتة لمعاينة الشكل فقط.</CardDescription>
+            </div>
+            <Button asChild className="shrink-0">
+              <Link href={"/admin-preview/products/new" as Route}>
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                منتج جديد
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap gap-2">
