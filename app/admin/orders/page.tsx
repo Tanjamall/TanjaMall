@@ -13,9 +13,9 @@ export default async function AdminOrdersPage() {
 
   const rows: AdminOrderTableRow[] = orders.map((order) => ({
     ...order,
-    whatsapp_url: order.whatsapp_confirmation_url ?? buildWhatsAppConfirmationUrl({
+    whatsapp_url: buildWhatsAppConfirmationUrl({
       storeName: settings.store_name,
-      whatsappNumber: settings.whatsapp_number ?? "",
+      customerPhone: order.customer_phone,
       customerName: order.customer_name,
       orderNumber: order.order_number,
       lines: order.items.map((item) => ({ name: item.product_name, quantity: item.quantity })),

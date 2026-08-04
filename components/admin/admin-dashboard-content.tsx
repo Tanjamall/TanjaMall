@@ -9,11 +9,12 @@ import {
   Truck,
   XCircle
 } from "lucide-react";
-import { AdminDataTable, AdminPageHeader, AdminStatCard, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
+import { AdminDataTable, AdminStatCard, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminDashboardData } from "@/lib/admin/dashboard";
 import { formatOrderDate, formatOrderMad } from "@/lib/orders";
+import { retargetWhatsAppConfirmationUrl } from "@/lib/whatsapp/confirmation";
 
 const previewDashboard: AdminDashboardData = {
   new_orders_today: 3,
@@ -34,7 +35,7 @@ const previewDashboard: AdminDashboardData = {
       area: "طنجة البالية",
       total: 498,
       status: "NEW",
-      whatsapp_confirmation_url: "https://wa.me/212708012888",
+      whatsapp_confirmation_url: "https://wa.me/212708012888?text=Confirmation",
       created_at: "2026-07-14T10:24:00Z"
     },
     {
@@ -46,7 +47,7 @@ const previewDashboard: AdminDashboardData = {
       area: "مرشان",
       total: 549,
       status: "CONTACTED",
-      whatsapp_confirmation_url: "https://wa.me/212708012888",
+      whatsapp_confirmation_url: "https://wa.me/212708012888?text=Confirmation",
       created_at: "2026-07-14T09:12:00Z"
     }
   ],
@@ -72,19 +73,6 @@ export function AdminDashboardContent({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="hidden sm:block">
-        <AdminPageHeader
-          eyebrow={preview ? "معاينة التصميم" : "بيانات مباشرة من Supabase"}
-          title="نظام إدارة TanjaMall"
-          description="نظرة تشغيلية سريعة على الطلبات، الإيرادات المؤكدة، والتنبيهات التي تحتاج متابعة."
-        >
-          <span className="rounded-full bg-emerald-50 px-4 py-3 text-xs font-black text-emerald-700">
-            {preview ? "بيانات معاينة" : "متصل مباشرة"}
-          </span>
-          <span className="rounded-full bg-[#131921] px-4 py-3 text-xs font-black text-white">COD Dashboard</span>
-        </AdminPageHeader>
-      </div>
-
       <section className="rounded-xl border border-[#d8e2dc] bg-white p-3 shadow-sm sm:p-4">
         <div className="mb-3 rounded-lg border border-[#d8e2dc] bg-white p-3 shadow-sm sm:mb-4 sm:p-4">
           <div className="flex items-center justify-between gap-3" style={{ direction: "ltr" }}>
@@ -166,7 +154,7 @@ export function AdminDashboardContent({
                     <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
                       <StatusBadge status={order.status} />
                       <div className="flex gap-2">
-                        {order.whatsapp_confirmation_url ? <WhatsAppButton href={order.whatsapp_confirmation_url} label="تأكيد" /> : null}
+                        <WhatsAppButton href={retargetWhatsAppConfirmationUrl(order.whatsapp_confirmation_url, order.customer_phone)} label="تأكيد" />
                         <Button asChild size="sm" variant="secondary">
                           <Link href={`${basePath}/orders/${order.id}` as Route}>فتح</Link>
                         </Button>
@@ -187,7 +175,7 @@ export function AdminDashboardContent({
                     <StatusBadge key={`${order.id}-status`} status={order.status} />,
                     <span key={`${order.id}-date`} className="whitespace-nowrap text-xs">{formatOrderDate(order.created_at)}</span>,
                     <div key={`${order.id}-actions`} className="flex flex-wrap gap-2">
-                      {order.whatsapp_confirmation_url ? <WhatsAppButton href={order.whatsapp_confirmation_url} label="تأكيد" /> : null}
+                      <WhatsAppButton href={retargetWhatsAppConfirmationUrl(order.whatsapp_confirmation_url, order.customer_phone)} label="تأكيد" />
                       <Button asChild size="sm" variant="secondary">
                         <Link href={`${basePath}/orders/${order.id}` as Route}>فتح</Link>
                       </Button>

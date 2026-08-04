@@ -26,7 +26,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
 
   const whatsappUrl = buildWhatsAppConfirmationUrl({
     storeName: settings.store_name,
-    whatsappNumber: settings.whatsapp_number ?? "",
+    customerPhone: order.customer_phone,
     customerName: order.customer_name,
     orderNumber: order.order_number,
     lines: order.items.map((item) => ({ name: item.product_name, quantity: item.quantity })),
