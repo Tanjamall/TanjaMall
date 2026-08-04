@@ -57,14 +57,14 @@ export function AdminStatCard({
 
   return (
     <Card>
-      <CardHeader className="flex min-h-[145px] items-start justify-between gap-4" style={{ direction: "ltr" }}>
-        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-md", toneClass)}>
-          <Icon className="h-5 w-5" aria-hidden="true" />
+      <CardHeader className="flex min-h-[88px] items-start justify-between gap-2 p-2.5 sm:min-h-[118px] sm:gap-3 sm:p-4" style={{ direction: "ltr" }}>
+        <div className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-md sm:h-9 sm:w-9", toneClass)}>
+          <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
         </div>
-        <div className="text-right" dir="rtl">
-          <CardDescription>{title}</CardDescription>
-          <CardTitle className="mt-2 text-2xl">{value}</CardTitle>
-          <p className="mt-2 text-xs font-black text-muted-foreground">{description}</p>
+        <div className="min-w-0 text-right" dir="rtl">
+          <CardDescription className="text-[11px] leading-4 sm:text-xs">{title}</CardDescription>
+          <CardTitle className="mt-1 text-lg leading-tight sm:text-xl">{value}</CardTitle>
+          <p className="mt-1 hidden text-[11px] font-black leading-4 text-muted-foreground sm:block">{description}</p>
         </div>
       </CardHeader>
     </Card>
