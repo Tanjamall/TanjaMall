@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { Banknote, PhoneCall, Truck } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
 import { formatPrice } from "@/lib/storefront/format";
@@ -16,6 +16,9 @@ type HomeStorefrontProps = {
 };
 
 export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
+  const heroTrackRef = useRef<HTMLDivElement>(null);
+  const activeSlideRef = useRef(0);
+  const autoScrollPausedRef = useRef(false);
   const featuredProducts = useMemo(
     () => products.filter((product) => product.is_featured).slice(0, 8),
     [products]
@@ -26,11 +29,62 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
   );
   const slides = featuredProducts.length ? featuredProducts.slice(0, 3) : products.slice(0, 3);
 
+  useEffect(() => {
+    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const interval = window.setInterval(() => {
+      if (autoScrollPausedRef.current) return;
+
+      const track = heroTrackRef.current;
+      if (!track) return;
+
+      const nextIndex = (activeSlideRef.current + 1) % slides.length;
+      const nextSlide = track.children.item(nextIndex);
+      if (!(nextSlide instanceof HTMLElement)) return;
+
+      activeSlideRef.current = nextIndex;
+      nextSlide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+    }, 5000);
+
+    return () => window.clearInterval(interval);
+  }, [slides.length]);
+
+  function syncActiveSlide() {
+    const track = heroTrackRef.current;
+    if (!track) return;
+
+    const trackBounds = track.getBoundingClientRect();
+    const isRtl = window.getComputedStyle(track).direction === "rtl";
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    Array.from(track.children).forEach((slide, index) => {
+      const slideBounds = slide.getBoundingClientRect();
+      const distance = Math.abs((isRtl ? slideBounds.right : slideBounds.left) - (isRtl ? trackBounds.right : trackBounds.left));
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    activeSlideRef.current = closestIndex;
+  }
+
   return (
     <>
       {slides.length ? (
-        <section className="hero" aria-label="المنتجات المميزة">
-          <div className="hero-track">
+        <section
+          className="hero"
+          aria-label="المنتجات المميزة"
+          onMouseEnter={() => { autoScrollPausedRef.current = true; }}
+          onMouseLeave={() => { autoScrollPausedRef.current = false; }}
+          onFocusCapture={() => { autoScrollPausedRef.current = true; }}
+          onBlurCapture={() => { autoScrollPausedRef.current = false; }}
+          onPointerDown={() => { autoScrollPausedRef.current = true; }}
+          onPointerUp={() => { autoScrollPausedRef.current = false; }}
+          onPointerCancel={() => { autoScrollPausedRef.current = false; }}
+        >
+          <div className="hero-track" ref={heroTrackRef} onScroll={syncActiveSlide}>
             {slides.map((product, index) => (
               <Link href={`/products/${product.slug}`} className="hero-slide" key={product.id}>
                 {product.main_image_url ? (
