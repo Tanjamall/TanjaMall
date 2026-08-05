@@ -4,9 +4,10 @@
 
 import Link from "next/link";
 import { Banknote, PhoneCall, Truck } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
+import { formatPrice } from "@/lib/storefront/format";
 import type { StoreCategory, StoreProduct } from "@/lib/storefront/types";
 
 type HomeStorefrontProps = {
@@ -24,64 +25,33 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
     [products]
   );
   const slides = featuredProducts.length ? featuredProducts.slice(0, 3) : products.slice(0, 3);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const heroProduct = slides[activeSlide] ?? products[0];
-  const sideProducts = slides.slice(1, 3);
 
   return (
     <>
-      <div className="home-hero-grid">
-      {heroProduct ? (
-        <section className="hero" aria-label="العروض الرئيسية">
-          <Link href={`/products/${heroProduct.slug}`} className="hero-slide">
-            <div>
-              <span className="hero-kicker">عرض اليوم</span>
-              <h1 className="hero-title">{heroProduct.name}</h1>
-              <p className="hero-copy">{heroProduct.short_description ?? "اطلب الآن والدفع عند الاستلام والتوصيل إلى جميع مدن المغرب."}</p>
-              <span className="view-all">اكتشف العرض</span>
-            </div>
-            {heroProduct.main_image_url ? (
-              <img className="hero-img" src={heroProduct.main_image_url} alt={heroProduct.name} fetchPriority="high" decoding="async" />
-            ) : null}
-          </Link>
-          <div className="hero-controls" aria-label="اختيار العرض">
-            {slides.map((slide, index) => (
-              <button
-                key={slide.id}
-                type="button"
-                className={`dot ${index === activeSlide ? "active" : ""}`}
-                aria-label={`العرض ${index + 1}`}
-                onClick={() => setActiveSlide(index)}
-              />
+      {slides.length ? (
+        <section className="hero" aria-label="المنتجات المميزة">
+          <div className="hero-track">
+            {slides.map((product, index) => (
+              <Link href={`/products/${product.slug}`} className="hero-slide" key={product.id}>
+                {product.main_image_url ? (
+                  <img
+                    className="hero-img"
+                    src={product.main_image_url}
+                    alt={product.name}
+                    fetchPriority={index === 0 ? "high" : undefined}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                ) : null}
+                <div className="hero-product-info">
+                  <h1 className="hero-title">{product.name}</h1>
+                  <strong className="hero-price">{formatPrice(product.price)}</strong>
+                </div>
+              </Link>
             ))}
           </div>
         </section>
       ) : null}
-        <aside className="desktop-hero-aside desktop-only" aria-label="عروض مختارة">
-          {sideProducts.map((product) => (
-            <Link className="desktop-promo-card" href={`/products/${product.slug}`} key={product.id}>
-              <div>
-                <span>{product.is_best_seller ? "الأكثر طلبا" : "منتج مختار"}</span>
-                <strong>{product.name}</strong>
-                <small>اكتشف المنتج</small>
-              </div>
-              {product.main_image_url ? (
-                <img src={product.main_image_url} alt="" loading="lazy" decoding="async" />
-              ) : null}
-            </Link>
-          ))}
-          {sideProducts.length < 2 ? (
-            <div className="desktop-promo-card desktop-service-card">
-              <Banknote aria-hidden="true" />
-              <div>
-                <span>شراء بدون مخاطرة</span>
-                <strong>الدفع عند الاستلام</strong>
-                <small>نؤكد الطلب معك قبل التوصيل</small>
-              </div>
-            </div>
-          ) : null}
-        </aside>
-      </div>
 
       <section className="desktop-home-services desktop-only" aria-label="خدمات المتجر">
         <div><Truck aria-hidden="true" /><span><strong>توصيل وطني</strong><small>إلى جميع مدن المغرب</small></span></div>
