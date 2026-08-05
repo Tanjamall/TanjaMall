@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { Banknote, PhoneCall, Truck } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
 import { formatPrice } from "@/lib/storefront/format";
@@ -19,6 +19,8 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const activeSlideRef = useRef(0);
   const autoScrollPausedRef = useRef(false);
+  const autoScrollStoppedRef = useRef(false);
+  const [activeSlide, setActiveSlide] = useState(0);
   const featuredProducts = useMemo(
     () => products.filter((product) => product.is_featured).slice(0, 8),
     [products]
@@ -30,10 +32,14 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
   const slides = featuredProducts.length ? featuredProducts.slice(0, 3) : products.slice(0, 3);
 
   useEffect(() => {
-    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (
+      slides.length < 2
+      || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || !window.matchMedia("(min-width: 900px)").matches
+    ) return;
 
     const interval = window.setInterval(() => {
-      if (autoScrollPausedRef.current) return;
+      if (autoScrollPausedRef.current || autoScrollStoppedRef.current) return;
 
       const track = heroTrackRef.current;
       if (!track) return;
@@ -43,8 +49,9 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
       if (!(nextSlide instanceof HTMLElement)) return;
 
       activeSlideRef.current = nextIndex;
+      setActiveSlide(nextIndex);
       nextSlide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-    }, 5000);
+    }, 6000);
 
     return () => window.clearInterval(interval);
   }, [slides.length]);
@@ -68,6 +75,18 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
     });
 
     activeSlideRef.current = closestIndex;
+    setActiveSlide(closestIndex);
+  }
+
+  function selectHeroSlide(index: number) {
+    const track = heroTrackRef.current;
+    const selectedSlide = track?.children.item(index);
+    if (!(selectedSlide instanceof HTMLElement)) return;
+
+    autoScrollStoppedRef.current = true;
+    activeSlideRef.current = index;
+    setActiveSlide(index);
+    selectedSlide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
   }
 
   return (
@@ -80,7 +99,10 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
           onMouseLeave={() => { autoScrollPausedRef.current = false; }}
           onFocusCapture={() => { autoScrollPausedRef.current = true; }}
           onBlurCapture={() => { autoScrollPausedRef.current = false; }}
-          onPointerDown={() => { autoScrollPausedRef.current = true; }}
+          onPointerDown={() => {
+            autoScrollPausedRef.current = true;
+            autoScrollStoppedRef.current = true;
+          }}
           onPointerUp={() => { autoScrollPausedRef.current = false; }}
           onPointerCancel={() => { autoScrollPausedRef.current = false; }}
         >
@@ -104,6 +126,22 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
               </Link>
             ))}
           </div>
+          {slides.length > 1 ? (
+            <div className="hero-pagination" aria-label="اختيار المنتج المميز">
+              {slides.map((product, index) => (
+                <button
+                  type="button"
+                  key={product.id}
+                  className={index === activeSlide ? "active" : ""}
+                  aria-label={`عرض ${product.name}`}
+                  aria-current={index === activeSlide ? "true" : undefined}
+                  onClick={() => selectHeroSlide(index)}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
+          ) : null}
         </section>
       ) : null}
 

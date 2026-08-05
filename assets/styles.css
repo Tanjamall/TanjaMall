@@ -307,6 +307,7 @@ a {
 }
 
 .hero {
+  position: relative;
   margin: 2px 0 12px;
   width: 100%;
   max-width: 100%;
@@ -334,18 +335,31 @@ a {
   display: grid;
   flex: 0 0 100%;
   min-width: 100%;
-  grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+  grid-template-columns: minmax(0, 60%) minmax(0, 40%);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   background: var(--tm-cream);
 }
 
+.hero-slide:nth-child(2) {
+  background: var(--tm-green-soft);
+}
+
+.hero-slide:nth-child(3) {
+  background: var(--tm-soft);
+}
+
 .hero-img {
   display: block;
-  width: 100%;
-  height: 178px;
+  z-index: 1;
+  width: calc(100% - 20px);
+  height: 158px;
+  margin: 10px;
+  border-radius: 7px;
   object-fit: contain;
-  background: #ffffff;
+  background: var(--tm-card);
+  box-shadow: 0 8px 22px rgba(19, 25, 33, 0.1);
+  transform: translateX(-4px);
 }
 
 .hero-product-info {
@@ -353,7 +367,7 @@ a {
   min-width: 0;
   align-content: center;
   gap: 12px;
-  padding: 16px;
+  padding: 16px 14px 30px;
   direction: rtl;
 }
 
@@ -374,6 +388,45 @@ a {
   font-size: 18px;
   font-weight: 900;
   white-space: nowrap;
+}
+
+.hero-pagination {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: 12px;
+  bottom: 8px;
+  display: flex;
+  direction: ltr;
+}
+
+.hero-pagination button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hero-pagination button span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tm-ink) 28%, transparent);
+  transition: width 180ms ease-out, background-color 180ms ease-out;
+}
+
+.hero-pagination button.active span {
+  width: 22px;
+  background: var(--tm-orange);
+}
+
+.hero-pagination button:focus-visible {
+  outline: 2px solid var(--tm-orange-dark);
+  outline-offset: -3px;
+  border-radius: 6px;
 }
 
 .section-head {
@@ -2458,12 +2511,16 @@ button:disabled,
   }
 
   .hero-img {
-    height: 260px;
+    width: calc(100% - 32px);
+    height: 228px;
+    margin: 16px;
+    border-radius: 9px;
+    transform: translateX(-8px);
   }
 
   .hero-product-info {
     gap: 18px;
-    padding: 28px;
+    padding: 28px 30px 44px;
   }
 
   .hero-title {
@@ -3127,7 +3184,12 @@ button:disabled,
   }
 
   .hero-img {
-    height: 280px;
+    height: 248px;
+  }
+
+  .hero-pagination {
+    inset-inline-end: 26px;
+    bottom: 14px;
   }
 
   .desktop-home-services {
