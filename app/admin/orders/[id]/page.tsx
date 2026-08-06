@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, MessageCircle, Phone, UserRound } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminFormSection, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
-import { OrderManagementForm } from "@/components/admin/order-management-form";
+import { OrderManagementForm, OrderStatusSelect } from "@/components/admin/order-management-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -35,7 +35,17 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
   });
 
   return (
-    <AdminShell adminUser={admin}>
+    <AdminShell
+      adminUser={admin}
+      mobileHeaderAction={(
+        <Button asChild className="border border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" variant="secondary">
+          <Link href={"/admin/orders" as Route}>
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            رجوع
+          </Link>
+        </Button>
+      )}
+    >
       <div className="space-y-6">
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
           <div className="space-y-4">
@@ -49,12 +59,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
                   <StatusBadge status={order.status} />
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button asChild variant="secondary">
-                    <Link href={"/admin/orders" as Route}>
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                      كل الطلبات
-                    </Link>
-                  </Button>
+                  <OrderStatusSelect currentStatus={order.status} orderId={order.id} />
                   <WhatsAppButton href={whatsappUrl} label="فتح واتساب" />
                 </div>
               </CardHeader>
@@ -117,12 +122,11 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
             </Card>
 
             <AdminFormSection
-              description="غيّر مرحلة الطلب واحفظ ملاحظات لا يراها العميل."
+              description="احفظ ملاحظات لا يراها العميل."
               icon={MessageCircle}
-              title="الحالة والملاحظات"
+              title="الملاحظات الداخلية"
             >
               <OrderManagementForm
-                currentStatus={order.status}
                 internalNotes={order.internal_notes}
                 orderId={order.id}
               />

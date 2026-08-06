@@ -8,7 +8,7 @@ export default async function AdminDashboardPage() {
   const dashboard = await getAdminDashboardData();
 
   return (
-    <AdminShell adminUser={admin}>
+    <AdminShell adminUser={admin} showLogout>
       <AdminDashboardContent
         adminName={admin.fullName || admin.email}
         data={dashboard}

@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 import { MessageCircle, Save } from "lucide-react";
 import { saveOrderNotesAction, updateOrderStatusAction, type OrderActionState } from "@/app/admin/orders/actions";
-import { StatusBadge } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/orders";
 
@@ -31,43 +30,15 @@ function ActionMessage({ state }: { state: OrderActionState }) {
 
 export function OrderManagementForm({
   orderId,
-  currentStatus,
   internalNotes
 }: {
   orderId: string;
-  currentStatus: OrderStatus;
   internalNotes: string | null;
 }) {
-  const [statusState, statusAction, statusPending] = useActionState(updateOrderStatusAction, initialState);
   const [notesState, notesAction, notesPending] = useActionState(saveOrderNotesAction, initialState);
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-black">الحالة الحالية</span>
-          <StatusBadge status={currentStatus} />
-        </div>
-        <form action={statusAction} className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
-          <input name="order_id" type="hidden" value={orderId} />
-          {ORDER_STATUSES.map((status) => (
-            <Button
-              disabled={statusPending || status === currentStatus}
-              key={status}
-              name="status"
-              className="min-h-11"
-              size="sm"
-              type="submit"
-              value={status}
-              variant={status === currentStatus ? "default" : "secondary"}
-            >
-              {statusLabels[status]}
-            </Button>
-          ))}
-        </form>
-        <ActionMessage state={statusState} />
-      </div>
-
       <form action={notesAction} className="grid gap-3">
         <input name="order_id" type="hidden" value={orderId} />
         <label className="text-sm font-black" htmlFor="internal_notes">ملاحظات داخلية</label>
@@ -91,5 +62,34 @@ export function OrderManagementForm({
         رسالة واتساب تستخدم بيانات الطلب والأسعار المحفوظة وقت الشراء.
       </p>
     </div>
+  );
+}
+
+export function OrderStatusSelect({
+  orderId,
+  currentStatus
+}: {
+  orderId: string;
+  currentStatus: OrderStatus;
+}) {
+  const [state, action, pending] = useActionState(updateOrderStatusAction, initialState);
+
+  return (
+    <form action={action} className="grid" aria-label="تحديث حالة الطلب">
+      <input name="order_id" type="hidden" value={orderId} />
+      <select
+        aria-label="حالة الطلب"
+        className="min-h-9 rounded-md border border-input bg-card px-3 text-sm font-black outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait disabled:opacity-60"
+        defaultValue={currentStatus}
+        disabled={pending}
+        name="status"
+        onChange={(event) => event.currentTarget.form?.requestSubmit()}
+      >
+        {ORDER_STATUSES.map((status) => (
+          <option key={status} value={status}>{statusLabels[status]}</option>
+        ))}
+      </select>
+      {state.message ? <span className="sr-only" role="status">{state.message}</span> : null}
+    </form>
   );
 }
