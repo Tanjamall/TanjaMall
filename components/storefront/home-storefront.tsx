@@ -4,10 +4,9 @@
 
 import Link from "next/link";
 import { Banknote, PhoneCall, Truck } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CategoryStrip } from "@/components/storefront/category-strip";
 import { ProductCard } from "@/components/storefront/product-card";
-import { formatPrice } from "@/lib/storefront/format";
 import type { StoreCategory, StoreProduct } from "@/lib/storefront/types";
 
 type HomeStorefrontProps = {
@@ -16,11 +15,6 @@ type HomeStorefrontProps = {
 };
 
 export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
-  const heroTrackRef = useRef<HTMLDivElement>(null);
-  const activeSlideRef = useRef(0);
-  const autoScrollPausedRef = useRef(false);
-  const autoScrollStoppedRef = useRef(false);
-  const [activeSlide, setActiveSlide] = useState(0);
   const featuredProducts = useMemo(
     () => products.filter((product) => product.is_featured).slice(0, 8),
     [products]
@@ -30,120 +24,64 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
     [products]
   );
   const slides = featuredProducts.length ? featuredProducts.slice(0, 3) : products.slice(0, 3);
-
-  useEffect(() => {
-    if (
-      slides.length < 2
-      || window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      || !window.matchMedia("(min-width: 900px)").matches
-    ) return;
-
-    const interval = window.setInterval(() => {
-      if (autoScrollPausedRef.current || autoScrollStoppedRef.current) return;
-
-      const track = heroTrackRef.current;
-      if (!track) return;
-
-      const nextIndex = (activeSlideRef.current + 1) % slides.length;
-      const nextSlide = track.children.item(nextIndex);
-      if (!(nextSlide instanceof HTMLElement)) return;
-
-      activeSlideRef.current = nextIndex;
-      setActiveSlide(nextIndex);
-      nextSlide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-    }, 6000);
-
-    return () => window.clearInterval(interval);
-  }, [slides.length]);
-
-  function syncActiveSlide() {
-    const track = heroTrackRef.current;
-    if (!track) return;
-
-    const trackBounds = track.getBoundingClientRect();
-    const isRtl = window.getComputedStyle(track).direction === "rtl";
-    let closestIndex = 0;
-    let closestDistance = Number.POSITIVE_INFINITY;
-
-    Array.from(track.children).forEach((slide, index) => {
-      const slideBounds = slide.getBoundingClientRect();
-      const distance = Math.abs((isRtl ? slideBounds.right : slideBounds.left) - (isRtl ? trackBounds.right : trackBounds.left));
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
-    });
-
-    activeSlideRef.current = closestIndex;
-    setActiveSlide(closestIndex);
-  }
-
-  function selectHeroSlide(index: number) {
-    const track = heroTrackRef.current;
-    const selectedSlide = track?.children.item(index);
-    if (!(selectedSlide instanceof HTMLElement)) return;
-
-    autoScrollStoppedRef.current = true;
-    activeSlideRef.current = index;
-    setActiveSlide(index);
-    selectedSlide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-  }
+  const [activeSlide, setActiveSlide] = useState(0);
+  const heroProduct = slides[activeSlide] ?? products[0];
+  const sideProducts = slides.slice(1, 3);
 
   return (
     <>
-      {slides.length ? (
-        <section
-          className="hero"
-          aria-label="المنتجات المميزة"
-          onMouseEnter={() => { autoScrollPausedRef.current = true; }}
-          onMouseLeave={() => { autoScrollPausedRef.current = false; }}
-          onFocusCapture={() => { autoScrollPausedRef.current = true; }}
-          onBlurCapture={() => { autoScrollPausedRef.current = false; }}
-          onPointerDown={() => {
-            autoScrollPausedRef.current = true;
-            autoScrollStoppedRef.current = true;
-          }}
-          onPointerUp={() => { autoScrollPausedRef.current = false; }}
-          onPointerCancel={() => { autoScrollPausedRef.current = false; }}
-        >
-          <div className="hero-track" ref={heroTrackRef} onScroll={syncActiveSlide}>
-            {slides.map((product, index) => (
-              <Link href={`/products/${product.slug}`} className="hero-slide" key={product.id}>
-                {product.main_image_url ? (
-                  <img
-                    className="hero-img"
-                    src={product.main_image_url}
-                    alt={product.name}
-                    fetchPriority={index === 0 ? "high" : undefined}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
-                ) : null}
-                <div className="hero-product-info">
-                  <h1 className="hero-title">{product.name}</h1>
-                  <strong className="hero-price">{formatPrice(product.price)}</strong>
-                </div>
-              </Link>
+      <div className="home-hero-grid">
+      {heroProduct ? (
+        <section className="hero" aria-label="العروض الرئيسية">
+          <Link href={`/products/${heroProduct.slug}`} className="hero-slide">
+            <div>
+              <span className="hero-kicker">عرض اليوم</span>
+              <h1 className="hero-title">{heroProduct.name}</h1>
+              <p className="hero-copy">{heroProduct.short_description ?? "اطلب الآن والدفع عند الاستلام والتوصيل إلى جميع مدن المغرب."}</p>
+              <span className="view-all">اكتشف العرض</span>
+            </div>
+            {heroProduct.main_image_url ? (
+              <img className="hero-img" src={heroProduct.main_image_url} alt={heroProduct.name} fetchPriority="high" decoding="async" />
+            ) : null}
+          </Link>
+          <div className="hero-controls" aria-label="اختيار العرض">
+            {slides.map((slide, index) => (
+              <button
+                key={slide.id}
+                type="button"
+                className={`dot ${index === activeSlide ? "active" : ""}`}
+                aria-label={`العرض ${index + 1}`}
+                onClick={() => setActiveSlide(index)}
+              />
             ))}
           </div>
-          {slides.length > 1 ? (
-            <div className="hero-pagination" aria-label="اختيار المنتج المميز">
-              {slides.map((product, index) => (
-                <button
-                  type="button"
-                  key={product.id}
-                  className={index === activeSlide ? "active" : ""}
-                  aria-label={`عرض ${product.name}`}
-                  aria-current={index === activeSlide ? "true" : undefined}
-                  onClick={() => selectHeroSlide(index)}
-                >
-                  <span />
-                </button>
-              ))}
-            </div>
-          ) : null}
         </section>
       ) : null}
+        <aside className="desktop-hero-aside desktop-only" aria-label="عروض مختارة">
+          {sideProducts.map((product) => (
+            <Link className="desktop-promo-card" href={`/products/${product.slug}`} key={product.id}>
+              <div>
+                <span>{product.is_best_seller ? "الأكثر طلبا" : "منتج مختار"}</span>
+                <strong>{product.name}</strong>
+                <small>اكتشف المنتج</small>
+              </div>
+              {product.main_image_url ? (
+                <img src={product.main_image_url} alt="" loading="lazy" decoding="async" />
+              ) : null}
+            </Link>
+          ))}
+          {sideProducts.length < 2 ? (
+            <div className="desktop-promo-card desktop-service-card">
+              <Banknote aria-hidden="true" />
+              <div>
+                <span>شراء بدون مخاطرة</span>
+                <strong>الدفع عند الاستلام</strong>
+                <small>نؤكد الطلب معك قبل التوصيل</small>
+              </div>
+            </div>
+          ) : null}
+        </aside>
+      </div>
 
       <section className="desktop-home-services desktop-only" aria-label="خدمات المتجر">
         <div><Truck aria-hidden="true" /><span><strong>توصيل وطني</strong><small>إلى جميع مدن المغرب</small></span></div>
