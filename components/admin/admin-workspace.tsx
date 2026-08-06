@@ -3,8 +3,8 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
-import { PanelRightClose, PanelRightOpen, ShieldCheck } from "lucide-react";
+import { useState, type FocusEvent, type ReactNode } from "react";
+import { ShieldCheck } from "lucide-react";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { adminNavItems, isAdminNavItemActive } from "@/components/admin/admin-nav-items";
 
@@ -18,12 +18,16 @@ export function AdminWorkspace({
   preview: boolean;
 }>) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+
+  function handleSidebarBlur(event: FocusEvent<HTMLElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget)) setCollapsed(true);
+  }
 
   return (
     <>
       <div
-        className={`mx-auto grid max-w-[1720px] gap-6 ${
+        className={`mx-auto grid max-w-[1720px] gap-6 transition-[grid-template-columns] duration-200 ease-out motion-reduce:transition-none ${
           collapsed
             ? "lg:grid-cols-[minmax(0,1fr)_76px]"
             : "lg:grid-cols-[minmax(0,1fr)_288px]"
@@ -35,42 +39,34 @@ export function AdminWorkspace({
         </section>
 
         <aside
-          className={`relative sticky top-6 hidden h-[calc(100vh-48px)] rounded-xl border border-white/10 bg-[#131921] text-white shadow-xl shadow-slate-950/10 lg:block ${
+          className={`relative sticky top-6 hidden h-[calc(100vh-48px)] overflow-hidden rounded-xl border border-white/10 bg-[#131921] text-white shadow-xl shadow-slate-950/10 transition-[padding] duration-200 ease-out motion-reduce:transition-none lg:block ${
             collapsed ? "p-3" : "p-4"
           }`}
           dir="rtl"
+          onBlur={handleSidebarBlur}
+          onFocus={() => setCollapsed(false)}
+          onMouseEnter={() => setCollapsed(false)}
+          onMouseLeave={() => setCollapsed(true)}
         >
-          <button
-            type="button"
-            aria-expanded={!collapsed}
-            aria-label={collapsed ? "توسيع القائمة الجانبية" : "طي القائمة الجانبية"}
-            className="absolute -left-3 top-6 grid h-8 w-8 place-items-center rounded-full border border-[#2d3642] bg-[#131921] text-white/75 shadow-md transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#ece8df]"
-            onClick={() => setCollapsed((current) => !current)}
-            title={collapsed ? "توسيع القائمة" : "طي القائمة"}
-          >
-            {collapsed ? (
-              <PanelRightOpen className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <PanelRightClose className="h-4 w-4" aria-hidden="true" />
-            )}
-          </button>
-
           <Link
             className={`mb-8 flex min-h-11 items-center ${collapsed ? "justify-center" : "justify-between"}`}
             href={`${basePath}/dashboard` as Route}
             aria-label={collapsed ? "TanjaMall، لوحة التحكم" : undefined}
             title={collapsed ? "TanjaMall" : undefined}
           >
-            {!collapsed ? (
-              <div>
+            <div
+              aria-hidden={collapsed}
+              className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,transform] duration-200 ease-out motion-reduce:transition-none ${
+                collapsed ? "max-w-0 translate-x-2 opacity-0" : "max-w-48 translate-x-0 opacity-100"
+              }`}
+            >
                 <p className="text-xs font-bold text-orange-300">
                   {preview ? "معاينة محلية" : "لوحة إدارة"}
                 </p>
                 <p className="text-2xl font-black" dir="ltr">
                   <span className="text-primary">Tanja</span>Mall
                 </p>
-              </div>
-            ) : null}
+            </div>
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white/10">
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
             </div>
@@ -86,7 +82,7 @@ export function AdminWorkspace({
                 <Link
                   aria-current={active ? "page" : undefined}
                   aria-label={collapsed ? item.label : undefined}
-                  className={`flex min-h-11 items-center rounded-md text-sm font-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#131921] ${
+                  className={`flex min-h-11 items-center rounded-md text-sm font-black transition-[color,background-color,padding,gap] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#131921] ${
                     collapsed ? "justify-center px-0" : "gap-3 px-3"
                   } ${
                     active
@@ -98,7 +94,14 @@ export function AdminWorkspace({
                   title={collapsed ? item.label : undefined}
                 >
                   <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
-                  {!collapsed ? <span>{item.label}</span> : null}
+                  <span
+                    aria-hidden={collapsed}
+                    className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,transform] duration-200 ease-out motion-reduce:transition-none ${
+                      collapsed ? "max-w-0 translate-x-2 opacity-0" : "max-w-48 translate-x-0 opacity-100"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}

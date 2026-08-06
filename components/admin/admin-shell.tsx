@@ -17,11 +17,15 @@ const previewAdmin: AdminUser = {
 export async function AdminShell({
   children,
   preview = false,
-  adminUser
+  adminUser,
+  showLogout = false,
+  mobileHeaderAction
 }: Readonly<{
   children: ReactNode;
   preview?: boolean;
   adminUser?: AdminUser;
+  showLogout?: boolean;
+  mobileHeaderAction?: ReactNode;
 }>) {
   if (preview && process.env.NODE_ENV === "production" && process.env.ADMIN_PREVIEW_ENABLED !== "true") {
     notFound();
@@ -42,7 +46,13 @@ export async function AdminShell({
             <p className="mt-1 text-[11px] font-bold text-white/60">{preview ? "معاينة الإدارة" : "إدارة المتجر"}</p>
           </div>
         </Link>
-        {!preview ? <AdminLogoutButton /> : <span className="rounded-md bg-white/10 px-3 py-2 text-xs font-black">معاينة</span>}
+        {mobileHeaderAction ?? (
+          !preview && showLogout
+            ? <AdminLogoutButton />
+            : preview
+              ? <span className="rounded-md bg-white/10 px-3 py-2 text-xs font-black">معاينة</span>
+              : null
+        )}
       </header>
 
       <AdminWorkspace basePath={basePath} preview={preview}>

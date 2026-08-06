@@ -37,7 +37,7 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
             <div>
               <span className="hero-kicker">عرض اليوم</span>
               <h1 className="hero-title">{heroProduct.name}</h1>
-              <p className="hero-copy">{heroProduct.short_description ?? "اطلب الآن والدفع عند الاستلام داخل طنجة."}</p>
+              <p className="hero-copy">{heroProduct.short_description ?? "اطلب الآن والدفع عند الاستلام والتوصيل إلى جميع مدن المغرب."}</p>
               <span className="view-all">اكتشف العرض</span>
             </div>
             {heroProduct.main_image_url ? (
@@ -84,7 +84,7 @@ export function HomeStorefront({ categories, products }: HomeStorefrontProps) {
       </div>
 
       <section className="desktop-home-services desktop-only" aria-label="خدمات المتجر">
-        <div><Truck aria-hidden="true" /><span><strong>توصيل محلي</strong><small>توصيل سريع داخل طنجة</small></span></div>
+        <div><Truck aria-hidden="true" /><span><strong>توصيل وطني</strong><small>إلى جميع مدن المغرب</small></span></div>
         <div><Banknote aria-hidden="true" /><span><strong>الدفع عند الاستلام</strong><small>لا تدفع أي شيء مسبقا</small></span></div>
         <div><PhoneCall aria-hidden="true" /><span><strong>تأكيد شخصي</strong><small>عبر الهاتف أو واتساب</small></span></div>
       </section>

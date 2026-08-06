@@ -3,7 +3,7 @@ import type { Route } from "next";
 import { Search } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { adminOrders } from "@/components/admin/admin-demo-data";
-import { AdminDataTable, AdminPageHeader, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
+import { AdminDataTable, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,6 @@ export default function AdminPreviewOrdersPage() {
   return (
     <AdminShell preview>
       <div className="space-y-6">
-        <AdminPageHeader title="الطلبات" description="معاينة إدارة طلبات الدفع عند الاستلام." />
-
         <Card>
           <CardHeader>
             <CardTitle>كل الطلبات</CardTitle>
@@ -41,7 +39,7 @@ export default function AdminPreviewOrdersPage() {
                 order.area,
                 order.total,
                 <StatusBadge key={order.id} status={order.status} />,
-                <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212672975000" label="تأكيد" />,
+                <WhatsAppButton key={`${order.id}-wa`} href="https://wa.me/212708012888" label="تأكيد" />,
                 <Button key={`${order.id}-view`} asChild variant="secondary" size="sm">
                   <Link href={`/admin-preview/orders/${order.id}` as Route}>فتح</Link>
                 </Button>

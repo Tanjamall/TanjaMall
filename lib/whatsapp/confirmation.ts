@@ -1,6 +1,6 @@
 type WhatsAppOrderMessageInput = {
   storeName: string;
-  whatsappNumber: string;
+  customerPhone: string;
   customerName: string;
   orderNumber: string;
   lines: Array<{
@@ -11,8 +11,32 @@ type WhatsAppOrderMessageInput = {
   address: string;
 };
 
+export function normalizeWhatsAppRecipient(phone: string) {
+  let digits = phone.replace(/\D/g, "");
+
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (digits.startsWith("0")) digits = `212${digits.slice(1)}`;
+  if (/^[5-7]\d{8}$/.test(digits)) digits = `212${digits}`;
+
+  return digits;
+}
+
+export function retargetWhatsAppConfirmationUrl(url: string | null, customerPhone: string) {
+  const recipient = normalizeWhatsAppRecipient(customerPhone);
+  if (!recipient) return "";
+
+  if (!url) return `https://wa.me/${recipient}`;
+
+  try {
+    const parsed = new URL(url);
+    return `https://wa.me/${recipient}${parsed.search}`;
+  } catch {
+    return `https://wa.me/${recipient}`;
+  }
+}
+
 export function buildWhatsAppConfirmationUrl(input: WhatsAppOrderMessageInput) {
-  const whatsappNumber = input.whatsappNumber.replace(/\D/g, "");
+  const recipient = normalizeWhatsAppRecipient(input.customerPhone);
   const products = input.lines.map((line) => `- ${line.name} x${line.quantity}`).join("\n");
   const message = [
     `Salam ${input.customerName}, hna ${input.storeName}.`,
@@ -26,5 +50,5 @@ export function buildWhatsAppConfirmationUrl(input: WhatsAppOrderMessageInput) {
     "واش كتأكد الطلب باش نوجهوه ليك؟"
   ].join("\n");
 
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
 }

@@ -2,7 +2,7 @@
 
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { MessageCircle, Settings, Truck } from "lucide-react";
+import { Settings } from "lucide-react";
 import { updateStoreSettings, type StoreSettingsState } from "@/app/admin/settings/actions";
 import { AdminFormSection } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
@@ -57,6 +57,11 @@ export function AdminStoreSettingsForm({ settings }: { settings: StoreSettings }
     <form className="contents" noValidate onSubmit={submit}>
       <AdminFormSection title="المتجر" description="الاسم والهاتف ونص الإعلان." icon={Settings}>
         <div className="grid gap-4">
+          <input type="hidden" {...register("whatsapp_number")} />
+          <input type="hidden" {...register("default_city")} />
+          <input type="hidden" {...register("supported_cities")} />
+          <input type="hidden" {...register("delivery_fee_tanger")} />
+          <input type="hidden" {...register("free_delivery_threshold")} />
           <div>
             <Input
               placeholder="اسم المتجر"
@@ -71,49 +76,6 @@ export function AdminStoreSettingsForm({ settings }: { settings: StoreSettings }
           <div>
             <Input placeholder="نص الإعلان في الصفحة الرئيسية" {...register("announcement_text", { maxLength: 300 })} />
             <FieldError message={errors.announcement_text?.message} />
-          </div>
-          <Button disabled={isPending} type="submit">{saveLabel}</Button>
-        </div>
-      </AdminFormSection>
-
-      <AdminFormSection title="واتساب" description="رقم تأكيد طلبات الدفع عند الاستلام." icon={MessageCircle}>
-        <div className="grid gap-4">
-          <div>
-            <Input
-              dir="ltr"
-              inputMode="tel"
-              placeholder="مثال: 212672975000"
-              {...register("whatsapp_number", { required: "رقم واتساب مطلوب." })}
-            />
-            <FieldError message={errors.whatsapp_number?.message} />
-          </div>
-          <Button disabled={isPending} type="submit">{saveLabel}</Button>
-        </div>
-      </AdminFormSection>
-
-      <AdminFormSection title="التوصيل" description="المدن المدعومة ورسوم التوصيل في MVP." icon={Truck}>
-        <div className="grid gap-4">
-          <div>
-            <Input placeholder="المدينة الافتراضية" {...register("default_city", { required: "المدينة الافتراضية مطلوبة." })} />
-            <FieldError message={errors.default_city?.message} />
-          </div>
-          <div>
-            <textarea
-              className="min-h-28 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-bold leading-7 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              placeholder="مدينة واحدة في كل سطر"
-              {...register("supported_cities", { required: "أضف مدينة مدعومة واحدة على الأقل." })}
-            />
-            <FieldError message={errors.supported_cities?.message} />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Input min="0" step="0.01" type="number" placeholder="رسوم التوصيل" {...register("delivery_fee_tanger", { required: true })} />
-              <FieldError message={errors.delivery_fee_tanger?.message} />
-            </div>
-            <div>
-              <Input min="0" step="0.01" type="number" placeholder="حد التوصيل المجاني" {...register("free_delivery_threshold")} />
-              <FieldError message={errors.free_delivery_threshold?.message} />
-            </div>
           </div>
           <Button disabled={isPending} type="submit">{saveLabel}</Button>
         </div>

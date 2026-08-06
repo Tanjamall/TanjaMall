@@ -20,15 +20,15 @@ export function AdminPageHeader({
   children?: ReactNode;
 }) {
   return (
-    <header className="rounded-xl border border-[#d8e2dc] bg-white p-6 shadow-sm">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_410px] md:items-end" style={{ direction: "ltr" }}>
-        <div className="flex flex-wrap items-center gap-2" dir="ltr">
+    <header className="rounded-xl border border-[#d8e2dc] bg-white p-4 shadow-sm sm:p-6">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_410px] md:items-end md:gap-6" style={{ direction: "ltr" }}>
+        <div className="flex flex-wrap items-center gap-2 max-md:order-2" dir="ltr">
           {children}
         </div>
         <div className="text-right" dir="rtl">
           <p className="text-sm font-black text-accent-foreground">{eyebrow}</p>
-          <h1 className="mt-2 text-3xl font-black text-foreground md:text-4xl">{title}</h1>
-          <p className="mt-4 text-base font-bold leading-8 text-muted-foreground">{description}</p>
+          <h1 className="mt-1 text-2xl font-black text-foreground sm:text-3xl md:mt-2 md:text-4xl">{title}</h1>
+          <p className="mt-2 text-sm font-bold leading-7 text-muted-foreground sm:mt-4 sm:text-base sm:leading-8">{description}</p>
         </div>
       </div>
     </header>
@@ -57,14 +57,14 @@ export function AdminStatCard({
 
   return (
     <Card>
-      <CardHeader className="flex min-h-[145px] items-start justify-between gap-4" style={{ direction: "ltr" }}>
-        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-md", toneClass)}>
-          <Icon className="h-5 w-5" aria-hidden="true" />
+      <CardHeader className="flex min-h-[88px] items-start justify-between gap-2 p-2.5 sm:min-h-[118px] sm:gap-3 sm:p-4" style={{ direction: "ltr" }}>
+        <div className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-md sm:h-9 sm:w-9", toneClass)}>
+          <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
         </div>
-        <div className="text-right" dir="rtl">
-          <CardDescription>{title}</CardDescription>
-          <CardTitle className="mt-2 text-2xl">{value}</CardTitle>
-          <p className="mt-2 text-xs font-black text-muted-foreground">{description}</p>
+        <div className="min-w-0 text-right" dir="rtl">
+          <CardDescription className="text-[11px] leading-4 sm:text-xs">{title}</CardDescription>
+          <CardTitle className="mt-1 text-lg leading-tight sm:text-xl">{value}</CardTitle>
+          <p className="mt-1 hidden text-[11px] font-black leading-4 text-muted-foreground sm:block">{description}</p>
         </div>
       </CardHeader>
     </Card>

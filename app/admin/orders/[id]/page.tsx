@@ -3,8 +3,8 @@ import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, MessageCircle, Phone, UserRound } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminFormSection, AdminPageHeader, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
-import { OrderManagementForm } from "@/components/admin/order-management-form";
+import { AdminFormSection, StatusBadge, WhatsAppButton } from "@/components/admin/admin-ui";
+import { OrderManagementForm, OrderStatusSelect } from "@/components/admin/order-management-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -26,7 +26,7 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
 
   const whatsappUrl = buildWhatsAppConfirmationUrl({
     storeName: settings.store_name,
-    whatsappNumber: settings.whatsapp_number ?? "",
+    customerPhone: order.customer_phone,
     customerName: order.customer_name,
     orderNumber: order.order_number,
     lines: order.items.map((item) => ({ name: item.product_name, quantity: item.quantity })),
@@ -35,32 +35,32 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
   });
 
   return (
-    <AdminShell adminUser={admin}>
+    <AdminShell
+      adminUser={admin}
+      mobileHeaderAction={(
+        <Button asChild className="border border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" variant="secondary">
+          <Link href={"/admin/orders" as Route}>
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            رجوع
+          </Link>
+        </Button>
+      )}
+    >
       <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow={`أنشئ في ${formatOrderDate(order.created_at)}`}
-          title={`الطلب ${order.order_number}`}
-          description="بيانات العميل، المنتجات المحفوظة وقت الشراء، حالة التنفيذ، وتأكيد واتساب."
-        >
-          <Button asChild variant="secondary">
-            <Link href={"/admin/orders" as Route}>
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              كل الطلبات
-            </Link>
-          </Button>
-          <WhatsAppButton href={whatsappUrl} label="فتح واتساب" />
-        </AdminPageHeader>
-
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
           <div className="space-y-4">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <CardTitle>منتجات الطلب</CardTitle>
-                    <CardDescription className="mt-1">الاسم والسعر والصورة محفوظة كما كانت عند إنشاء الطلب.</CardDescription>
+                    <CardTitle>الطلب {order.order_number}</CardTitle>
+                    <CardDescription className="mt-1">أنشئ في {formatOrderDate(order.created_at)}</CardDescription>
                   </div>
                   <StatusBadge status={order.status} />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <OrderStatusSelect currentStatus={order.status} orderId={order.id} />
+                  <WhatsAppButton href={whatsappUrl} label="فتح واتساب" />
                 </div>
               </CardHeader>
               <CardContent className="grid gap-3">
@@ -122,12 +122,11 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
             </Card>
 
             <AdminFormSection
-              description="غيّر مرحلة الطلب واحفظ ملاحظات لا يراها العميل."
+              description="احفظ ملاحظات لا يراها العميل."
               icon={MessageCircle}
-              title="الحالة والملاحظات"
+              title="الملاحظات الداخلية"
             >
               <OrderManagementForm
-                currentStatus={order.status}
                 internalNotes={order.internal_notes}
                 orderId={order.id}
               />

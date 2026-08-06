@@ -37,7 +37,6 @@ export function InlineProductCheckout({
   onDecrease
 }: InlineProductCheckoutProps) {
   const router = useRouter();
-  const cities = settings.supported_cities.length ? settings.supported_cities : [settings.default_city];
   const productTotal = product.price * quantity;
   const qualifiesForFreeDelivery = settings.free_delivery_threshold !== null && productTotal >= settings.free_delivery_threshold;
   const deliveryFee = qualifiesForFreeDelivery ? 0 : settings.delivery_fee_tanger;
@@ -51,7 +50,7 @@ export function InlineProductCheckout({
   } = useForm<CheckoutInput>({
     mode: "onTouched",
     defaultValues: {
-      city: cities.includes(settings.default_city) ? settings.default_city : cities[0]
+      city: "المغرب"
     }
   });
 
@@ -109,18 +108,12 @@ export function InlineProductCheckout({
             <input {...register("phone")} autoComplete="tel" dir="ltr" inputMode="tel" aria-invalid={Boolean(errors.phone)} placeholder="06xxxxxxxx" type="tel" />
             {errors.phone ? <small>{errors.phone.message}</small> : null}
           </label>
+          <input type="hidden" {...register("city")} />
           <label className="inline-checkout-wide">
-            <span>المدينة</span>
-            <input {...register("city")} autoComplete="address-level1" aria-invalid={Boolean(errors.city)} list="inline-city-suggestions" placeholder="المدينة" />
-            <datalist id="inline-city-suggestions">
-              {cities.map((city) => <option key={city} value={city} />)}
-            </datalist>
-            {errors.city ? <small>{errors.city.message}</small> : null}
-          </label>
-          <label className="inline-checkout-wide">
-            <span>العنوان</span>
-            <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address)} placeholder="العنوان" />
+            <span>المدينة والعنوان</span>
+            <input {...register("address")} autoComplete="street-address" aria-invalid={Boolean(errors.address || errors.city)} placeholder="مثال: الدار البيضاء، الحي، الشارع..." />
             {errors.address ? <small>{errors.address.message}</small> : null}
+            {errors.city ? <small>{errors.city.message}</small> : null}
           </label>
         </div>
 

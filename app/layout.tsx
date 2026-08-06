@@ -12,7 +12,7 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: "TanjaMall",
-  description: "Cash-on-delivery ecommerce store for Tanger."
+  description: "Cash-on-delivery ecommerce store delivering across Morocco."
 };
 
 export default async function RootLayout({

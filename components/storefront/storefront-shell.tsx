@@ -16,12 +16,14 @@ type StorefrontShellProps = {
 export function StorefrontShell({ categories, settings, children }: StorefrontShellProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const cartCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0)
   );
 
-  const phone = settings.store_phone ?? "0672975000";
+  const phone = settings.store_phone?.trim() || null;
+  const phoneHref = phone ? `tel:${phone.replace(/\s/g, "")}` : null;
   const visibleCategories = useMemo(() => categories.slice(0, 8), [categories]);
 
   useEffect(() => {
@@ -50,13 +52,15 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
             <div className="desktop-utility-inner">
               <div>
                 <MapPin aria-hidden="true" />
-                <span>التوصيل داخل {settings.default_city}</span>
+                <span>التوصيل إلى جميع مدن المغرب</span>
               </div>
-              <a href={`tel:${phone.replace(/\s/g, "")}`}>
-                <PhoneCall aria-hidden="true" />
-                <span>خدمة الزبناء:</span>
-                <b className="phone-ltr">{phone}</b>
-              </a>
+              {phoneHref ? (
+                <a href={phoneHref}>
+                  <PhoneCall aria-hidden="true" />
+                  <span>خدمة الزبناء:</span>
+                  <b className="phone-ltr">{phone}</b>
+                </a>
+              ) : null}
             </div>
           </div>
 
@@ -86,6 +90,18 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
 
               <button
                 type="button"
+                className="icon-button header-search-button"
+                data-action="open-search"
+                aria-label="فتح البحث"
+                aria-expanded={searchOpen}
+                aria-controls="store-search"
+                onClick={() => setSearchOpen((open) => !open)}
+              >
+                {searchOpen ? <X aria-hidden="true" /> : <Search aria-hidden="true" />}
+              </button>
+
+              <button
+                type="button"
                 className="icon-button"
                 data-action="open-menu"
                 aria-label="فتح القائمة"
@@ -96,7 +112,7 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
               </button>
             </div>
 
-            <form className="search-row" role="search" aria-label="البحث في المتجر" onSubmit={submitSearch}>
+            <form id="store-search" className={`search-row ${searchOpen ? "active" : ""}`} role="search" aria-label="البحث في المتجر" onSubmit={submitSearch}>
               <button type="submit" className="icon-button light" aria-label="تنفيذ البحث">
                 <Search aria-hidden="true" />
               </button>
@@ -120,10 +136,12 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
                 {category.name}
               </Link>
             ))}
-            <a className="desktop-nav-help" href={`tel:${phone.replace(/\s/g, "")}`}>
-              <Headphones aria-hidden="true" />
-              مساعدة في الطلب
-            </a>
+            {phoneHref ? (
+              <a className="desktop-nav-help" href={phoneHref}>
+                <Headphones aria-hidden="true" />
+                مساعدة في الطلب
+              </a>
+            ) : null}
           </nav>
         </header>
 
@@ -160,10 +178,10 @@ export function StorefrontShell({ categories, settings, children }: StorefrontSh
             </nav>
             <nav className="footer-links" aria-label="خدمة العملاء">
               <strong>خدمة العملاء</strong>
-              <a href={`tel:${phone.replace(/\s/g, "")}`}>اتصل بنا</a>
+              {phoneHref ? <a href={phoneHref}>اتصل بنا</a> : null}
               <span>الدفع عند الاستلام</span>
               <span>تأكيد عبر واتساب</span>
-              <span>توصيل إلى {settings.default_city}</span>
+              <span>توصيل إلى جميع مدن المغرب</span>
             </nav>
           </div>
           <div className="footer-bottom">

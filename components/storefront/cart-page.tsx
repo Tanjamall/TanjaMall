@@ -87,7 +87,7 @@ export function CartPage({ settings }: { settings: StoreSettings }) {
           <h2>ملخص الطلب</h2>
           <div className="summary-lines">
             <div><span>ثمن المنتجات</span><strong>{formatPrice(subtotal)}</strong></div>
-            <div><span>التوصيل إلى {settings.default_city}</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
+            <div><span>التوصيل إلى جميع مدن المغرب</span><strong>{deliveryFee === null ? "يؤكد لاحقا" : deliveryFee === 0 ? "مجاني" : formatPrice(deliveryFee)}</strong></div>
           </div>
           <div className="cart-total">
             <span>المجموع التقديري</span>
@@ -95,7 +95,7 @@ export function CartPage({ settings }: { settings: StoreSettings }) {
           </div>
           <div className="cart-trust-list">
             <span><Banknote aria-hidden="true" /> الدفع عند الاستلام</span>
-            <span><Truck aria-hidden="true" /> توصيل داخل {settings.default_city}</span>
+            <span><Truck aria-hidden="true" /> توصيل إلى جميع مدن المغرب</span>
             <span><PhoneCall aria-hidden="true" /> تأكيد عبر الهاتف أو واتساب</span>
           </div>
           <p className="cart-checkout-note">يحسب المتجر السعر النهائي بأحدث أسعار المنتجات عند تأكيد الطلب.</p>

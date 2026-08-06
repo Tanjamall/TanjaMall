@@ -71,8 +71,8 @@ export const adminOrders = [
 
 export const adminSettingsPreview = {
   storeName: "TanjaMall",
-  phone: "0672975000",
-  whatsapp: "212672975000",
+  phone: "+212708012888",
+  whatsapp: "212708012888",
   defaultCity: "Tanger",
   deliveryFee: "0 درهم",
   freeDeliveryThreshold: "500 درهم",
